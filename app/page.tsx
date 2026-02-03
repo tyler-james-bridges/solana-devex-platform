@@ -221,7 +221,7 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
       {/* Header */}
       <header className="header">
         <div className="dashboard-container">
@@ -245,7 +245,7 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, backgroundColor: '#f8fafc' }}>
         <div className="dashboard-container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
           <div className="space-y-6">
             {/* Header Section */}
