@@ -1,6 +1,6 @@
 /**
  * Real-Time Protocol Monitoring Dashboard
- * Live Solana protocol health and performance tracking
+ * Live Solana protocol health and performance tracking with fallback support
  */
 
 'use client'
@@ -87,6 +87,99 @@ interface DashboardData {
     avgResponseTime: number;
   };
 }
+
+// Mock data for demonstration
+const generateMockData = (): DashboardData => {
+  const now = new Date().toISOString();
+  
+  return {
+    network: {
+      'Helius': {
+        slot: 285947123 + Math.floor(Math.random() * 1000),
+        blockHeight: 285947123,
+        latency: 120 + Math.floor(Math.random() * 50),
+        tps: 2800 + Math.floor(Math.random() * 500),
+        status: Math.random() > 0.9 ? 'degraded' : 'healthy',
+        health: Math.random() > 0.1,
+        timestamp: now
+      },
+      'QuickNode': {
+        slot: 285947123 + Math.floor(Math.random() * 1000),
+        blockHeight: 285947123,
+        latency: 95 + Math.floor(Math.random() * 40),
+        tps: 2900 + Math.floor(Math.random() * 600),
+        status: Math.random() > 0.95 ? 'degraded' : 'healthy',
+        health: Math.random() > 0.05,
+        timestamp: now
+      },
+      'Alchemy': {
+        slot: 285947123 + Math.floor(Math.random() * 1000),
+        blockHeight: 285947123,
+        latency: 110 + Math.floor(Math.random() * 60),
+        tps: 2750 + Math.floor(Math.random() * 400),
+        status: 'healthy',
+        health: true,
+        timestamp: now
+      }
+    },
+    protocols: [
+      {
+        name: 'Jupiter',
+        status: Math.random() > 0.9 ? 'degraded' : 'healthy',
+        latency: 180 + Math.floor(Math.random() * 80),
+        availability: 98.5 + Math.random() * 1.4,
+        errorRate: Math.random() * 0.5,
+        timestamp: now
+      },
+      {
+        name: 'Kamino',
+        status: 'healthy',
+        latency: 220 + Math.floor(Math.random() * 100),
+        availability: 99.2 + Math.random() * 0.7,
+        errorRate: Math.random() * 0.3,
+        timestamp: now
+      },
+      {
+        name: 'Drift',
+        status: Math.random() > 0.95 ? 'degraded' : 'healthy',
+        latency: 160 + Math.floor(Math.random() * 70),
+        availability: 97.8 + Math.random() * 2.0,
+        errorRate: Math.random() * 0.8,
+        timestamp: now
+      },
+      {
+        name: 'Raydium',
+        status: 'healthy',
+        latency: 140 + Math.floor(Math.random() * 50),
+        availability: 99.1 + Math.random() * 0.8,
+        errorRate: Math.random() * 0.4,
+        timestamp: now
+      }
+    ],
+    alerts: Math.random() > 0.7 ? [
+      {
+        id: 'alert-' + Date.now(),
+        rule: {
+          name: 'High Latency Warning',
+          condition: 'latency > 500ms',
+          threshold: 500
+        },
+        value: 520 + Math.floor(Math.random() * 100),
+        severity: 'warning' as const,
+        protocol: 'Jupiter',
+        timestamp: now,
+        resolved: false
+      }
+    ] : [],
+    uptime: {},
+    system: {
+      uptime: Date.now() - (1000 * 60 * 60 * 24 * 30), // 30 days
+      totalRequests: 1250000 + Math.floor(Math.random() * 50000),
+      errorRate: Math.random() * 2,
+      avgResponseTime: 180 + Math.floor(Math.random() * 40)
+    }
+  };
+};
 
 const StatusIcon = ({ status }: { status: string }) => {
   switch (status) {
@@ -196,26 +289,58 @@ const RealTimeDashboard: React.FC = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('1h');
   const [selectedProtocol, setSelectedProtocol] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Alert[]>([]);
+  const [isLiveMode, setIsLiveMode] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const reconnectAttempts = useRef(0);
+  const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // WebSocket connection management
+  // Generate initial historical data
+  const generateHistoricalData = useCallback(() => {
+    const data = [];
+    const now = Date.now();
+    
+    for (let i = 20; i >= 0; i--) {
+      const timestamp = now - (i * 60000); // Every minute
+      data.push({
+        timestamp,
+        time: new Date(timestamp).toLocaleTimeString(),
+        helius_latency: 120 + Math.random() * 50,
+        quicknode_latency: 95 + Math.random() * 40,
+        alchemy_latency: 110 + Math.random() * 60,
+        jupiter_availability: 98 + Math.random() * 2,
+        kamino_availability: 99 + Math.random() * 1,
+        drift_availability: 97 + Math.random() * 3,
+        raydium_availability: 99 + Math.random() * 1
+      });
+    }
+    
+    setHistoricalData(data);
+  }, []);
+
+  // Try WebSocket connection, fallback to polling
   const connectWebSocket = useCallback(() => {
     try {
       const wsUrl = process.env.NODE_ENV === 'production' 
-        ? `wss://${window.location.host}` 
+        ? `wss://${window.location.host}/api/live-monitor` 
         : 'ws://localhost:3001';
       
       wsRef.current = new WebSocket(wsUrl);
       
+      const timeout = setTimeout(() => {
+        console.log('WebSocket connection timeout, using fallback mode');
+        if (wsRef.current && wsRef.current.readyState !== WebSocket.OPEN) {
+          wsRef.current.close();
+          setConnectionStatus('disconnected');
+          startFallbackMode();
+        }
+      }, 3000);
+      
       wsRef.current.onopen = () => {
-        console.log('📡 WebSocket connected');
+        console.log('WebSocket connected - using live mode');
+        clearTimeout(timeout);
         setConnectionStatus('connected');
-        reconnectAttempts.current = 0;
+        setIsLiveMode(true);
         
-        // Subscribe to all data streams
         wsRef.current?.send(JSON.stringify({
           type: 'subscribe',
           streams: ['all']
@@ -232,27 +357,59 @@ const RealTimeDashboard: React.FC = () => {
       };
       
       wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.log('WebSocket error, falling back to demo mode:', error);
+        clearTimeout(timeout);
         setConnectionStatus('disconnected');
+        startFallbackMode();
       };
       
       wsRef.current.onclose = () => {
-        console.log('📡 WebSocket disconnected');
+        console.log('WebSocket disconnected');
+        clearTimeout(timeout);
         setConnectionStatus('disconnected');
-        
-        // Implement exponential backoff for reconnection
-        if (reconnectAttempts.current < 10) {
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
-          reconnectTimeoutRef.current = setTimeout(() => {
-            reconnectAttempts.current++;
-            connectWebSocket();
-          }, delay);
+        if (isLiveMode) {
+          setIsLiveMode(false);
+          startFallbackMode();
         }
       };
     } catch (error) {
-      console.error('WebSocket connection error:', error);
+      console.log('WebSocket connection failed, using demo mode:', error);
       setConnectionStatus('disconnected');
+      startFallbackMode();
     }
+  }, [isLiveMode]);
+
+  // Fallback mode with mock data updates
+  const startFallbackMode = useCallback(() => {
+    console.log('Starting demo mode with simulated data');
+    setConnectionStatus('disconnected');
+    
+    // Set initial data
+    setDashboardData(generateMockData());
+    
+    // Update data every 5 seconds with slight variations
+    updateIntervalRef.current = setInterval(() => {
+      const newData = generateMockData();
+      setDashboardData(newData);
+      
+      // Update historical data
+      setHistoricalData(prev => {
+        const newPoint = {
+          timestamp: Date.now(),
+          time: new Date().toLocaleTimeString(),
+          helius_latency: newData.network['Helius']?.latency || 120,
+          quicknode_latency: newData.network['QuickNode']?.latency || 95,
+          alchemy_latency: newData.network['Alchemy']?.latency || 110,
+          jupiter_availability: newData.protocols.find(p => p.name === 'Jupiter')?.availability || 98,
+          kamino_availability: newData.protocols.find(p => p.name === 'Kamino')?.availability || 99,
+          drift_availability: newData.protocols.find(p => p.name === 'Drift')?.availability || 97,
+          raydium_availability: newData.protocols.find(p => p.name === 'Raydium')?.availability || 99
+        };
+        
+        const updated = [...prev, newPoint];
+        return updated.slice(-50); // Keep last 50 points
+      });
+    }, 5000);
   }, []);
 
   // Handle WebSocket messages
@@ -261,129 +418,48 @@ const RealTimeDashboard: React.FC = () => {
       case 'initial_data':
       case 'dashboard_update':
         setDashboardData(message.data);
-        updateHistoricalData(message.data);
         break;
-        
-      case 'network_metrics':
-        // Update specific network metrics
-        if (dashboardData) {
-          setDashboardData(prev => prev ? {
-            ...prev,
-            network: {
-              ...prev.network,
-              [message.data.provider]: message.data.metrics
-            }
-          } : null);
-        }
-        break;
-        
-      case 'protocol_metrics':
-        // Update specific protocol metrics
-        if (dashboardData) {
-          setDashboardData(prev => {
-            if (!prev) return null;
-            
-            const protocolIndex = prev.protocols.findIndex(p => 
-              p.name.toLowerCase() === message.data.protocol.toLowerCase()
-            );
-            
-            if (protocolIndex !== -1) {
-              const updatedProtocols = [...prev.protocols];
-              updatedProtocols[protocolIndex] = message.data.metrics;
-              
-              return {
-                ...prev,
-                protocols: updatedProtocols
-              };
-            }
-            
-            return prev;
-          });
-        }
-        break;
-        
       case 'alert':
         setNotifications(prev => [message.data, ...prev.slice(0, 9)]);
-        setDashboardData(prev => prev ? {
-          ...prev,
-          alerts: [message.data, ...prev.alerts.slice(0, 19)]
-        } : null);
         break;
-        
-      case 'health_check':
-        // Handle health check updates
-        break;
-        
       default:
         console.log('Unknown WebSocket message type:', message.type);
     }
-  }, [dashboardData]);
-
-  // Update historical data for charts
-  const updateHistoricalData = useCallback((data: DashboardData) => {
-    setHistoricalData(prev => {
-      const newPoint = {
-        timestamp: Date.now(),
-        time: new Date().toLocaleTimeString(),
-        ...Object.entries(data.network).reduce((acc, [provider, metrics]) => ({
-          ...acc,
-          [`${provider}_latency`]: metrics.latency,
-          [`${provider}_tps`]: metrics.tps
-        }), {}),
-        ...data.protocols.reduce((acc, protocol) => ({
-          ...acc,
-          [`${protocol.name.toLowerCase()}_latency`]: protocol.latency,
-          [`${protocol.name.toLowerCase()}_availability`]: protocol.availability
-        }), {})
-      };
-      
-      const updated = [...prev, newPoint];
-      // Keep last 50 data points
-      return updated.slice(-50);
-    });
   }, []);
 
   // Resolve alert
   const resolveAlert = useCallback(async (alertId: string) => {
-    try {
-      await fetch(`/api/alerts/${alertId}/resolve`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      setDashboardData(prev => prev ? {
-        ...prev,
-        alerts: prev.alerts.map(alert => 
-          alert.id === alertId ? { ...alert, resolved: true } : alert
-        )
-      } : null);
-      
-      setNotifications(prev => 
-        prev.map(alert => 
-          alert.id === alertId ? { ...alert, resolved: true } : alert
-        )
-      );
-    } catch (error) {
-      console.error('Failed to resolve alert:', error);
-    }
+    setDashboardData(prev => prev ? {
+      ...prev,
+      alerts: prev.alerts.map(alert => 
+        alert.id === alertId ? { ...alert, resolved: true } : alert
+      )
+    } : null);
+    
+    setNotifications(prev => 
+      prev.map(alert => 
+        alert.id === alertId ? { ...alert, resolved: true } : alert
+      )
+    );
   }, []);
 
-  // Initialize WebSocket connection
+  // Initialize
   useEffect(() => {
+    generateHistoricalData();
+    
+    // Try WebSocket first, fallback to demo mode
     connectWebSocket();
     
     return () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
+      if (updateIntervalRef.current) {
+        clearInterval(updateIntervalRef.current);
       }
       
       if (wsRef.current) {
         wsRef.current.close();
       }
     };
-  }, [connectWebSocket]);
+  }, [connectWebSocket, generateHistoricalData]);
 
   // Calculate overall system health
   const systemHealth = dashboardData ? {
@@ -400,7 +476,7 @@ const RealTimeDashboard: React.FC = () => {
           <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-gray-600">Loading real-time monitoring dashboard...</p>
           <p className="text-sm text-gray-500 mt-2">
-            Status: {connectionStatus}
+            Initializing {connectionStatus === 'connecting' ? 'live monitoring...' : 'demo mode...'}
           </p>
         </div>
       </div>
@@ -415,21 +491,28 @@ const RealTimeDashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Real-Time Protocol Monitor</h1>
-              <p className="text-gray-600">Live Solana network and protocol health tracking</p>
+              <p className="text-gray-600">
+                Live Solana network and protocol health tracking
+                {!isLiveMode && (
+                  <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    Demo Mode - Simulated Data
+                  </span>
+                )}
+              </p>
             </div>
             
             <div className="flex items-center space-x-4">
               {/* Connection Status */}
               <div className="flex items-center space-x-2">
-                {connectionStatus === 'connected' ? (
+                {isLiveMode ? (
                   <>
                     <Wifi className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600">Connected</span>
+                    <span className="text-sm text-green-600">Live Data</span>
                   </>
                 ) : (
                   <>
-                    <WifiOff className="w-4 h-4 text-red-600" />
-                    <span className="text-sm text-red-600">Disconnected</span>
+                    <Activity className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm text-blue-600">Demo Mode</span>
                   </>
                 )}
               </div>
@@ -477,9 +560,9 @@ const RealTimeDashboard: React.FC = () => {
             title="Avg Network Latency"
             value={systemHealth ? `${systemHealth.avgLatency.toFixed(0)}ms` : 'N/A'}
             icon={Clock}
-            status={systemHealth && systemHealth.avgLatency < 500 ? 'healthy' : systemHealth && systemHealth.avgLatency < 1000 ? 'degraded' : 'down'}
-            trend={historicalData.length > 1 && historicalData[historicalData.length - 1] ? 
-              (systemHealth!.avgLatency > historicalData[historicalData.length - 2]?.avg_latency ? 'up' : 'down') : 'neutral'}
+            status={systemHealth && systemHealth.avgLatency < 200 ? 'healthy' : systemHealth && systemHealth.avgLatency < 400 ? 'degraded' : 'down'}
+            trend={historicalData.length > 1 ? 
+              (systemHealth!.avgLatency > (historicalData[historicalData.length - 2]?.helius_latency || 0) ? 'up' : 'down') : 'neutral'}
           />
           
           <MetricCard
@@ -506,17 +589,30 @@ const RealTimeDashboard: React.FC = () => {
                   <XAxis dataKey="time" />
                   <YAxis />
                   <Tooltip />
-                  {Object.keys(dashboardData.network).map((provider, index) => (
-                    <Line
-                      key={provider}
-                      type="monotone"
-                      dataKey={`${provider}_latency`}
-                      stroke={`hsl(${index * 60}, 70%, 50%)`}
-                      strokeWidth={2}
-                      dot={false}
-                      name={`${provider} Latency (ms)`}
-                    />
-                  ))}
+                  <Line
+                    type="monotone"
+                    dataKey="helius_latency"
+                    stroke="#8884d8"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Helius (ms)"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="quicknode_latency"
+                    stroke="#82ca9d"
+                    strokeWidth={2}
+                    dot={false}
+                    name="QuickNode (ms)"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="alchemy_latency"
+                    stroke="#ffc658"
+                    strokeWidth={2}
+                    dot={false}
+                    name="Alchemy (ms)"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -533,20 +629,44 @@ const RealTimeDashboard: React.FC = () => {
                 <AreaChart data={historicalData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="time" />
-                  <YAxis domain={[90, 100]} />
+                  <YAxis domain={[95, 100]} />
                   <Tooltip />
-                  {dashboardData.protocols.map((protocol, index) => (
-                    <Area
-                      key={protocol.name}
-                      type="monotone"
-                      dataKey={`${protocol.name.toLowerCase()}_availability`}
-                      stackId="1"
-                      stroke={`hsl(${index * 90}, 70%, 50%)`}
-                      fill={`hsl(${index * 90}, 70%, 50%)`}
-                      fillOpacity={0.3}
-                      name={`${protocol.name} Availability (%)`}
-                    />
-                  ))}
+                  <Area
+                    type="monotone"
+                    dataKey="jupiter_availability"
+                    stackId="1"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                    fillOpacity={0.3}
+                    name="Jupiter (%)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="kamino_availability"
+                    stackId="1"
+                    stroke="#82ca9d"
+                    fill="#82ca9d"
+                    fillOpacity={0.3}
+                    name="Kamino (%)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="drift_availability"
+                    stackId="1"
+                    stroke="#ffc658"
+                    fill="#ffc658"
+                    fillOpacity={0.3}
+                    name="Drift (%)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="raydium_availability"
+                    stackId="1"
+                    stroke="#ff7300"
+                    fill="#ff7300"
+                    fillOpacity={0.3}
+                    name="Raydium (%)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -611,6 +731,7 @@ const RealTimeDashboard: React.FC = () => {
             <div className="text-center py-8">
               <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto mb-2" />
               <p className="text-gray-600">No recent alerts</p>
+              <p className="text-sm text-gray-500">All systems operating normally</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-64 overflow-y-auto">
