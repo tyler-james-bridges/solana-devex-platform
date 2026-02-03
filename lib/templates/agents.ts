@@ -550,4 +550,4 @@ export class YieldOptimizer {
       'npm run build'
     ]
   }
-];`
+];

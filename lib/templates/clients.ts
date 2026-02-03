@@ -13,18 +13,18 @@ export const CLIENT_TEMPLATES: Template[] = [
         content: `import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { Connection, PublicKey, Keypair, SystemProgram } from '@solana/web3.js';
-import { ${ProjectName} } from '../target/types/${project_name}';
-import idl from '../target/idl/${project_name}.json';
+import { __PROJECT_NAME__ } from '../target/types/__project_name__';
+import idl from '../target/idl/__project_name__.json';
 
-export class ${ProjectName}Client {
-  private program: Program<${ProjectName}>;
+export class __PROJECT_NAME__Client {
+  private program: Program<__PROJECT_NAME__>;
   private provider: anchor.AnchorProvider;
   
   constructor(connection: Connection, wallet: anchor.Wallet) {
     this.provider = new anchor.AnchorProvider(connection, wallet, {});
     anchor.setProvider(this.provider);
     
-    this.program = new Program<${ProjectName}>(
+    this.program = new Program<__PROJECT_NAME__>(
       idl as any,
       new PublicKey("11111111111111111111111111111112"), // Program ID
       this.provider
@@ -81,7 +81,7 @@ export class ${ProjectName}Client {
 }
 
 // Usage example
-export async function createClient(): Promise<${ProjectName}Client> {
+export async function createClient(): Promise<__PROJECT_NAME__Client> {
   const connection = new Connection("http://127.0.0.1:8899", "confirmed");
   
   // In browser, use window.solana.publicKey and wallet adapter
@@ -89,16 +89,16 @@ export async function createClient(): Promise<${ProjectName}Client> {
   const keypair = Keypair.generate();
   const wallet = new anchor.Wallet(keypair);
   
-  return new ${ProjectName}Client(connection, wallet);
+  return new __PROJECT_NAME__Client(connection, wallet);
 }
 `
       },
       {
         path: 'app/package.json',
         content: `{
-  "name": "${project_name}-client",
+  "name": "__project_name__-client",
   "version": "1.0.0",
-  "description": "TypeScript client for ${PROJECT_NAME}",
+  "description": "TypeScript client for __PROJECT_NAME__",
   "main": "client.ts",
   "scripts": {
     "build": "tsc",
@@ -296,9 +296,9 @@ export async function performSwap() {
       {
         path: 'src/package.json',
         content: `{
-  "name": "${project_name}-jupiter-client",
+  "name": "__project_name__-jupiter-client",
   "version": "1.0.0",
-  "description": "Jupiter swap client for ${PROJECT_NAME}",
+  "description": "Jupiter swap client for __PROJECT_NAME__",
   "main": "jupiter-client.ts",
   "scripts": {
     "build": "tsc",
@@ -336,7 +336,7 @@ export async function performSwap() {
       {
         path: 'client.py',
         content: `"""
-Solana Python Client for ${PROJECT_NAME}
+Solana Python Client for __PROJECT_NAME__
 """
 import asyncio
 import json
@@ -349,14 +349,14 @@ from solana.transaction import Transaction
 from anchorpy import Program, Provider, Wallet
 import aiohttp
 
-class ${ProjectName}Client:
+class __PROJECT_NAME__Client:
     def __init__(
         self, 
         rpc_url: str = "http://127.0.0.1:8899",
         commitment: Commitment = Commitment("confirmed")
     ):
         self.client = AsyncClient(rpc_url, commitment=commitment)
-        self.program_id = "${PROGRAM_ID}"  # Replace with actual program ID
+        self.program_id = "__PROGRAM_ID__"  # Replace with actual program ID
         
     async def initialize_provider(self, keypair_path: str):
         """Initialize provider with keypair from file"""
@@ -368,7 +368,7 @@ class ${ProjectName}Client:
         self.provider = Provider(self.client, wallet)
         
         # Load IDL and initialize program
-        with open('target/idl/${project_name}.json', 'r') as f:
+        with open('target/idl/__project_name__.json', 'r') as f:
             idl = json.load(f)
             
         self.program = Program(idl, self.program_id, self.provider)
@@ -458,9 +458,9 @@ class JupiterPythonClient:
                     return 0.0
 
 # Utility functions
-async def create_client(rpc_url: str = "http://127.0.0.1:8899") -> ${ProjectName}Client:
+async def create_client(rpc_url: str = "http://127.0.0.1:8899") -> __PROJECT_NAME__Client:
     """Create and return a configured client"""
-    client = ${ProjectName}Client(rpc_url)
+    client = __PROJECT_NAME__Client(rpc_url)
     return client
 
 async def main():

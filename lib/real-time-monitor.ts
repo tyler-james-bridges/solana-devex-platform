@@ -4,7 +4,7 @@
  */
 
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-import { WebSocket } from 'ws';
+import WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import axios from 'axios';
 
@@ -384,7 +384,7 @@ export class RealTimeProtocolMonitor extends EventEmitter {
           console.error(`Network monitoring error (${providerName}):`, error);
           this.emit('network_error', {
             provider: providerName,
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
             timestamp: new Date().toISOString()
           });
         }
@@ -415,7 +415,7 @@ export class RealTimeProtocolMonitor extends EventEmitter {
           console.error(`Protocol monitoring error (${protocolName}):`, error);
           this.emit('protocol_error', {
             protocol: protocolName,
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
             timestamp: new Date().toISOString()
           });
         }
@@ -445,7 +445,7 @@ export class RealTimeProtocolMonitor extends EventEmitter {
               this.emit('health_error', {
                 protocol: protocolName,
                 endpoint,
-                error: error.message,
+                error: error instanceof Error ? error.message : String(error),
                 timestamp: new Date().toISOString()
               });
             }
@@ -770,7 +770,7 @@ export class RealTimeProtocolMonitor extends EventEmitter {
     alerts: any[];
     uptime: any;
   } {
-    const networkData = {};
+    const networkData: Record<string, any> = {};
     const protocolData = [];
     
     // Get latest network metrics for each provider
