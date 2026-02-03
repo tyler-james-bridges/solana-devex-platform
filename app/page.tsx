@@ -41,22 +41,22 @@ interface Deployment {
 }
 
 const StatusIcon = ({ status }: { status: string }) => {
-  const baseClass = "h-4 w-4 flex-shrink-0"
+  const iconClass = "w-4 h-4"
   
   switch (status) {
     case 'passed':
     case 'success':
     case 'healthy':
-      return <CheckCircle2 className={`${baseClass} text-green-600 dark:text-green-400`} />
+      return <CheckCircle2 className={`${iconClass} text-green-600`} />
     case 'running':
-      return <Loader2 className={`${baseClass} text-blue-600 dark:text-blue-400 animate-spin`} />
+      return <Loader2 className={`${iconClass} text-blue-600 animate-spin`} />
     case 'failed':
     case 'down':
-      return <XCircle className={`${baseClass} text-red-600 dark:text-red-400`} />
+      return <XCircle className={`${iconClass} text-red-600`} />
     case 'degraded':
-      return <AlertCircle className={`${baseClass} text-yellow-600 dark:text-yellow-400`} />
+      return <AlertCircle className={`${iconClass} text-yellow-600`} />
     default:
-      return <Activity className={`${baseClass} text-gray-500`} />
+      return <Activity className={`${iconClass} text-gray-500`} />
   }
 }
 
@@ -73,22 +73,20 @@ const MetricCard = ({
   icon: any
   trend?: 'up' | 'down' | 'neutral'
 }) => (
-  <div className="metric-card group">
-    <div className="flex items-center justify-between mb-3">
-      <Icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+  <div className="metric-card">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+      <Icon className="w-5 h-5 text-blue-600" />
       {change && (
-        <span className={`text-xs font-medium ${
+        <span className={`${
           trend === 'up' ? 'metric-change-positive' : 
-          trend === 'down' ? 'metric-change-negative' : 'text-muted-foreground'
+          trend === 'down' ? 'metric-change-negative' : 'text-gray-500'
         }`}>
           {change}
         </span>
       )}
     </div>
-    <div>
-      <div className="metric-value">{value}</div>
-      <div className="metric-label mt-2">{title}</div>
-    </div>
+    <div className="metric-value">{value}</div>
+    <div className="metric-label">{title}</div>
   </div>
 )
 
@@ -223,204 +221,289 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="dashboard-container py-6 sm:py-8 space-y-6 sm:space-y-8 animate-fade-in">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div className="space-y-3">
-        <h1 className="typography-h1">Development Environment</h1>
-        <p className="typography-body text-muted-foreground max-w-3xl">
-          Complete testing, deployment, and monitoring platform for Solana applications. 
-          Built for autonomous agents and professional development teams.
-        </p>
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="dashboard-grid grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="Tests Run"
-          value={metrics.testsRun}
-          change="+12 today"
-          icon={Activity}
-          trend="up"
-        />
-        <MetricCard
-          title="Success Rate"
-          value={`${metrics.successRate}%`}
-          change="-0.2%"
-          icon={CheckCircle2}
-          trend="down"
-        />
-        <MetricCard
-          title="Avg Latency"
-          value={`${metrics.avgLatency}ms`}
-          change="+5ms"
-          icon={Clock}
-          trend="down"
-        />
-        <MetricCard
-          title="Deployments"
-          value={metrics.activeDeployments}
-          change={`${metrics.totalDeployments} total`}
-          icon={Zap}
-          trend="neutral"
-        />
-      </div>
-
-      <div className="dashboard-grid grid-cols-1 lg:grid-cols-2">
-        {/* Test Results */}
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Recent Tests</h2>
-            <p className="card-description">
-              Latest protocol integration tests and status
-            </p>
-          </div>
-          <div className="card-content">
-            <div className="space-y-3">
-              {testResults.map((test) => (
-                <div key={test.id} className="item-card">
-                  <div className="item-card-content">
-                    <StatusIcon status={test.status} />
-                    <div className="space-y-1 min-w-0 flex-1">
-                      <p className="typography-body font-medium truncate">{test.name}</p>
-                      <div className="item-card-meta">
-                        <span className="font-medium">{test.protocol}</span>
-                        <span>•</span>
-                        <span>{test.timestamp}</span>
-                        {test.latency && test.latency > 0 && (
-                          <>
-                            <span>•</span>
-                            <span>{test.latency}ms</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="item-card-actions">
-                    <div className={`status-indicator ${
-                      test.status === 'passed' ? 'status-success' :
-                      test.status === 'failed' ? 'status-error' :
-                      test.status === 'running' ? 'status-info' : 'status-neutral'
-                    }`}>
-                      {test.status}
-                    </div>
-                    {test.duration > 0 && (
-                      <p className="typography-caption">{test.duration.toFixed(1)}s</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Protocol Health */}
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Protocol Health</h2>
-            <p className="card-description">
-              Real-time status and performance metrics
-            </p>
-          </div>
-          <div className="card-content">
-            <div className="space-y-3">
-              {protocols.map((protocol) => (
-                <div key={protocol.name} className="item-card">
-                  <div className="item-card-content">
-                    <StatusIcon status={protocol.status} />
-                    <div className="space-y-1 min-w-0 flex-1">
-                      <p className="typography-body font-medium">{protocol.name}</p>
-                      <p className="typography-caption">
-                        Last check: {protocol.lastCheck}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="item-card-actions">
-                    <div className={`status-indicator ${
-                      protocol.status === 'healthy' ? 'status-success' :
-                      protocol.status === 'degraded' ? 'status-warning' :
-                      protocol.status === 'down' ? 'status-error' : 'status-neutral'
-                    }`}>
-                      {protocol.status}
-                    </div>
-                    <p className="typography-caption text-right">
-                      {protocol.latency > 0 ? `${protocol.latency}ms` : '—'} • {protocol.successRate.toFixed(1)}%
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Deployments */}
-      <div className="card">
-        <div className="card-header">
-          <h2 className="card-title">CI/CD Pipelines</h2>
-          <p className="card-description">
-            Deployment status and progress tracking
-          </p>
-        </div>
-        <div className="card-content">
-          <div className="space-y-6">
-            {deployments.map((deployment) => (
-              <div key={deployment.id} className="space-y-3">
-                <div className="item-card">
-                  <div className="item-card-content">
-                    <StatusIcon status={deployment.status} />
-                    <div className="space-y-1 min-w-0 flex-1">
-                      <p className="typography-body font-medium truncate">{deployment.name}</p>
-                      <div className="item-card-meta">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary text-secondary-foreground border">
-                          {deployment.environment}
-                        </span>
-                        <span>•</span>
-                        <span>{deployment.stage}</span>
-                        <span>•</span>
-                        <span>{deployment.startedAt}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="item-card-actions">
-                    <div className={`status-indicator ${
-                      deployment.status === 'success' ? 'status-success' :
-                      deployment.status === 'failed' ? 'status-error' :
-                      deployment.status === 'running' ? 'status-info' : 'status-neutral'
-                    }`}>
-                      {deployment.status}
-                    </div>
-                  </div>
-                </div>
-                
-                {deployment.status === 'running' && (
-                  <div className="space-y-2 px-2">
-                    <div className="flex justify-between typography-caption">
-                      <span>Progress</span>
-                      <span>{Math.round(deployment.progress)}%</span>
-                    </div>
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-indicator transition-all duration-1000" 
-                        style={{ width: `${deployment.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
+      <header className="header">
+        <div className="dashboard-container">
+          <div className="header-content">
+            <div className="logo">
+              <div className="logo-icon">
+                <div style={{ width: '16px', height: '16px', background: 'white', borderRadius: '2px' }}></div>
               </div>
-            ))}
+              <div>
+                <div className="logo-text">Solana DevEx</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Platform</div>
+              </div>
+            </div>
+            
+            <div className="status-badges">
+              <span className="status-success">Live</span>
+              <span className="status-info">#25</span>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Main Content */}
+      <main style={{ flex: 1 }}>
+        <div className="dashboard-container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+          <div className="space-y-6">
+            {/* Header Section */}
+            <div className="space-y-2">
+              <h1 className="typography-h1">Development Environment</h1>
+              <p className="typography-body" style={{ maxWidth: '768px' }}>
+                Complete testing, deployment, and monitoring platform for Solana applications. 
+                Built for autonomous agents and professional development teams.
+              </p>
+            </div>
+
+            {/* Metrics Grid */}
+            <div className="dashboard-grid grid-cols-2 md:grid-cols-4">
+              <MetricCard
+                title="Tests Run"
+                value={metrics.testsRun}
+                change="+12 today"
+                icon={Activity}
+                trend="up"
+              />
+              <MetricCard
+                title="Success Rate"
+                value={`${metrics.successRate}%`}
+                change="-0.2%"
+                icon={CheckCircle2}
+                trend="down"
+              />
+              <MetricCard
+                title="Avg Latency"
+                value={`${metrics.avgLatency}ms`}
+                change="+5ms"
+                icon={Clock}
+                trend="down"
+              />
+              <MetricCard
+                title="Active Deployments"
+                value={metrics.activeDeployments}
+                change={`${metrics.totalDeployments} total`}
+                icon={Zap}
+                trend="neutral"
+              />
+            </div>
+
+            {/* Test Results and Protocol Health */}
+            <div className="dashboard-grid grid-cols-1 lg:grid-cols-2">
+              {/* Test Results */}
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Recent Tests</h2>
+                  <p className="card-description">
+                    Latest protocol integration tests and their status
+                  </p>
+                </div>
+                <div className="card-content">
+                  <div className="space-y-3">
+                    {testResults.map((test) => (
+                      <div key={test.id} className="item-card">
+                        <div className="item-card-content">
+                          <StatusIcon status={test.status} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }} className="truncate">
+                              {test.name}
+                            </p>
+                            <div className="item-card-meta">
+                              <span style={{ fontWeight: 500 }}>{test.protocol}</span>
+                              <span>•</span>
+                              <span>{test.timestamp}</span>
+                              {test.latency && test.latency > 0 && (
+                                <>
+                                  <span>•</span>
+                                  <span>{test.latency}ms</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="item-card-actions">
+                          <div className={`status-indicator ${
+                            test.status === 'passed' ? 'status-success' :
+                            test.status === 'failed' ? 'status-error' :
+                            test.status === 'running' ? 'status-info' : 'status-neutral'
+                          }`}>
+                            {test.status}
+                          </div>
+                          {test.duration > 0 && (
+                            <p className="typography-caption">{test.duration.toFixed(1)}s</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Protocol Health */}
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Protocol Health</h2>
+                  <p className="card-description">
+                    Real-time status and performance metrics
+                  </p>
+                </div>
+                <div className="card-content">
+                  <div className="space-y-3">
+                    {protocols.map((protocol) => (
+                      <div key={protocol.name} className="item-card">
+                        <div className="item-card-content">
+                          <StatusIcon status={protocol.status} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }}>
+                              {protocol.name}
+                            </p>
+                            <p className="typography-caption">
+                              Last check: {protocol.lastCheck}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="item-card-actions">
+                          <div className={`status-indicator ${
+                            protocol.status === 'healthy' ? 'status-success' :
+                            protocol.status === 'degraded' ? 'status-warning' :
+                            protocol.status === 'down' ? 'status-error' : 'status-neutral'
+                          }`}>
+                            {protocol.status}
+                          </div>
+                          <p className="typography-caption">
+                            {protocol.latency > 0 ? `${protocol.latency}ms` : '—'} • {protocol.successRate.toFixed(1)}%
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CI/CD Pipelines */}
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title">CI/CD Pipelines</h2>
+                <p className="card-description">
+                  Deployment status and progress tracking
+                </p>
+              </div>
+              <div className="card-content">
+                <div className="space-y-4">
+                  {deployments.map((deployment) => (
+                    <div key={deployment.id}>
+                      <div className="item-card">
+                        <div className="item-card-content">
+                          <StatusIcon status={deployment.status} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }} className="truncate">
+                              {deployment.name}
+                            </p>
+                            <div className="item-card-meta">
+                              <span style={{ 
+                                padding: '2px 8px', 
+                                background: '#f3f4f6', 
+                                borderRadius: '4px', 
+                                fontSize: '11px',
+                                border: '1px solid #e5e7eb'
+                              }}>
+                                {deployment.environment}
+                              </span>
+                              <span>•</span>
+                              <span>{deployment.stage}</span>
+                              <span>•</span>
+                              <span>{deployment.startedAt}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="item-card-actions">
+                          <div className={`status-indicator ${
+                            deployment.status === 'success' ? 'status-success' :
+                            deployment.status === 'failed' ? 'status-error' :
+                            deployment.status === 'running' ? 'status-info' : 'status-neutral'
+                          }`}>
+                            {deployment.status}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {deployment.status === 'running' && (
+                        <div style={{ marginTop: '12px', paddingLeft: '8px', paddingRight: '8px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <span className="typography-caption">Progress</span>
+                            <span className="typography-caption">{Math.round(deployment.progress)}%</span>
+                          </div>
+                          <div className="progress-bar">
+                            <div 
+                              className="progress-indicator"
+                              style={{ width: `${deployment.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
 
       {/* Footer */}
-      <div className="text-center py-6 border-t border-border space-y-2">
-        <p className="typography-caption">
-          Autonomous DevEx Platform • Agent #25 • Colosseum Hackathon 2026
-        </p>
-        <p className="typography-caption">
-          Last updated: {new Date().toLocaleTimeString()} • All systems operational
-        </p>
-      </div>
+      <footer className="footer">
+        <div className="dashboard-container">
+          <div className="footer-content">
+            <div className="footer-grid">
+              <div className="footer-section">
+                <h4>Platform</h4>
+                <ul>
+                  <li><a href="#">Dashboard</a></li>
+                  <li><a href="#">Testing</a></li>
+                  <li><a href="#">CI/CD</a></li>
+                  <li><a href="#">Monitoring</a></li>
+                </ul>
+              </div>
+              
+              <div className="footer-section">
+                <h4>Integrations</h4>
+                <ul>
+                  <li><a href="#">Jupiter</a></li>
+                  <li><a href="#">Kamino</a></li>
+                  <li><a href="#">Drift</a></li>
+                  <li><a href="#">Raydium</a></li>
+                </ul>
+              </div>
+              
+              <div className="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                  <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener">GitHub</a></li>
+                  <li><a href="#">Documentation</a></li>
+                  <li><a href="#">API Reference</a></li>
+                  <li><a href="#">Support</a></li>
+                </ul>
+              </div>
+              
+              <div className="footer-section">
+                <h4>Project</h4>
+                <ul>
+                  <li><a href="https://colosseum.com/agent-hackathon" target="_blank" rel="noopener">Hackathon</a></li>
+                  <li><a href="#">Agent #25</a></li>
+                  <li><a href="#">Built by onchain-devex</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="footer-bottom">
+              <p>© 2026 Solana DevEx Platform. Built by onchain-devex agent.</p>
+              <p>Powered by Solana • Built for Agents</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
