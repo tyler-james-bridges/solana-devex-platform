@@ -1,0 +1,165 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for the Solana DevEx Platform
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature! Please provide as much detail as possible.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A brief, clear summary of the feature you're requesting
+      placeholder: Summarize the feature in one or two sentences...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What need does it address?
+      placeholder: |
+        Is your feature request related to a problem? Please describe.
+        A clear and concise description of what the problem is.
+        Example: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see implemented
+      placeholder: |
+        A clear and concise description of what you want to happen.
+        How should this feature work from a user perspective?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component should this feature be added to?
+      options:
+        - Frontend (Next.js/React)
+        - API Backend
+        - CLI Tools
+        - Documentation
+        - CI/CD Pipeline
+        - Developer Tools
+        - Monitoring & Analytics
+        - Security
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Critical (Blocking current work)
+        - High (Significantly improves workflow)
+        - Medium (Nice to have improvement)
+        - Low (Minor enhancement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories
+      description: Describe how different users would interact with this feature
+      placeholder: |
+        As a [type of user], I want [feature] so that [benefit/value].
+        
+        Example:
+        - As a Solana developer, I want automated testing for my smart contracts so that I can catch bugs before deployment.
+        - As a DevOps engineer, I want deployment notifications so that I know when releases are successful.
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What specific requirements must be met for this feature to be considered complete?
+      placeholder: |
+        - [ ] Requirement 1
+        - [ ] Requirement 2
+        - [ ] Requirement 3
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: |
+        A clear and concise description of any alternative solutions or features you've considered.
+        Why didn't these alternatives work for your use case?
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes
+      description: If you have technical ideas about how this could be implemented, share them here
+      placeholder: |
+        Any thoughts on technical approach, libraries to use, API design, etc.
+        This is optional but can be helpful for developers.
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: UI Mockups/Wireframes
+      description: If this is a UI feature, provide mockups, wireframes, or sketches
+      placeholder: Drag and drop images here or describe the UI...
+
+  - type: checkboxes
+    id: solana-specific
+    attributes:
+      label: Solana-Specific Features
+      description: Does this feature relate to Solana blockchain development?
+      options:
+        - label: This feature is specific to Solana blockchain development
+        - label: This feature involves Anchor framework integration
+        - label: This feature requires Solana program interaction
+        - label: This feature involves wallet integration
+        - label: This feature requires on-chain data analysis
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: Business/Developer Value
+      description: What value would this feature provide to developers or the project?
+      placeholder: |
+        How would this feature improve developer experience?
+        What time/effort would it save?
+        How does it align with project goals?
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request
+      placeholder: |
+        Links to similar features in other tools
+        Screenshots from other applications
+        Any other relevant information
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched for existing feature requests for this functionality
+          required: true
+        - label: I have provided a clear problem statement and proposed solution
+          required: true
+        - label: I understand this is a feature request, not a bug report
+          required: true
