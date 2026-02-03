@@ -6,5 +6,5 @@ export default function DashboardPage() {
 
 export const metadata = {
   title: 'Real-Time Protocol Monitor - Solana DevEx Platform',
-  description: 'Live monitoring dashboard for Solana network and DeFi protocol health',
+  description: 'Live monitoring dashboard for Solana network and DeFi protocol health tracking',
 };
