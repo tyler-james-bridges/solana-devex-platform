@@ -3,14 +3,65 @@ const cors = require('cors');
 const WebSocket = require('ws');
 const { Connection, clusterApiUrl } = require('@solana/web3.js');
 const axios = require('axios');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const { body, param, validationResult } = require('express-validator');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json({ limit: '10mb' }));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+app.use('/api/', limiter);
+
+// API Authentication middleware
+const authMiddleware = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'] || req.headers['authorization'];
+  
+  // Allow health checks without auth
+  if (req.path === '/api/health') {
+    return next();
+  }
+  
+  // For now, if no API key env var is set, allow all requests (dev mode)
+  if (!process.env.API_KEY) {
+    return next();
+  }
+  
+  if (!apiKey || !apiKey.includes(process.env.API_KEY)) {
+    return res.status(401).json({ 
+      error: 'Unauthorized', 
+      message: 'Valid API key required' 
+    });
+  }
+  
+  next();
+};
+
+// Input validation helper
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: 'Validation failed',
+      details: errors.array()
+    });
+  }
+  next();
+};
 
 // Solana connection
 const connection = new Connection(clusterApiUrl('devnet'));
@@ -163,9 +214,16 @@ app.get('/api/tests', (req, res) => {
 });
 
 // Run protocol tests
-app.post('/api/tests/run', async (req, res) => {
-  const { protocols } = req.body;
-  const testId = Date.now().toString();
+app.post('/api/tests/run', 
+  authMiddleware,
+  [
+    body('protocols').optional().isArray().withMessage('protocols must be an array'),
+    body('protocols.*').optional().isIn(['jupiter', 'kamino', 'drift', 'raydium']).withMessage('Invalid protocol name')
+  ],
+  handleValidationErrors,
+  async (req, res) => {
+    const { protocols } = req.body;
+    const testId = Date.now().toString();
   
   const runTests = async () => {
     for (const protocol of protocols || ['jupiter', 'kamino', 'drift', 'raydium']) {
@@ -264,8 +322,16 @@ app.get('/api/pipelines', (req, res) => {
 });
 
 // Deploy pipeline
-app.post('/api/pipelines/deploy', async (req, res) => {
-  const { name, environment, branch } = req.body;
+app.post('/api/pipelines/deploy',
+  authMiddleware,
+  [
+    body('name').isString().isLength({ min: 1, max: 100 }).withMessage('Name must be 1-100 characters'),
+    body('environment').optional().isIn(['devnet', 'testnet', 'mainnet']).withMessage('Invalid environment'),
+    body('branch').optional().isString().isLength({ min: 1, max: 50 }).withMessage('Branch name must be 1-50 characters')
+  ],
+  handleValidationErrors,
+  async (req, res) => {
+    const { name, environment, branch } = req.body;
   
   const deploymentId = Date.now().toString();
   const deployment = {
@@ -403,45 +469,113 @@ setInterval(() => {
   });
 }, 5000);
 
-// Initialize some mock data
+// Initialize comprehensive demo data
 const initializeMockData = () => {
-  // Initialize protocol health
-  ['jupiter', 'kamino', 'drift', 'raydium'].forEach(protocol => {
+  // Initialize realistic protocol health
+  const protocolData = {
+    jupiter: { baseLatency: 120, baseSuccess: 99.5, status: 'healthy' },
+    kamino: { baseLatency: 95, baseSuccess: 98.8, status: 'healthy' },
+    drift: { baseLatency: 180, baseSuccess: 97.2, status: 'degraded' },
+    raydium: { baseLatency: 250, baseSuccess: 94.1, status: 'degraded' }
+  };
+  
+  Object.entries(protocolData).forEach(([protocol, data]) => {
     protocolHealth[protocol] = {
       name: protocol,
-      status: 'healthy',
-      latency: Math.random() * 200 + 50,
-      successRate: Math.random() * 10 + 90,
+      status: data.status,
+      latency: data.baseLatency + Math.random() * 20,
+      successRate: data.baseSuccess + Math.random() * 2,
       lastCheck: new Date().toISOString(),
-      message: `${protocol} is operational`
+      message: `${protocol} ${data.status === 'healthy' ? 'is operational' : 'experiencing minor issues'}`
     };
   });
   
-  // Initialize some deployment history
-  deployments.push(
+  // Initialize realistic test history
+  const testHistory = [
+    { protocol: 'jupiter', name: 'Jupiter V6 Swap Integration', status: 'passed', duration: 1.8 },
+    { protocol: 'kamino', name: 'Kamino Lending Pool Validation', status: 'passed', duration: 2.1 },
+    { protocol: 'drift', name: 'Drift Perpetuals Position Test', status: 'failed', duration: 0.9 },
+    { protocol: 'raydium', name: 'Raydium AMM Liquidity Check', status: 'passed', duration: 1.5 },
+    { protocol: 'jupiter', name: 'Price Impact Analysis', status: 'passed', duration: 0.7 },
+    { protocol: 'drift', name: 'PnL Calculation Validation', status: 'passed', duration: 1.3 }
+  ];
+  
+  testHistory.forEach((test, index) => {
+    testResults.push({
+      id: `test-${index}`,
+      name: test.name,
+      protocol: test.protocol,
+      status: test.status,
+      duration: test.duration,
+      timestamp: `${Math.floor(Math.random() * 60)} min ago`,
+      startedAt: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+      completedAt: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+      latency: Math.random() * 300 + 50
+    });
+  });
+  
+  // Initialize comprehensive deployment history  
+  const deploymentHistory = [
     {
-      id: 'dep-1',
-      name: 'Trading Bot v2.1',
+      id: 'dep-prod-1',
+      name: 'Autonomous Trading Agent v3.2',
       environment: 'mainnet',
+      branch: 'release/v3.2',
       status: 'success',
       progress: 100,
       currentStage: 'completed',
-      startedAt: new Date(Date.now() - 3600000).toISOString(),
-      completedAt: new Date(Date.now() - 3000000).toISOString(),
-      logs: []
+      startedAt: new Date(Date.now() - 7200000).toISOString(),
+      completedAt: new Date(Date.now() - 6000000).toISOString(),
+      logs: [
+        { timestamp: new Date(Date.now() - 7200000).toISOString(), level: 'info', message: 'Build started for mainnet deployment' },
+        { timestamp: new Date(Date.now() - 6800000).toISOString(), level: 'success', message: 'All 47 tests passed' },
+        { timestamp: new Date(Date.now() - 6200000).toISOString(), level: 'success', message: 'Deployed to mainnet successfully' }
+      ]
     },
     {
-      id: 'dep-2',
-      name: 'DeFi Dashboard',
+      id: 'dep-staging-1',
+      name: 'DeFi Yield Optimizer v2.1',
+      environment: 'testnet',
+      branch: 'feature/advanced-routing',
+      status: 'running',
+      progress: 78,
+      currentStage: 'deploy',
+      startedAt: new Date(Date.now() - 1200000).toISOString(),
+      logs: [
+        { timestamp: new Date(Date.now() - 1200000).toISOString(), level: 'info', message: 'Starting deployment pipeline' },
+        { timestamp: new Date(Date.now() - 900000).toISOString(), level: 'success', message: 'Build completed successfully' },
+        { timestamp: new Date(Date.now() - 600000).toISOString(), level: 'info', message: 'Deploying to testnet...' }
+      ]
+    },
+    {
+      id: 'dep-dev-1',
+      name: 'Protocol Analytics Dashboard',
       environment: 'devnet',
+      branch: 'hotfix/ui-improvements',
       status: 'failed',
-      progress: 25,
+      progress: 45,
       currentStage: 'test',
-      startedAt: new Date(Date.now() - 1800000).toISOString(),
-      completedAt: new Date(Date.now() - 1500000).toISOString(),
-      logs: []
+      startedAt: new Date(Date.now() - 2400000).toISOString(),
+      completedAt: new Date(Date.now() - 2100000).toISOString(),
+      logs: [
+        { timestamp: new Date(Date.now() - 2400000).toISOString(), level: 'info', message: 'Pipeline started' },
+        { timestamp: new Date(Date.now() - 2200000).toISOString(), level: 'success', message: 'Build stage completed' },
+        { timestamp: new Date(Date.now() - 2100000).toISOString(), level: 'error', message: 'Integration tests failed: Jupiter API timeout' }
+      ]
     }
-  );
+  ];
+  
+  deployments.push(...deploymentHistory);
+  
+  // Update metrics based on demo data
+  realTimeMetrics = {
+    testsRun: testResults.length,
+    successRate: (testResults.filter(t => t.status === 'passed').length / testResults.length) * 100,
+    avgLatency: testResults.reduce((acc, t) => acc + (t.latency || 150), 0) / testResults.length,
+    activeDeployments: deployments.filter(d => d.status === 'running').length,
+    totalDeployments: deployments.length,
+    healthyProtocols: Object.values(protocolHealth).filter(p => p.status === 'healthy').length
+  };
 };
 
 initializeMockData();
