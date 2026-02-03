@@ -1,5 +1,5 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import ErrorBoundary from '../components/ErrorBoundary'
 
@@ -8,6 +8,14 @@ const inter = Inter({
   display: 'swap',
 })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  userScalable: true,
+  themeColor: '#3b82f6'
+}
+
 export const metadata: Metadata = {
   title: 'Solana DevEx Platform - Professional Development Environment',
   description: 'Complete development environment and dashboard for Solana applications. Built for autonomous agents and professional development teams.',
@@ -15,7 +23,12 @@ export const metadata: Metadata = {
   authors: [{ name: 'onchain-devex' }],
   creator: 'onchain-devex',
   robots: 'index, follow',
-  viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'format-detection': 'telephone=no'
+  }
 }
 
 export default function RootLayout({

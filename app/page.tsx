@@ -444,20 +444,30 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {deployments.map((deployment) => (
                     <div key={deployment.id}>
-                      <div className="item-card">
+                      <div className="item-card" style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}>
                         <div className="item-card-content">
                           <StatusIcon status={deployment.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }} className="truncate">
+                            <p style={{ 
+                              fontWeight: 500, 
+                              fontSize: '0.875rem', 
+                              color: '#111827',
+                              lineHeight: '1.4',
+                              marginBottom: '0.25rem'
+                            }}>
                               {deployment.name}
                             </p>
                             <div className="item-card-meta">
                               <span style={{ 
-                                padding: '2px 8px', 
+                                padding: '0.25rem 0.5rem', 
                                 background: '#f3f4f6', 
-                                borderRadius: '4px', 
-                                fontSize: '11px',
-                                border: '1px solid #e5e7eb'
+                                borderRadius: '0.25rem', 
+                                fontSize: '0.75rem',
+                                border: '1px solid #e5e7eb',
+                                fontWeight: '500'
                               }}>
                                 {deployment.environment}
                               </span>
@@ -480,10 +490,24 @@ export default function Dashboard() {
                       </div>
                       
                       {deployment.status === 'running' && (
-                        <div style={{ marginTop: '12px', paddingLeft: '8px', paddingRight: '8px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                            <span className="typography-caption">Progress</span>
-                            <span className="typography-caption">{Math.round(deployment.progress)}%</span>
+                        <div style={{ 
+                          marginTop: '0.75rem', 
+                          padding: '0.75rem',
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '0.5rem',
+                          border: '1px solid #e5e7eb'
+                        }}>
+                          <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            marginBottom: '0.5rem',
+                            alignItems: 'center'
+                          }}>
+                            <span className="typography-caption" style={{ fontWeight: '500' }}>Progress</span>
+                            <span className="typography-caption" style={{ 
+                              fontWeight: '600',
+                              color: '#111827'
+                            }}>{Math.round(deployment.progress)}%</span>
                           </div>
                           <div className="progress-bar">
                             <div 
