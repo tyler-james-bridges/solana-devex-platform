@@ -466,7 +466,31 @@ app.get('/api/metrics/public', publicMetricsLimiter, (req, res) => {
 });
 
 // WebSocket connection handling
+// SECURITY PATCH: WebSocket connection tracking
+const ipConnections = new Map();
+const MAX_WS_CONNECTIONS_PER_IP = 3;
+
 wss.on('connection', (ws, req) => {
+  const ip = req.socket.remoteAddress;
+  const currentCount = ipConnections.get(ip) || 0;
+  
+  if (currentCount >= MAX_WS_CONNECTIONS_PER_IP) {
+    console.log(`🚨 WebSocket connection limit exceeded for IP: ${ip}`);
+    ws.close(1008, 'Connection limit exceeded');
+    return;
+  }
+  
+  ipConnections.set(ip, currentCount + 1);
+  
+  // Clean up on disconnect
+  ws.on('close', () => {
+    const count = ipConnections.get(ip) || 0;
+    if (count <= 1) {
+      ipConnections.delete(ip);
+    } else {
+      ipConnections.set(ip, count - 1);
+    }
+  });
   // Rate limiting check
   if (!wsRateLimit(ws, req)) {
     ws.close(1008, 'Rate limit exceeded');
@@ -652,7 +676,9 @@ process.on('SIGTERM', async () => {
 });
 
 // Start the enhanced monitoring system
-monitor.startMonitoring().catch(console.error);
+// SECURITY PATCH: Automatic monitoring disabled
+// monitor.startMonitoring().catch(console.error);
+console.log('🛡️  Security: Real-time monitoring disabled by default. Use API to enable with limits.');
 
 // Start server
 server.listen(PORT, () => {

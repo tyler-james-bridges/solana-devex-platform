@@ -32,6 +32,17 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// SECURITY PATCH: Aggressive rate limiting for expensive operations
+const expensiveLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Only 5 expensive operations per hour
+  message: {
+    error: 'Rate limit exceeded',
+    message: 'Resource-intensive operations limited to 5 per hour',
+    retryAfter: 3600
+  }
+});
+
 // API Authentication middleware
 const authMiddleware = (req, res, next) => {
   const apiKey = req.headers['x-api-key'] || req.headers['authorization'];
@@ -41,9 +52,13 @@ const authMiddleware = (req, res, next) => {
     return next();
   }
   
-  // For now, if no API key env var is set, allow all requests (dev mode)
+  // SECURITY PATCH: Auth required in production
   if (!process.env.API_KEY) {
-    return next();
+    console.error('🚨 SECURITY: API_KEY environment variable required');
+    return res.status(503).json({ 
+      error: 'Service unavailable',
+      message: 'API_KEY configuration required' 
+    });
   }
   
   if (!apiKey || !apiKey.includes(process.env.API_KEY)) {
@@ -127,7 +142,8 @@ liveMonitor.on('health_check_error', (error) => {
 });
 
 // Start monitoring
-liveMonitor.startMonitoring().catch(console.error);
+// SECURITY PATCH: Automatic monitoring disabled - use API endpoint to start monitoring with time limits
+// liveMonitor.startMonitoring().catch(console.error);
 // Protocol tester is now initialized above with real implementation
 
 // Routes
@@ -157,6 +173,7 @@ app.get('/api/tests', (req, res) => {
 
 // Run protocol tests
 app.post('/api/tests/run', 
+  expensiveLimiter,
   authMiddleware,
   [
     body('protocols').optional().isArray().withMessage('protocols must be an array'),
@@ -268,6 +285,7 @@ app.get('/api/pipelines', (req, res) => {
 
 // Deploy pipeline using real CI/CD manager
 app.post('/api/pipelines/deploy',
+  expensiveLimiter,
   authMiddleware,
   [
     body('name').isString().isLength({ min: 1, max: 100 }).withMessage('Name must be 1-100 characters'),
@@ -567,6 +585,26 @@ const initializeMockData = () => {
 };
 
 initializeMockData();
+
+// SECURITY PATCH: Resource cleanup to prevent memory leaks
+setInterval(() => {
+  if (testResults.length > 100) {
+    testResults = testResults.slice(-100);
+    console.log('🧹 Cleaned old test results');
+  }
+  
+  if (deployments.length > 50) {
+    deployments = deployments.slice(-50);
+    console.log('🧹 Cleaned old deployment records');
+  }
+  
+  // Clean disconnected WebSocket clients
+  wss.clients.forEach(client => {
+    if (client.readyState !== client.OPEN) {
+      wss.clients.delete(client);
+    }
+  });
+}, 300000); // Every 5 minutes
 
 server.listen(PORT, () => {
   console.log(`Solana DevEx API server running on port ${PORT}`);
