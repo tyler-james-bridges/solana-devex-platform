@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "types": ["mocha", "chai"],
+    "typeRoots": ["./node_modules/@types"],
+    "lib": ["es6", "dom"],
+    "module": "commonjs",
+    "target": "es6",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"],
+      "@tests/*": ["./tests/*"],
+      "@programs/*": ["./programs/*"],
+      "@generated/*": ["./target/types/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "tests/**/*",
+    "app/**/*",
+    "programs/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "target/deploy",
+    "target/idl"
+  ]
+}

@@ -1,0 +1,393 @@
+name: Solana Agent Multi-DEX CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run integration tests daily at 6 AM UTC
+    - cron: '0 6 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_VERSION: 20
+  RUST_VERSION: stable
+  ANCHOR_VERSION: 0.29.0
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      agent-core: ${{ steps.changes.outputs.agent-core }}
+      dex-integrations: ${{ steps.changes.outputs.dex-integrations }}
+      strategies: ${{ steps.changes.outputs.strategies }}
+      monitoring: ${{ steps.changes.outputs.monitoring }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    
+    - name: Detect changes
+      id: changes
+      run: |
+        echo "agent-core=$(git diff --name-only HEAD~1 HEAD | grep -E '^(programs/agent|lib/core)/' | wc -l)" >> $GITHUB_OUTPUT
+        echo "dex-integrations=$(git diff --name-only HEAD~1 HEAD | grep -E '^(lib/dex|integrations)/' | wc -l)" >> $GITHUB_OUTPUT
+        echo "strategies=$(git diff --name-only HEAD~1 HEAD | grep -E '^strategies/' | wc -l)" >> $GITHUB_OUTPUT
+        echo "monitoring=$(git diff --name-only HEAD~1 HEAD | grep -E '^monitoring/' | wc -l)" >> $GITHUB_OUTPUT
+
+  dex-integration-tests:
+    name: DEX Integration Tests
+    runs-on: ubuntu-latest
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.dex-integrations > 0 || github.event_name == 'schedule'
+    strategy:
+      fail-fast: false
+      matrix:
+        dex: 
+          - jupiter
+          - raydium
+          - orca
+          - meteora
+          - drift
+          - kamino
+          - mango
+        network:
+          - devnet
+          - testnet
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Test ${{ matrix.dex }} on ${{ matrix.network }}
+      run: |
+        npm run test:dex -- --dex=${{ matrix.dex }} --network=${{ matrix.network }}
+      env:
+        DEX_NAME: ${{ matrix.dex }}
+        SOLANA_NETWORK: ${{ matrix.network }}
+        JUPITER_API_KEY: ${{ secrets.JUPITER_API_KEY }}
+        HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: dex-test-results-${{ matrix.dex }}-${{ matrix.network }}
+        path: test-results/${{ matrix.dex }}-${{ matrix.network }}.json
+
+  agent-behavior-tests:
+    name: Agent Behavior Tests
+    runs-on: ubuntu-latest
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.agent-core > 0 || needs.detect-changes.outputs.strategies > 0
+    strategy:
+      matrix:
+        strategy: [arbitrage, market-making, dca, rebalancing]
+        scenario: [bull-market, bear-market, sideways, high-volatility]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run agent behavior simulation
+      run: |
+        npm run test:agent-behavior -- \
+          --strategy=${{ matrix.strategy }} \
+          --scenario=${{ matrix.scenario }} \
+          --duration=300 \
+          --output=results/${{ matrix.strategy }}-${{ matrix.scenario }}.json
+      env:
+        STRATEGY: ${{ matrix.strategy }}
+        SCENARIO: ${{ matrix.scenario }}
+    
+    - name: Validate behavior metrics
+      run: |
+        npm run validate:behavior-metrics -- results/${{ matrix.strategy }}-${{ matrix.scenario }}.json
+    
+    - name: Upload behavior test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: behavior-test-${{ matrix.strategy }}-${{ matrix.scenario }}
+        path: results/${{ matrix.strategy }}-${{ matrix.scenario }}.json
+
+  financial-logic-tests:
+    name: Financial Logic Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Test slippage calculations
+      run: npm run test:slippage
+    
+    - name: Test MEV protection logic
+      run: npm run test:mev-protection
+    
+    - name: Test price impact calculations
+      run: npm run test:price-impact
+    
+    - name: Test risk management rules
+      run: npm run test:risk-management
+    
+    - name: Test profit/loss calculations
+      run: npm run test:pnl
+    
+    - name: Generate financial test report
+      run: |
+        npm run generate:financial-report
+        echo "## Financial Logic Test Results" >> $GITHUB_STEP_SUMMARY
+        cat financial-test-report.md >> $GITHUB_STEP_SUMMARY
+
+  cross-chain-tests:
+    name: Cross-Chain Integration Tests
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[test:cross-chain]')
+    strategy:
+      matrix:
+        chain-pair:
+          - solana-ethereum
+          - solana-arbitrum
+          - solana-base
+          - solana-polygon
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup multi-chain environment
+      run: |
+        echo "Setting up cross-chain testing for ${{ matrix.chain-pair }}"
+        npm run setup:cross-chain -- --chains=${{ matrix.chain-pair }}
+    
+    - name: Test cross-chain bridge integration
+      run: |
+        npm run test:bridge -- --chains=${{ matrix.chain-pair }}
+      env:
+        ETHEREUM_RPC_URL: ${{ secrets.ETHEREUM_RPC_URL }}
+        ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
+        BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+        POLYGON_RPC_URL: ${{ secrets.POLYGON_RPC_URL }}
+    
+    - name: Test cross-chain arbitrage
+      run: |
+        npm run test:cross-chain-arbitrage -- --chains=${{ matrix.chain-pair }}
+
+  performance-monitoring:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Test API response times
+      run: |
+        npm run test:performance:api
+    
+    - name: Test swap execution latency
+      run: |
+        npm run test:performance:swaps
+    
+    - name: Test agent decision latency
+      run: |
+        npm run test:performance:decisions
+    
+    - name: Generate performance report
+      run: |
+        npm run generate:performance-report
+        echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "### API Response Times" >> $GITHUB_STEP_SUMMARY
+        echo "$(cat performance/api-results.md)" >> $GITHUB_STEP_SUMMARY
+        echo "### Swap Execution Latency" >> $GITHUB_STEP_SUMMARY
+        echo "$(cat performance/swap-results.md)" >> $GITHUB_STEP_SUMMARY
+
+  security-audit:
+    name: Security Audit for Agents
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check for hardcoded private keys
+      run: |
+        grep -r "privateKey\|secretKey" --include="*.ts" --include="*.js" . || echo "No hardcoded keys found"
+    
+    - name: Test API key rotation
+      run: |
+        npm run test:api-key-rotation
+    
+    - name: Test wallet security
+      run: |
+        npm run test:wallet-security
+    
+    - name: Test transaction signing security
+      run: |
+        npm run test:signing-security
+    
+    - name: Audit trading permissions
+      run: |
+        npm run audit:trading-permissions
+
+  deploy-agent-devnet:
+    name: Deploy Agent to Devnet
+    runs-on: ubuntu-latest
+    needs: [dex-integration-tests, agent-behavior-tests, financial-logic-tests, security-audit]
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    environment: agent-devnet
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Deploy agent infrastructure
+      run: |
+        npm run deploy:agent-infra -- --network=devnet
+      env:
+        AGENT_WALLET_PRIVATE_KEY: ${{ secrets.DEVNET_AGENT_WALLET }}
+        JUPITER_API_KEY: ${{ secrets.JUPITER_API_KEY }}
+        HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+    
+    - name: Configure agent strategies
+      run: |
+        npm run configure:strategies -- --network=devnet --config=devnet-strategies.json
+    
+    - name: Start agent monitoring
+      run: |
+        npm run start:monitoring -- --network=devnet
+    
+    - name: Verify agent deployment
+      run: |
+        npm run verify:agent-deployment -- --network=devnet
+        
+    - name: Run post-deployment tests
+      run: |
+        sleep 60  # Wait for agent to initialize
+        npm run test:post-deploy:agent
+
+  monitor-production-agents:
+    name: Monitor Production Agents
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check agent health
+      run: |
+        npm run check:agent-health
+      env:
+        MAINNET_MONITORING_API_KEY: ${{ secrets.MAINNET_MONITORING_API_KEY }}
+    
+    - name: Validate trading performance
+      run: |
+        npm run validate:trading-performance
+    
+    - name: Check for anomalies
+      run: |
+        npm run detect:anomalies
+    
+    - name: Generate health report
+      run: |
+        npm run generate:health-report
+        echo "## Agent Health Report" >> $GITHUB_STEP_SUMMARY
+        cat agent-health-report.md >> $GITHUB_STEP_SUMMARY
+    
+    - name: Alert on issues
+      if: failure()
+      run: |
+        npm run send:alert -- --message="Production agent monitoring detected issues"
+
+  backup-agent-state:
+    name: Backup Agent State
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+    - name: Backup agent configurations
+      run: |
+        echo "Backing up agent state and configurations..."
+        # Add backup logic for agent state, configurations, and trading history
+    
+    - name: Upload backup to secure storage
+      run: |
+        echo "Uploading backup to secure storage..."
+        # Add logic to upload backups to encrypted storage
+
+  emergency-shutdown:
+    name: Emergency Shutdown
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[emergency:shutdown]')
+    environment: emergency
+    steps:
+    - name: Emergency agent shutdown
+      run: |
+        echo "⚠️  EMERGENCY SHUTDOWN INITIATED"
+        echo "Shutting down all agent operations..."
+        # Add emergency shutdown logic
+      env:
+        EMERGENCY_SHUTDOWN_KEY: ${{ secrets.EMERGENCY_SHUTDOWN_KEY }}
+    
+    - name: Notify team
+      run: |
+        echo "Sending emergency notifications..."
+        # Add emergency notification logic

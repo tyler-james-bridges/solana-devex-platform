@@ -1,0 +1,60 @@
+{
+  "name": "solana-devex-anchor-workspace",
+  "version": "1.0.0",
+  "description": "LiteSVM-powered Anchor workspace for Solana protocol testing",
+  "scripts": {
+    "test": "anchor test --provider.cluster localnet",
+    "test:litesvm": "anchor test --provider.cluster localnet --use-litesvm",
+    "test:protocols": "anchor test tests/protocol-tests.ts",
+    "test:jupiter": "anchor test tests/jupiter.test.ts", 
+    "test:kamino": "anchor test tests/kamino.test.ts",
+    "test:drift": "anchor test tests/drift.test.ts",
+    "test:raydium": "anchor test tests/raydium.test.ts",
+    "build": "anchor build",
+    "deploy:localnet": "anchor deploy --provider.cluster localnet",
+    "deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "generate-types": "anchor build && anchor generate",
+    "clean": "anchor clean",
+    "format": "prettier --write . && cargo fmt",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "pre-test": "anchor build && npm run generate-types"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.29.0",
+    "@solana/web3.js": "^1.91.5",
+    "@solana/spl-token": "^0.4.1",
+    "@jupiter-ag/core": "^6.0.15",
+    "@kamino-finance/klend-sdk": "^1.23.0",
+    "@drift-labs/sdk": "^2.73.0",
+    "@raydium-io/raydium-sdk": "^1.3.1-beta.58",
+    "litesvm": "^0.4.0",
+    "bufio": "^1.0.7",
+    "borsh": "^0.7.0",
+    "superstruct": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.10",
+    "@types/mocha": "^10.0.4",
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "chai": "^4.3.10",
+    "eslint": "^8.52.0",
+    "mocha": "^10.2.0",
+    "prettier": "^3.0.3",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "litesvm",
+    "testing",
+    "defi",
+    "protocols",
+    "jupiter",
+    "kamino",
+    "drift",
+    "raydium"
+  ]
+}
