@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 
 interface Props {
   children: React.ReactNode
@@ -24,11 +24,15 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Dashboard Error Boundary caught an error:', error, errorInfo)
+    console.error('DevEx Platform Error Boundary:', error, errorInfo)
   }
 
   handleReset = () => {
     this.setState({ hasError: false, error: undefined })
+  }
+
+  handleGoHome = () => {
+    window.location.href = '/'
   }
 
   render() {
@@ -38,39 +42,58 @@ class ErrorBoundary extends React.Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
-            <div className="flex justify-center mb-4">
-              <AlertTriangle className="h-12 w-12 text-red-500" />
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+          <div className="max-w-md w-full space-y-6">
+            <div className="text-center space-y-4">
+              <div className="flex justify-center">
+                <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <AlertTriangle className="h-8 w-8 text-destructive" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h1 className="typography-h2">System Error</h1>
+                <p className="typography-body text-muted-foreground">
+                  The DevEx Platform encountered an unexpected error. This might be a temporary issue.
+                </p>
+              </div>
             </div>
             
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Something went wrong
-            </h2>
-            
-            <p className="text-gray-600 mb-6">
-              The dashboard encountered an error. This might be a temporary issue.
-            </p>
-            
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="bg-red-50 border border-red-200 rounded p-3 mb-4 text-left">
-                <p className="text-sm font-mono text-red-800">
-                  {this.state.error.message}
-                </p>
+              <div className="card">
+                <div className="card-content">
+                  <h3 className="typography-h3 mb-2 text-destructive">Error Details</h3>
+                  <pre className="text-xs font-mono text-muted-foreground bg-muted p-3 rounded-md overflow-auto max-h-32">
+                    {this.state.error.message}
+                    {this.state.error.stack && '\n\n' + this.state.error.stack}
+                  </pre>
+                </div>
               </div>
             )}
             
-            <button
-              onClick={this.handleReset}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Try Again
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={this.handleReset}
+                className="button-primary flex-1"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Try Again
+              </button>
+              
+              <button
+                onClick={this.handleGoHome}
+                className="button-secondary flex-1"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Go Home
+              </button>
+            </div>
             
-            <p className="text-xs text-gray-500 mt-4">
-              If this problem persists, please refresh the page or contact support.
-            </p>
+            <div className="text-center">
+              <p className="typography-caption">
+                If this problem persists, please check the console for details or report the issue.
+              </p>
+            </div>
           </div>
         </div>
       )

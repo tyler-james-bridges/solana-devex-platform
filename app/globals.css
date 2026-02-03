@@ -2,34 +2,279 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    font-family: system-ui, sans-serif;
+/* Modern Design System - 2026 */
+:root {
+  /* Colors - Professional Dark Theme */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #111111;
+  --card-foreground: #fafafa;
+  --popover: #111111;
+  --popover-foreground: #fafafa;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+  --muted: #171717;
+  --muted-foreground: #737373;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #262626;
+  --input: #262626;
+  --ring: #3b82f6;
+  --radius: 0.5rem;
+  
+  /* Status Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Base Styles */
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+.typography-h1 {
+  @apply text-3xl font-bold tracking-tight;
+}
+
+.typography-h2 {
+  @apply text-2xl font-semibold tracking-tight;
+}
+
+.typography-h3 {
+  @apply text-xl font-semibold;
+}
+
+.typography-body {
+  @apply text-sm leading-relaxed;
+}
+
+.typography-caption {
+  @apply text-xs text-muted-foreground;
+}
+
+/* Components */
+.card {
+  @apply rounded-lg border bg-card text-card-foreground shadow-sm backdrop-blur-sm;
+}
+
+.card-header {
+  @apply flex flex-col space-y-1.5 p-6;
+}
+
+.card-title {
+  @apply text-2xl font-semibold leading-none tracking-tight;
+}
+
+.card-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.card-content {
+  @apply p-6 pt-0;
+}
+
+.button {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+}
+
+.button-primary {
+  @apply button bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
+}
+
+.button-secondary {
+  @apply button bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2;
+}
+
+.button-ghost {
+  @apply button hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+}
+
+/* Status Components */
+.status-indicator {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+}
+
+.status-success {
+  @apply status-indicator bg-green-500/10 text-green-400 ring-1 ring-green-500/20;
+}
+
+.status-warning {
+  @apply status-indicator bg-yellow-500/10 text-yellow-400 ring-1 ring-yellow-500/20;
+}
+
+.status-error {
+  @apply status-indicator bg-red-500/10 text-red-400 ring-1 ring-red-500/20;
+}
+
+.status-info {
+  @apply status-indicator bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20;
+}
+
+.status-neutral {
+  @apply status-indicator bg-gray-500/10 text-gray-400 ring-1 ring-gray-500/20;
+}
+
+/* Grid System */
+.dashboard-grid {
+  @apply grid gap-4 md:gap-6 lg:gap-8;
+}
+
+.dashboard-container {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Animation */
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
   }
 }
 
-@layer components {
-  .dashboard-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glass Effect */
+.glass {
+  @apply backdrop-blur-md bg-white/5 border border-white/10;
+}
+
+.glass-strong {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20;
+}
+
+/* Metrics */
+.metric-card {
+  @apply card p-6 hover:shadow-lg transition-shadow duration-200;
+}
+
+.metric-value {
+  @apply text-3xl font-bold tabular-nums;
+}
+
+.metric-label {
+  @apply text-sm font-medium text-muted-foreground uppercase tracking-wide;
+}
+
+.metric-change {
+  @apply text-xs font-medium;
+}
+
+.metric-change-positive {
+  @apply metric-change text-green-400;
+}
+
+.metric-change-negative {
+  @apply metric-change text-red-400;
+}
+
+/* Data Tables */
+.data-table {
+  @apply w-full border-collapse space-y-1;
+}
+
+.data-table th {
+  @apply h-12 px-4 text-left align-middle font-medium text-muted-foreground border-b border-border;
+}
+
+.data-table td {
+  @apply p-4 align-middle border-b border-border;
+}
+
+/* Progress */
+.progress-bar {
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-secondary;
+}
+
+.progress-indicator {
+  @apply h-full w-full flex-1 transition-all duration-500 ease-in-out;
+}
+
+/* Loading States */
+.skeleton {
+  @apply animate-pulse rounded-md bg-muted;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    @apply px-4;
   }
   
-  .status-indicator {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  .card {
+    @apply mx-2;
   }
   
-  .status-success {
-    @apply bg-green-100 text-green-800;
+  .typography-h1 {
+    @apply text-2xl;
   }
   
-  .status-warning {
-    @apply bg-yellow-100 text-yellow-800;
+  .typography-h2 {
+    @apply text-xl;
   }
-  
-  .status-error {
-    @apply bg-red-100 text-red-800;
-  }
-  
-  .status-info {
-    @apply bg-blue-100 text-blue-800;
-  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Focus States */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
 }
