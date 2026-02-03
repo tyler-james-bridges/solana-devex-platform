@@ -326,7 +326,7 @@ describe('Kamino Finance Protocol Integration', () => {
     });
   });
 
-  after(async () => {
+  afterAll(async () => {
     // Cleanup
     if (env && env.liteSvm) {
       // Perform any necessary cleanup

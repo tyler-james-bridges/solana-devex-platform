@@ -380,7 +380,7 @@ describe('Drift Protocol Integration', () => {
     });
   });
 
-  after(async () => {
+  afterAll(async () => {
     // Cleanup
     if (driftClient) {
       await driftClient.unsubscribe();

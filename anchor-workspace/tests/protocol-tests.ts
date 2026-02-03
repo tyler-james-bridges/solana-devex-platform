@@ -357,7 +357,7 @@ describe('Integrated Protocol Test Suite', () => {
     };
   }
 
-  after(async () => {
+  afterAll(async () => {
     console.log('🧹 Cleaning up test environment...');
     await testSuite.cleanup();
     console.log('✅ Cleanup completed');

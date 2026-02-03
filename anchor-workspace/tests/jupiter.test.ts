@@ -256,7 +256,7 @@ describe('Jupiter V6 Protocol Integration', () => {
     });
   });
 
-  after(async () => {
+  afterAll(async () => {
     // Cleanup
     if (env && env.liteSvm) {
       // Perform any necessary cleanup
