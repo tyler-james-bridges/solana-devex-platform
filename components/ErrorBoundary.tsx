@@ -46,13 +46,13 @@ class ErrorBoundary extends React.Component<Props, State> {
           <div className="max-w-md w-full space-y-6">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
-                <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
-                  <AlertTriangle className="h-8 w-8 text-destructive" />
+                <div className="h-16 w-16 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center border border-red-200 dark:border-red-800">
+                  <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <h1 className="typography-h2">System Error</h1>
+                <h1 className="typography-h2 text-foreground">System Error</h1>
                 <p className="typography-body text-muted-foreground">
                   The DevEx Platform encountered an unexpected error. This might be a temporary issue.
                 </p>
@@ -61,20 +61,21 @@ class ErrorBoundary extends React.Component<Props, State> {
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div className="card">
-                <div className="card-content">
-                  <h3 className="typography-h3 mb-2 text-destructive">Error Details</h3>
-                  <pre className="text-xs font-mono text-muted-foreground bg-muted p-3 rounded-md overflow-auto max-h-32">
-                    {this.state.error.message}
-                    {this.state.error.stack && '\n\n' + this.state.error.stack}
-                  </pre>
+                <div className="card-content space-y-3">
+                  <h3 className="text-sm font-semibold text-red-600 dark:text-red-400">Error Details</h3>
+                  <div className="bg-muted rounded-lg p-3 max-h-32 overflow-auto">
+                    <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap break-words">
+                      {this.state.error.message}
+                    </pre>
+                  </div>
                 </div>
               </div>
             )}
             
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3">
               <button
                 onClick={this.handleReset}
-                className="button-primary flex-1"
+                className="button-primary w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
@@ -82,7 +83,7 @@ class ErrorBoundary extends React.Component<Props, State> {
               
               <button
                 onClick={this.handleGoHome}
-                className="button-secondary flex-1"
+                className="button-secondary w-full"
               >
                 <Home className="h-4 w-4 mr-2" />
                 Go Home
@@ -91,7 +92,7 @@ class ErrorBoundary extends React.Component<Props, State> {
             
             <div className="text-center">
               <p className="typography-caption">
-                If this problem persists, please check the console for details or report the issue.
+                If this problem persists, please refresh the page or check the console for more details.
               </p>
             </div>
           </div>

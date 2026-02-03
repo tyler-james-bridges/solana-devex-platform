@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     description: 'Professional development environment for Solana applications',
     creator: '@onchain_devex',
   },
+  viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
 }
 
 export default function RootLayout({
@@ -39,79 +40,78 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <ErrorBoundary>
-          <div className="min-h-screen bg-background">
-            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="dashboard-container flex h-16 items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                      <div className="h-4 w-4 rounded-sm bg-white" />
-                    </div>
-                    <div className="flex flex-col">
-                      <h1 className="text-sm font-semibold leading-none">Solana DevEx</h1>
-                      <p className="text-xs text-muted-foreground">Platform</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-                  <a 
-                    href="#" 
-                    className="text-foreground hover:text-foreground/80 transition-colors border-b-2 border-primary pb-1"
-                  >
-                    Dashboard
-                  </a>
-                  <a 
-                    href="#" 
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Testing
-                  </a>
-                  <a 
-                    href="#" 
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Deployments
-                  </a>
-                  <a 
-                    href="#" 
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Monitoring
-                  </a>
-                </nav>
-
-                <div className="flex items-center space-x-3">
-                  <div className="hidden sm:flex items-center space-x-2">
-                    <div className="status-success">
-                      Live
-                    </div>
-                    <div className="status-info">
-                      Agent #25
+          <div className="min-h-screen bg-background flex flex-col">
+            <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
+              <div className="dashboard-container">
+                <div className="flex h-16 items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                        <div className="h-4 w-4 rounded-sm bg-white" />
+                      </div>
+                      <div className="hidden sm:flex flex-col">
+                        <h1 className="text-sm font-semibold leading-none text-foreground">Solana DevEx</h1>
+                        <p className="text-xs text-muted-foreground">Platform</p>
+                      </div>
+                      <div className="sm:hidden">
+                        <h1 className="text-sm font-semibold text-foreground">DevEx</h1>
+                      </div>
                     </div>
                   </div>
                   
-                  <button className="md:hidden p-2 rounded-md hover:bg-accent">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                  </button>
+                  <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    <a 
+                      href="#" 
+                      className="text-foreground hover:text-primary transition-colors border-b-2 border-primary pb-1"
+                    >
+                      Dashboard
+                    </a>
+                    <a 
+                      href="#" 
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Testing
+                    </a>
+                    <a 
+                      href="#" 
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Deployments
+                    </a>
+                    <a 
+                      href="#" 
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Monitoring
+                    </a>
+                  </nav>
+
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="status-success text-xs sm:text-xs">
+                        Live
+                      </div>
+                      <div className="status-info text-xs sm:text-xs">
+                        #25
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </header>
 
-            <main className="relative">
+            <main className="flex-1">
               {children}
             </main>
 
-            <footer className="border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-              <div className="dashboard-container py-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <footer className="mt-auto border-t border-border bg-background/50">
+              <div className="dashboard-container py-6 sm:py-8">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
                   <div className="space-y-3">
-                    <h4 className="text-sm font-semibold">Platform</h4>
+                    <h4 className="text-sm font-semibold text-foreground">Platform</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li><a href="#" className="hover:text-foreground transition-colors">Dashboard</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Testing</a></li>
@@ -121,7 +121,7 @@ export default function RootLayout({
                   </div>
                   
                   <div className="space-y-3">
-                    <h4 className="text-sm font-semibold">Integrations</h4>
+                    <h4 className="text-sm font-semibold text-foreground">Integrations</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li><a href="#" className="hover:text-foreground transition-colors">Jupiter</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Kamino</a></li>
@@ -131,9 +131,9 @@ export default function RootLayout({
                   </div>
                   
                   <div className="space-y-3">
-                    <h4 className="text-sm font-semibold">Resources</h4>
+                    <h4 className="text-sm font-semibold text-foreground">Resources</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" className="hover:text-foreground transition-colors">GitHub</a></li>
+                      <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Documentation</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">API Reference</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Support</a></li>
@@ -141,21 +141,21 @@ export default function RootLayout({
                   </div>
                   
                   <div className="space-y-3">
-                    <h4 className="text-sm font-semibold">Project</h4>
+                    <h4 className="text-sm font-semibold text-foreground">Project</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li><a href="https://colosseum.com/agent-hackathon" className="hover:text-foreground transition-colors">Colosseum Hackathon</a></li>
+                      <li><a href="https://colosseum.com/agent-hackathon" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Hackathon</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Agent #25</a></li>
                       <li><a href="#" className="hover:text-foreground transition-colors">Built by onchain-devex</a></li>
                     </ul>
                   </div>
                 </div>
                 
-                <div className="mt-8 pt-8 border-t border-border/40 flex flex-col md:flex-row justify-between items-center">
-                  <p className="text-xs text-muted-foreground">
-                    © 2026 Solana DevEx Platform. Built autonomously by onchain-devex agent.
+                <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                  <p className="text-xs text-muted-foreground text-center sm:text-left">
+                    © 2026 Solana DevEx Platform. Built by onchain-devex agent.
                   </p>
-                  <p className="text-xs text-muted-foreground mt-2 md:mt-0">
-                    Powered by Solana • Secured by Design • Built for Agents
+                  <p className="text-xs text-muted-foreground text-center sm:text-right">
+                    Powered by Solana • Built for Agents
                   </p>
                 </div>
               </div>

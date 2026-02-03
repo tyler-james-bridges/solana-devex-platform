@@ -41,20 +41,22 @@ interface Deployment {
 }
 
 const StatusIcon = ({ status }: { status: string }) => {
+  const baseClass = "h-4 w-4 flex-shrink-0"
+  
   switch (status) {
     case 'passed':
     case 'success':
     case 'healthy':
-      return <CheckCircle2 className="h-4 w-4 text-green-400" />
+      return <CheckCircle2 className={`${baseClass} text-green-600 dark:text-green-400`} />
     case 'running':
-      return <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
+      return <Loader2 className={`${baseClass} text-blue-600 dark:text-blue-400 animate-spin`} />
     case 'failed':
     case 'down':
-      return <XCircle className="h-4 w-4 text-red-400" />
+      return <XCircle className={`${baseClass} text-red-600 dark:text-red-400`} />
     case 'degraded':
-      return <AlertCircle className="h-4 w-4 text-yellow-400" />
+      return <AlertCircle className={`${baseClass} text-yellow-600 dark:text-yellow-400`} />
     default:
-      return <Activity className="h-4 w-4 text-gray-400" />
+      return <Activity className={`${baseClass} text-gray-500`} />
   }
 }
 
@@ -73,16 +75,19 @@ const MetricCard = ({
 }) => (
   <div className="metric-card group">
     <div className="flex items-center justify-between mb-3">
-      <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+      <Icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
       {change && (
-        <span className={`metric-change ${trend === 'up' ? 'metric-change-positive' : trend === 'down' ? 'metric-change-negative' : 'text-muted-foreground'}`}>
+        <span className={`text-xs font-medium ${
+          trend === 'up' ? 'metric-change-positive' : 
+          trend === 'down' ? 'metric-change-negative' : 'text-muted-foreground'
+        }`}>
           {change}
         </span>
       )}
     </div>
     <div>
       <div className="metric-value">{value}</div>
-      <div className="metric-label mt-1">{title}</div>
+      <div className="metric-label mt-2">{title}</div>
     </div>
   </div>
 )
@@ -218,17 +223,18 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="dashboard-container py-8 space-y-8">
+    <div className="dashboard-container py-6 sm:py-8 space-y-6 sm:space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="typography-h1">DevEx Platform</h1>
-        <p className="typography-body text-muted-foreground max-w-2xl">
-          Complete development environment for Solana applications. Monitor tests, deployments, and protocol health in real-time.
+      <div className="space-y-3">
+        <h1 className="typography-h1">Development Environment</h1>
+        <p className="typography-body text-muted-foreground max-w-3xl">
+          Complete testing, deployment, and monitoring platform for Solana applications. 
+          Built for autonomous agents and professional development teams.
         </p>
       </div>
 
       {/* Metrics Grid */}
-      <div className="dashboard-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="dashboard-grid grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="Tests Run"
           value={metrics.testsRun}
@@ -251,7 +257,7 @@ export default function Dashboard() {
           trend="down"
         />
         <MetricCard
-          title="Active Deployments"
+          title="Deployments"
           value={metrics.activeDeployments}
           change={`${metrics.totalDeployments} total`}
           icon={Zap}
@@ -259,24 +265,24 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="dashboard-grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="dashboard-grid grid-cols-1 lg:grid-cols-2">
         {/* Test Results */}
         <div className="card">
           <div className="card-header">
             <h2 className="card-title">Recent Tests</h2>
             <p className="card-description">
-              Latest protocol integration tests and their status
+              Latest protocol integration tests and status
             </p>
           </div>
           <div className="card-content">
-            <div className="space-y-4">
+            <div className="space-y-3">
               {testResults.map((test) => (
-                <div key={test.id} className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-border/60 transition-colors">
-                  <div className="flex items-center space-x-3">
+                <div key={test.id} className="item-card">
+                  <div className="item-card-content">
                     <StatusIcon status={test.status} />
-                    <div className="space-y-1">
-                      <p className="typography-body font-medium">{test.name}</p>
-                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <p className="typography-body font-medium truncate">{test.name}</p>
+                      <div className="item-card-meta">
                         <span className="font-medium">{test.protocol}</span>
                         <span>•</span>
                         <span>{test.timestamp}</span>
@@ -289,7 +295,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="item-card-actions">
                     <div className={`status-indicator ${
                       test.status === 'passed' ? 'status-success' :
                       test.status === 'failed' ? 'status-error' :
@@ -298,7 +304,7 @@ export default function Dashboard() {
                       {test.status}
                     </div>
                     {test.duration > 0 && (
-                      <p className="typography-caption mt-1">{test.duration.toFixed(1)}s</p>
+                      <p className="typography-caption">{test.duration.toFixed(1)}s</p>
                     )}
                   </div>
                 </div>
@@ -316,19 +322,19 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="card-content">
-            <div className="space-y-4">
+            <div className="space-y-3">
               {protocols.map((protocol) => (
-                <div key={protocol.name} className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-border/60 transition-colors">
-                  <div className="flex items-center space-x-3">
+                <div key={protocol.name} className="item-card">
+                  <div className="item-card-content">
                     <StatusIcon status={protocol.status} />
-                    <div className="space-y-1">
+                    <div className="space-y-1 min-w-0 flex-1">
                       <p className="typography-body font-medium">{protocol.name}</p>
                       <p className="typography-caption">
                         Last check: {protocol.lastCheck}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right space-y-1">
+                  <div className="item-card-actions">
                     <div className={`status-indicator ${
                       protocol.status === 'healthy' ? 'status-success' :
                       protocol.status === 'degraded' ? 'status-warning' :
@@ -336,9 +342,9 @@ export default function Dashboard() {
                     }`}>
                       {protocol.status}
                     </div>
-                    <div className="typography-caption">
+                    <p className="typography-caption text-right">
                       {protocol.latency > 0 ? `${protocol.latency}ms` : '—'} • {protocol.successRate.toFixed(1)}%
-                    </div>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -359,13 +365,13 @@ export default function Dashboard() {
           <div className="space-y-6">
             {deployments.map((deployment) => (
               <div key={deployment.id} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                <div className="item-card">
+                  <div className="item-card-content">
                     <StatusIcon status={deployment.status} />
-                    <div className="space-y-1">
-                      <p className="typography-body font-medium">{deployment.name}</p>
-                      <div className="flex items-center space-x-2 typography-caption">
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-secondary text-secondary-foreground">
+                    <div className="space-y-1 min-w-0 flex-1">
+                      <p className="typography-body font-medium truncate">{deployment.name}</p>
+                      <div className="item-card-meta">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary text-secondary-foreground border">
                           {deployment.environment}
                         </span>
                         <span>•</span>
@@ -375,7 +381,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="item-card-actions">
                     <div className={`status-indicator ${
                       deployment.status === 'success' ? 'status-success' :
                       deployment.status === 'failed' ? 'status-error' :
@@ -385,15 +391,16 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
+                
                 {deployment.status === 'running' && (
-                  <div className="space-y-2">
+                  <div className="space-y-2 px-2">
                     <div className="flex justify-between typography-caption">
                       <span>Progress</span>
                       <span>{Math.round(deployment.progress)}%</span>
                     </div>
                     <div className="progress-bar">
                       <div 
-                        className="progress-indicator bg-primary transition-all duration-1000" 
+                        className="progress-indicator transition-all duration-1000" 
                         style={{ width: `${deployment.progress}%` }}
                       />
                     </div>
@@ -406,11 +413,11 @@ export default function Dashboard() {
       </div>
 
       {/* Footer */}
-      <div className="text-center py-8 border-t border-border">
+      <div className="text-center py-6 border-t border-border space-y-2">
         <p className="typography-caption">
           Autonomous DevEx Platform • Agent #25 • Colosseum Hackathon 2026
         </p>
-        <p className="typography-caption mt-1">
+        <p className="typography-caption">
           Last updated: {new Date().toLocaleTimeString()} • All systems operational
         </p>
       </div>
