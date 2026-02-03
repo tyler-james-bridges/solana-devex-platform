@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged for incremental checks on staged files
+npm run lint-staged
+
+# Run TypeScript type checking
+echo "📝 Type checking..."
+npx tsc --noEmit
+
+# Security check for sensitive data
+echo "🔒 Checking for sensitive data..."
+if git diff --cached --name-only | xargs grep -l "private.*key\|secret.*key\|-----BEGIN.*PRIVATE" 2>/dev/null; then
+  echo "❌ Found potential private keys or secrets in staged files!"
+  echo "Please remove sensitive data before committing."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"

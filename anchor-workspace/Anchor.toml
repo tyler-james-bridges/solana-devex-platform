@@ -1,0 +1,55 @@
+[workspace]
+members = ["programs/*"]
+
+[toolchain]
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+protocol_testing_program = "EiQgUJwSGJ6wuPQfokbDJZHJm8v6s1X8ZXJyvvf93i7m"
+
+[programs.devnet]
+protocol_testing_program = "EiQgUJwSGJ6wuPQfokbDJZHJm8v6s1X8ZXJyvvf93i7m"
+
+[programs.mainnet]
+protocol_testing_program = "EiQgUJwSGJ6wuPQfokbDJZHJm8v6s1X8ZXJyvvf93i7m"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false
+
+[test.validator]
+bind_address = "0.0.0.0"
+port = 8899
+url = "http://localhost:8899"
+slots_per_epoch = 32
+faucet_port = 9900
+faucet_sol = 1000000
+rpc_port = 8899
+limit_ledger_size = 10000
+log_messages_bytes_limit = 10000
+
+# LiteSVM Configuration
+[test.litesvm]
+enabled = true
+accounts_db_skip_shrink = true
+accounts_db_test_skip_rewrites = true
+fast_mode = true
+account_compression = false
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "tests/fixtures/metaplex_token_metadata.so"

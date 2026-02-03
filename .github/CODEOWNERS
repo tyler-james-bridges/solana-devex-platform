@@ -1,0 +1,79 @@
+# CODEOWNERS file for automated code review assignments
+# Each line is a file pattern followed by one or more owners.
+
+# Global owners - these people are automatically requested for review on all PRs
+* @solana-devex/core-team
+
+# Frontend (Next.js/React)
+app/ @solana-devex/frontend-team
+components/ @solana-devex/frontend-team
+lib/ @solana-devex/frontend-team
+public/ @solana-devex/frontend-team
+*.tsx @solana-devex/frontend-team
+*.jsx @solana-devex/frontend-team
+tailwind.config.js @solana-devex/frontend-team
+next.config.js @solana-devex/frontend-team
+
+# API Backend
+api/ @solana-devex/backend-team
+api/**/*.js @solana-devex/backend-team
+api/**/*.ts @solana-devex/backend-team
+
+# CLI Tools
+cli/ @solana-devex/cli-team
+cli/**/*.js @solana-devex/cli-team
+
+# Rust/Anchor Programs (when added)
+programs/ @solana-devex/blockchain-team @solana-devex/security-team
+Anchor.toml @solana-devex/blockchain-team
+**/Cargo.toml @solana-devex/blockchain-team
+**/Cargo.lock @solana-devex/blockchain-team
+**/*.rs @solana-devex/blockchain-team @solana-devex/security-team
+
+# DevOps and Infrastructure
+.github/ @solana-devex/devops-team
+.github/workflows/ @solana-devex/devops-team @solana-devex/security-team
+Dockerfile @solana-devex/devops-team
+docker-compose.yml @solana-devex/devops-team
+.dockerignore @solana-devex/devops-team
+
+# Configuration Files
+*.json @solana-devex/core-team
+*.yaml @solana-devex/core-team
+*.yml @solana-devex/core-team
+.env.example @solana-devex/core-team @solana-devex/security-team
+
+# Quality and Testing
+.eslintrc* @solana-devex/core-team
+.prettierrc* @solana-devex/core-team
+jest.config* @solana-devex/core-team
+lighthouserc.js @solana-devex/frontend-team @solana-devex/devops-team
+.bundlesizerc.json @solana-devex/frontend-team
+
+# Security-sensitive files
+SECURITY.md @solana-devex/security-team
+.github/workflows/security-audit.yml @solana-devex/security-team @solana-devex/devops-team
+
+# Documentation
+README.md @solana-devex/docs-team
+CONTRIBUTING.md @solana-devex/docs-team
+docs/ @solana-devex/docs-team
+*.md @solana-devex/docs-team
+
+# Package management
+package.json @solana-devex/core-team @solana-devex/devops-team
+package-lock.json @solana-devex/core-team @solana-devex/devops-team
+api/package.json @solana-devex/backend-team @solana-devex/core-team
+cli/package.json @solana-devex/cli-team @solana-devex/core-team
+
+# TypeScript configuration
+tsconfig.json @solana-devex/frontend-team @solana-devex/core-team
+types/ @solana-devex/frontend-team
+
+# Git hooks and automation
+.husky/ @solana-devex/devops-team
+.lintstagedrc* @solana-devex/core-team
+
+# Environment and deployment
+setup.sh @solana-devex/devops-team
+.vercel/ @solana-devex/devops-team @solana-devex/frontend-team

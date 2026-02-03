@@ -1,0 +1,212 @@
+name: Security Audit & Vulnerability Scan
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # Dependency Vulnerability Scanning
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+        if: env.SNYK_TOKEN != ''
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Snyk test - Frontend
+        run: snyk test --severity-threshold=medium
+        continue-on-error: true
+
+      - name: Install API dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Snyk test - API
+        working-directory: ./api
+        run: snyk test --severity-threshold=medium
+        continue-on-error: true
+
+      - name: Install CLI dependencies  
+        working-directory: ./cli
+        run: npm ci
+
+      - name: Snyk test - CLI
+        working-directory: ./cli
+        run: snyk test --severity-threshold=medium
+        continue-on-error: true
+
+      - name: Snyk monitor - Frontend
+        run: snyk monitor
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+
+      - name: Snyk monitor - API
+        working-directory: ./api
+        run: snyk monitor
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+
+      - name: Snyk monitor - CLI
+        working-directory: ./cli
+        run: snyk monitor
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+
+  # SAST (Static Application Security Testing)
+  sast-scan:
+    name: SAST Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+
+  # Solana-specific Security Checks
+  solana-security:
+    name: Solana Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for hardcoded private keys
+        run: |
+          echo "Scanning for hardcoded private keys and sensitive data..."
+          # Check for common patterns of private keys
+          if grep -r -i "private.*key\|secret.*key\|-----BEGIN.*PRIVATE" --include="*.js" --include="*.ts" --include="*.json" . ; then
+            echo "⚠️ Found potential hardcoded private keys!"
+            exit 1
+          fi
+          echo "✅ No hardcoded private keys found"
+
+      - name: Check for insecure RPC endpoints
+        run: |
+          echo "Checking for insecure RPC endpoints..."
+          # Check for hardcoded mainnet RPC URLs or insecure endpoints
+          if grep -r -i "mainnet-beta\|devnet" --include="*.js" --include="*.ts" . | grep -v "// " | grep -v "/\*"; then
+            echo "⚠️ Found potentially hardcoded RPC endpoints"
+          fi
+          echo "✅ RPC endpoint check complete"
+
+      - name: Validate environment variables
+        run: |
+          echo "Checking for proper environment variable usage..."
+          if grep -r "process\.env\." --include="*.js" --include="*.ts" . | grep -v "process\.env\.NODE_ENV"; then
+            echo "✅ Environment variables are being used"
+          fi
+
+      - name: Check for secure transaction handling
+        run: |
+          echo "Checking transaction security patterns..."
+          # Look for potential insecure transaction patterns
+          if grep -r -i "keypair\|signer" --include="*.js" --include="*.ts" .; then
+            echo "⚠️ Review keypair and signer usage for security"
+          fi
+
+  # Container Security (if using Docker)
+  container-security:
+    name: Container Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # License Compliance Check
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install license checker
+        run: npm install -g license-checker
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check licenses - Frontend
+        run: |
+          echo "Checking frontend licenses..."
+          license-checker --summary
+
+      - name: Check licenses - API
+        working-directory: ./api
+        run: |
+          echo "Checking API licenses..."
+          npm ci
+          license-checker --summary
+
+      - name: Check licenses - CLI
+        working-directory: ./cli
+        run: |
+          echo "Checking CLI licenses..."
+          npm ci
+          license-checker --summary

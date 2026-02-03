@@ -1,0 +1,182 @@
+name: 🔒 Security Issue
+description: Report a security vulnerability (please use private disclosure for critical issues)
+title: "[Security]: "
+labels: ["security", "needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **IMPORTANT**: For critical security vulnerabilities, please use private disclosure methods:
+        - Email: security@solana-devex.com
+        - Create a private security advisory on GitHub
+        
+        Only use this public issue template for non-critical security improvements or general security discussions.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Security Severity
+      description: How severe is this security issue?
+      options:
+        - Low (Security improvement suggestion)
+        - Medium (Minor security concern)
+        - High (Significant security risk - consider private disclosure)
+        - Critical (Severe security vulnerability - USE PRIVATE DISCLOSURE)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Security Issue Description
+      description: Describe the security concern or vulnerability
+      placeholder: |
+        Please provide a clear description of the security issue.
+        If this is a high or critical severity issue, consider using private disclosure instead.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Security Category
+      description: What type of security issue is this?
+      options:
+        - Authentication/Authorization
+        - Input Validation
+        - Data Exposure
+        - Cryptographic Issue
+        - Access Control
+        - Injection Attack
+        - Cross-Site Scripting (XSS)
+        - Cross-Site Request Forgery (CSRF)
+        - Solana Program Security
+        - Private Key Management
+        - API Security
+        - Infrastructure Security
+        - Dependency Vulnerability
+        - Configuration Security
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      description: Which component is affected by this security issue?
+      options:
+        - Frontend (Next.js/React)
+        - API Backend
+        - CLI Tools
+        - Solana Programs
+        - Authentication System
+        - Database
+        - CI/CD Pipeline
+        - Infrastructure
+        - Documentation
+        - Multiple Components
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential Impact
+      description: What could an attacker achieve if this vulnerability were exploited?
+      placeholder: |
+        Describe the potential impact of this security issue:
+        - What data could be accessed?
+        - What actions could be performed?
+        - What systems could be compromised?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce (if applicable)
+      description: If this is a vulnerability, how can it be reproduced?
+      placeholder: |
+        ⚠️ Only provide reproduction steps for LOW severity issues.
+        For higher severity issues, use private disclosure.
+        
+        1. Step 1
+        2. Step 2
+        3. Step 3
+
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested Mitigation
+      description: Do you have suggestions for how to fix or mitigate this issue?
+      placeholder: |
+        Any suggestions for:
+        - Code changes
+        - Configuration updates
+        - Security controls
+        - Best practices
+
+  - type: checkboxes
+    id: solana-specific
+    attributes:
+      label: Solana-Specific Security Concerns
+      description: Check any that apply to this security issue
+      options:
+        - label: Private key handling or storage
+        - label: Transaction security
+        - label: Program authority controls
+        - label: Account validation
+        - label: Integer overflow/underflow
+        - label: Reentrancy attacks
+        - label: Signer verification
+        - label: Program derived addresses (PDAs)
+        - label: Cross-program invocation security
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: Provide relevant environment details
+      placeholder: |
+        - Network: [mainnet/devnet/testnet/localnet]
+        - Browser: [if frontend related]
+        - Platform version:
+        - Node.js version: [if backend related]
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Any relevant security advisories, CVEs, or documentation
+      placeholder: |
+        - CVE numbers
+        - Security advisories
+        - Related documentation
+        - Similar issues in other projects
+
+  - type: checkboxes
+    id: responsible-disclosure
+    attributes:
+      label: Responsible Disclosure
+      description: Confirm your understanding of responsible disclosure
+      options:
+        - label: I understand that high/critical security issues should use private disclosure
+          required: true
+        - label: I confirm this is appropriate for public disclosure
+          required: true
+        - label: I have not shared details of this issue publicly elsewhere
+          required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information about this security issue
+      placeholder: |
+        - Timeline considerations
+        - Related security measures already in place
+        - Impact on users or operations

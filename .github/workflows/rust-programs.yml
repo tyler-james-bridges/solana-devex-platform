@@ -1,0 +1,256 @@
+name: Rust/Anchor Programs CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'programs/**'
+      - 'Anchor.toml'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'programs/**'
+      - 'Anchor.toml'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+
+env:
+  SOLANA_VERSION: 1.18.2
+  ANCHOR_VERSION: 0.29.0
+
+jobs:
+  # Setup and Cache
+  setup:
+    name: Setup Rust and Solana
+    runs-on: ubuntu-latest
+    outputs:
+      rust-cache-key: ${{ steps.rust-cache-key.outputs.key }}
+      solana-cache-key: ${{ steps.solana-cache-key.outputs.key }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Rust cache key
+        id: rust-cache-key
+        run: echo "key=rust-${{ hashFiles('**/Cargo.lock', '**/Cargo.toml') }}" >> $GITHUB_OUTPUT
+
+      - name: Generate Solana cache key
+        id: solana-cache-key
+        run: echo "key=solana-${{ env.SOLANA_VERSION }}-anchor-${{ env.ANCHOR_VERSION }}" >> $GITHUB_OUTPUT
+
+  # Rust Code Quality
+  rust-quality:
+    name: Rust Code Quality
+    runs-on: ubuntu-latest
+    needs: setup
+    if: |
+      contains(github.event.head_commit.message, 'programs/') || 
+      contains(github.event.pull_request.title, 'program') ||
+      github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ needs.setup.outputs.rust-cache-key }}
+          restore-keys: |
+            rust-
+
+      - name: Install Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor
+        run: |
+          npm install -g @coral-xyz/anchor-cli@${{ env.ANCHOR_VERSION }}
+
+      - name: Check Rust formatting
+        run: |
+          if [ -d "programs" ]; then
+            cd programs
+            cargo fmt --all -- --check
+          else
+            echo "No Rust programs found, skipping format check"
+          fi
+
+      - name: Run Clippy
+        run: |
+          if [ -d "programs" ]; then
+            cd programs
+            cargo clippy --all-targets --all-features -- -D warnings
+          else
+            echo "No Rust programs found, skipping Clippy"
+          fi
+
+      - name: Check for common security issues
+        run: |
+          if [ -d "programs" ]; then
+            echo "🔍 Checking for common Solana program security issues..."
+            
+            # Check for unsafe code blocks
+            if find programs -name "*.rs" -exec grep -l "unsafe" {} \; | head -1; then
+              echo "⚠️  Found unsafe code blocks. Please review for security implications."
+            fi
+            
+            # Check for unwrap() calls which can panic
+            if find programs -name "*.rs" -exec grep -l "\.unwrap()" {} \; | head -1; then
+              echo "⚠️  Found .unwrap() calls. Consider using proper error handling instead."
+            fi
+            
+            # Check for hardcoded addresses
+            if find programs -name "*.rs" -exec grep -E "[1-9A-HJ-NP-Za-km-z]{32,44}" {} \; | head -1; then
+              echo "⚠️  Found potential hardcoded addresses. Consider using configurable addresses."
+            fi
+            
+            # Check for missing access control
+            if find programs -name "*.rs" -exec grep -L "#\[access_control\]" {} \; | head -1; then
+              echo "ℹ️  Some functions may be missing access control. Review security implications."
+            fi
+            
+            echo "✅ Security scan completed"
+          else
+            echo "No Rust programs found, skipping security checks"
+          fi
+
+  # Anchor Build and Test
+  anchor-test:
+    name: Anchor Build and Test
+    runs-on: ubuntu-latest
+    needs: setup
+    if: |
+      contains(github.event.head_commit.message, 'programs/') || 
+      contains(github.event.pull_request.title, 'program') ||
+      github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Solana and Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/solana
+            ~/.local/share/solana
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ needs.setup.outputs.solana-cache-key }}-${{ needs.setup.outputs.rust-cache-key }}
+
+      - name: Install Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor
+        run: |
+          npm install -g @coral-xyz/anchor-cli@${{ env.ANCHOR_VERSION }}
+
+      - name: Build Anchor programs
+        run: |
+          if [ -f "Anchor.toml" ]; then
+            echo "📦 Building Anchor programs..."
+            anchor build
+            
+            # Verify IDL generation
+            if [ -d "target/idl" ]; then
+              echo "✅ IDL files generated successfully"
+              ls -la target/idl/
+            else
+              echo "⚠️ No IDL files found"
+            fi
+            
+            # Check program binary sizes
+            if [ -d "target/deploy" ]; then
+              echo "📊 Program binary sizes:"
+              ls -lah target/deploy/*.so
+            fi
+          else
+            echo "No Anchor.toml found, skipping Anchor build"
+          fi
+
+      - name: Run Anchor tests
+        run: |
+          if [ -f "Anchor.toml" ]; then
+            echo "🧪 Running Anchor tests..."
+            anchor test --skip-local-validator
+          else
+            echo "No Anchor.toml found, skipping Anchor tests"
+          fi
+
+      - name: Generate program documentation
+        run: |
+          if [ -d "programs" ]; then
+            cd programs
+            cargo doc --no-deps --document-private-items
+            echo "📚 Program documentation generated"
+          else
+            echo "No Rust programs found, skipping documentation generation"
+          fi
+
+  # Security Audit for Rust
+  rust-security:
+    name: Rust Security Audit
+    runs-on: ubuntu-latest
+    if: |
+      contains(github.event.head_commit.message, 'programs/') || 
+      contains(github.event.pull_request.title, 'program') ||
+      github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run security audit
+        run: |
+          if [ -f "Cargo.lock" ]; then
+            echo "🔒 Running Rust security audit..."
+            cargo audit
+          else
+            echo "No Cargo.lock found, skipping security audit"
+          fi
+
+      - name: Check for known vulnerabilities
+        run: |
+          if [ -d "programs" ]; then
+            echo "🔍 Checking for known vulnerability patterns..."
+            
+            # Check for integer overflow possibilities
+            if find programs -name "*.rs" -exec grep -l "as u64\|as u32" {} \; | head -1; then
+              echo "ℹ️  Found integer casts. Verify overflow handling."
+            fi
+            
+            # Check for unchecked arithmetic
+            if find programs -name "*.rs" -exec grep -l "checked_" {} \; | head -1; then
+              echo "✅ Found checked arithmetic operations"
+            else
+              echo "⚠️  Consider using checked arithmetic operations"
+            fi
+          fi

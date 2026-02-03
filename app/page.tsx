@@ -253,6 +253,12 @@ export default function Dashboard() {
             </div>
             
             <div className="status-badges">
+              <a 
+                href="/dashboard" 
+                className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition-colors"
+              >
+                Real-Time Dashboard
+              </a>
               <span className="status-success">Live</span>
               <span className="status-info">#25</span>
             </div>

@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/solana-devex/platform/discussions
+    about: Ask questions, share ideas, or discuss features with the community
+  - name: 📚 Documentation
+    url: https://docs.solana-devex.com
+    about: Check our documentation for guides, API references, and tutorials
+  - name: 🔒 Security Vulnerability (Private)
+    url: https://github.com/solana-devex/platform/security/advisories/new
+    about: Report security vulnerabilities privately through GitHub Security Advisories
+  - name: 💬 Discord Community
+    url: https://discord.gg/solana-devex
+    about: Join our Discord community for real-time discussions and support
+  - name: 📧 Email Support
+    url: mailto:support@solana-devex.com
+    about: Contact us directly via email for urgent issues or private matters
