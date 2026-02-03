@@ -1,49 +1,39 @@
 module.exports = {
   extends: [
-    'next/core-web-vitals',
     'eslint:recommended',
-    '@typescript-eslint/recommended',
   ],
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'security'],
+  plugins: ['security'],
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   env: {
-    browser: true,
-    es2022: true,
     node: true,
+    es2022: true,
+    jest: true,
   },
   rules: {
     // Code Quality Rules
-    'no-console': 'warn',
+    'no-console': 'off', // Server logging is necessary
     'no-debugger': 'error',
-    'no-unused-vars': 'off', // Use TypeScript version instead
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'warn',
+    'no-unused-vars': 'error',
     
-    // Security Rules
-    'security/detect-object-injection': 'warn',
-    'security/detect-non-literal-regexp': 'warn',
+    // Security Rules - Critical for API servers
+    'security/detect-object-injection': 'error',
+    'security/detect-non-literal-regexp': 'error',
     'security/detect-unsafe-regex': 'error',
     'security/detect-buffer-noassert': 'error',
     'security/detect-child-process': 'warn',
     'security/detect-disable-mustache-escape': 'error',
     'security/detect-eval-with-expression': 'error',
     'security/detect-no-csrf-before-method-override': 'error',
-    'security/detect-non-literal-fs-filename': 'warn',
-    'security/detect-non-literal-require': 'warn',
-    'security/detect-possible-timing-attacks': 'warn',
+    'security/detect-non-literal-fs-filename': 'error',
+    'security/detect-non-literal-require': 'error',
+    'security/detect-possible-timing-attacks': 'error',
     'security/detect-pseudoRandomBytes': 'error',
     
-    // Best Practices
+    // API Security Best Practices
+    'no-template-curly-in-string': 'error',
     'prefer-const': 'error',
     'no-var': 'error',
     'eqeqeq': ['error', 'always'],
@@ -51,48 +41,18 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-trailing-spaces': 'error',
     
-    // React/Next.js specific
-    'react-hooks/exhaustive-deps': 'warn',
-    'react-hooks/rules-of-hooks': 'error',
+    // Express.js specific
+    'no-undef': 'error',
+    'no-redeclare': 'error',
     
-    // Solana-specific security rules
-    'no-template-curly-in-string': 'error', // Prevent accidental template literal issues
+    // Solana API security
+    'no-process-env': 'off', // We need process.env for configuration
   },
-  overrides: [
-    {
-      files: ['**/*.test.{js,ts,tsx}', '**/*.spec.{js,ts,tsx}'],
-      env: {
-        jest: true,
-      },
-      rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
-        'no-console': 'off',
-      },
-    },
-    {
-      files: ['cli/**/*.js'],
-      env: {
-        node: true,
-        browser: false,
-      },
-      rules: {
-        'no-console': 'off', // CLI tools need console output
-      },
-    },
-    {
-      files: ['api/**/*.js'],
-      env: {
-        node: true,
-        browser: false,
-      },
-      rules: {
-        'no-console': 'off', // Server logging is acceptable
-      },
-    },
-  ],
-  settings: {
-    react: {
-      version: 'detect',
-    },
+  globals: {
+    // Add any global variables used in your API
+    'process': 'readonly',
+    'Buffer': 'readonly',
+    '__dirname': 'readonly',
+    '__filename': 'readonly',
   },
 };
