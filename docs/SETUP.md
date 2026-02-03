@@ -58,13 +58,13 @@ npm run api
 
 ## Features
 
-### 🎛️ Dashboard
+### Dashboard
 - Live test result monitoring
 - Protocol health visualization
 - CI/CD pipeline tracking
 - Performance metrics display
 
-### 🧪 Testing Framework
+### Testing Framework
 ```javascript
 // Example: Test Jupiter integration
 const result = await protocolTester.testJupiterSwap(
@@ -74,13 +74,13 @@ const result = await protocolTester.testJupiterSwap(
 );
 ```
 
-### 📊 Real-time Monitoring
+### Real-time Monitoring
 - WebSocket-based live updates
 - Protocol latency tracking
 - Success rate monitoring
 - Automated health checks
 
-### 🔄 CI/CD Pipeline
+### CI/CD Pipeline
 - Automated deployment simulation
 - Multi-stage pipeline tracking
 - Environment management (devnet → mainnet)

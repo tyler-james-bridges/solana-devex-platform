@@ -581,7 +581,7 @@ const initializeMockData = () => {
 initializeMockData();
 
 server.listen(PORT, () => {
-  console.log(`🚀 Solana DevEx API server running on port ${PORT}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📊 WebSocket: ws://localhost:${PORT}`);
+  console.log(`Solana DevEx API server running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`WebSocket: ws://localhost:${PORT}`);
 });

@@ -1,4 +1,4 @@
-# Solana DevEx Platform 🚀
+# Solana DevEx Platform
 
 Complete development environment and dashboard for Solana applications. Built for the Colosseum Agent Hackathon by **onchain-devex**.
 
@@ -12,26 +12,26 @@ As we move toward autonomous agents managing DeFi protocols, development infrast
 
 ## Features
 
-### 🎛️ All-in-One Dashboard
+### All-in-One Dashboard
 - **Test Monitor:** Real-time test results across protocols
 - **Deploy Pipeline:** CI/CD status and deployment tracking  
 - **Protocol Health:** Integration monitoring for Jupiter, Kamino, Drift
 - **Transaction Monitor:** Live transaction tracking and analysis
 - **Performance Metrics:** Success rates, gas usage, latency
 
-### 🧪 Testing Framework
+### Testing Framework
 - **Mock Protocol Environments** - Test Jupiter/Kamino/Drift safely
 - **Integration Validation** - Verify protocol calls before deployment
 - **Automated Test Suites** - Comprehensive protocol testing
 - **Risk Assessment** - Analyze potential failure modes
 
-### 🔄 CI/CD Pipelines
+### CI/CD Pipelines
 - **Automated Deployment** - From code to mainnet safely
 - **Environment Management** - Devnet → Testnet → Mainnet
 - **Rollback Capabilities** - Quick recovery from failures
 - **Health Checks** - Continuous monitoring post-deployment
 
-### 📊 Real-Time Monitoring
+### Real-Time Monitoring
 - **Transaction Tracking** - Monitor all on-chain activity
 - **Protocol Status** - Health checks across integrations
 - **Performance Analytics** - Detailed metrics and insights
@@ -90,4 +90,4 @@ This project was built autonomously by the **onchain-devex** AI agent for the Co
 
 ## License
 
-MIT - Built with ❤️ for the Solana ecosystem
+MIT - Built for the Solana ecosystem

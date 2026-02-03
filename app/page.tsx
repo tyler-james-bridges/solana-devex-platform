@@ -74,13 +74,20 @@ const MetricCard = ({
   trend?: 'up' | 'down' | 'neutral'
 }) => (
   <div className="metric-card">
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-      <Icon className="w-5 h-5 text-blue-600" />
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'space-between', 
+      marginBottom: '0.75rem',
+      flexWrap: 'wrap',
+      gap: '0.5rem'
+    }}>
+      <Icon className="w-5 h-5 text-blue-600 flex-shrink-0" />
       {change && (
         <span className={`${
           trend === 'up' ? 'metric-change-positive' : 
           trend === 'down' ? 'metric-change-negative' : 'text-gray-500'
-        }`}>
+        } metric-change`} style={{ fontSize: '0.75rem', fontWeight: '500' }}>
           {change}
         </span>
       )}
@@ -228,11 +235,20 @@ export default function Dashboard() {
           <div className="header-content">
             <div className="logo">
               <div className="logo-icon">
-                <div style={{ width: '16px', height: '16px', background: 'white', borderRadius: '2px' }}></div>
+                <div style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  background: 'white', 
+                  borderRadius: '2px' 
+                }}></div>
               </div>
               <div>
                 <div className="logo-text">Solana DevEx</div>
-                <div style={{ fontSize: '12px', color: '#6b7280' }}>Platform</div>
+                <div style={{ 
+                  fontSize: '0.75rem', 
+                  color: '#6b7280',
+                  lineHeight: '1'
+                }}>Platform</div>
               </div>
             </div>
             
@@ -246,12 +262,22 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main style={{ flex: 1, backgroundColor: '#f8fafc' }}>
-        <div className="dashboard-container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+        <div className="dashboard-container" style={{ 
+          paddingTop: '1.5rem', 
+          paddingBottom: '1.5rem' 
+        }}>
           <div className="space-y-6">
             {/* Header Section */}
-            <div className="space-y-2">
+            <div className="space-y-2" style={{ 
+              textAlign: 'center',
+              marginBottom: '2rem'
+            }}>
               <h1 className="typography-h1">Development Environment</h1>
-              <p className="typography-body" style={{ maxWidth: '768px' }}>
+              <p className="typography-body" style={{ 
+                maxWidth: '100%',
+                margin: '0 auto',
+                textAlign: 'center'
+              }}>
                 Complete testing, deployment, and monitoring platform for Solana applications. 
                 Built for autonomous agents and professional development teams.
               </p>
@@ -302,11 +328,20 @@ export default function Dashboard() {
                 <div className="card-content">
                   <div className="space-y-3">
                     {testResults.map((test) => (
-                      <div key={test.id} className="item-card">
+                      <div key={test.id} className="item-card" style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}>
                         <div className="item-card-content">
                           <StatusIcon status={test.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }} className="truncate">
+                            <p style={{ 
+                              fontWeight: 500, 
+                              fontSize: '0.875rem', 
+                              color: '#111827',
+                              lineHeight: '1.4',
+                              marginBottom: '0.25rem'
+                            }}>
                               {test.name}
                             </p>
                             <div className="item-card-meta">
@@ -331,7 +366,10 @@ export default function Dashboard() {
                             {test.status}
                           </div>
                           {test.duration > 0 && (
-                            <p className="typography-caption">{test.duration.toFixed(1)}s</p>
+                            <p className="typography-caption" style={{
+                              marginTop: '0.25rem',
+                              fontWeight: '500'
+                            }}>{test.duration.toFixed(1)}s</p>
                           )}
                         </div>
                       </div>
@@ -351,11 +389,20 @@ export default function Dashboard() {
                 <div className="card-content">
                   <div className="space-y-3">
                     {protocols.map((protocol) => (
-                      <div key={protocol.name} className="item-card">
+                      <div key={protocol.name} className="item-card" style={{
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}>
                         <div className="item-card-content">
                           <StatusIcon status={protocol.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontWeight: 500, fontSize: '14px', color: '#111827' }}>
+                            <p style={{ 
+                              fontWeight: 500, 
+                              fontSize: '0.875rem', 
+                              color: '#111827',
+                              lineHeight: '1.4',
+                              marginBottom: '0.25rem'
+                            }}>
                               {protocol.name}
                             </p>
                             <p className="typography-caption">
@@ -371,7 +418,10 @@ export default function Dashboard() {
                           }`}>
                             {protocol.status}
                           </div>
-                          <p className="typography-caption">
+                          <p className="typography-caption" style={{
+                            marginTop: '0.25rem',
+                            fontWeight: '500'
+                          }}>
                             {protocol.latency > 0 ? `${protocol.latency}ms` : '—'} • {protocol.successRate.toFixed(1)}%
                           </p>
                         </div>

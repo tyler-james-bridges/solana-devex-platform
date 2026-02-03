@@ -1,6 +1,6 @@
 # Security Policy
 
-## 🔒 Security Measures
+## Security Measures
 
 This project implements several security measures to protect against common web application vulnerabilities:
 
@@ -22,7 +22,7 @@ This project implements several security measures to protect against common web 
 - **Helmet.js**: Security headers including CSP, XSS protection, and HSTS
 - **Content Type Protection**: Strict content-type validation
 
-## 🚨 Known Limitations
+## Known Limitations
 
 ### Development Mode
 - **Demo Environment**: In development mode without API_KEY env var, authentication is disabled for testing
@@ -39,7 +39,7 @@ This project implements several security measures to protect against common web 
 - **No Audit Logging**: Currently lacks comprehensive audit trails
 - **Single Point of Failure**: No redundancy or failover mechanisms implemented
 
-## 🔧 Production Security Checklist
+## Production Security Checklist
 
 Before deploying to production, ensure:
 
@@ -51,7 +51,7 @@ Before deploying to production, ensure:
 - [ ] **Regular security updates** are applied to dependencies
 - [ ] **Backup and recovery** procedures are in place
 
-## 🐛 Reporting Security Issues
+## Reporting Security Issues
 
 If you discover a security vulnerability, please:
 
@@ -60,7 +60,7 @@ If you discover a security vulnerability, please:
 3. Include detailed steps to reproduce the issue
 4. Allow time for assessment and remediation
 
-## 📋 Security Testing
+## Security Testing
 
 ### Automated Security Checks
 ```bash
@@ -79,7 +79,7 @@ npm audit --audit-level moderate
 - Rate limiting verification
 - CORS policy validation
 
-## ⚡ Emergency Response
+## Emergency Response
 
 In case of a security incident:
 
@@ -89,7 +89,7 @@ In case of a security incident:
 4. **Remediation**: Apply fixes and patches
 5. **Post-incident**: Review and improve security measures
 
-## 🔄 Security Updates
+## Security Updates
 
 This project follows security best practices and is regularly updated to address:
 - Dependency vulnerabilities
