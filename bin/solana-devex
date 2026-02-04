@@ -1,317 +1,166 @@
 #!/usr/bin/env node
 
 /**
- * Unified Solana DevEx Platform CLI
+ * Solana DevEx Platform - Unified CLI
+ * Official Solana Stack Made Easy
  * 
- * Integrates all platform components into a single, cohesive developer experience:
- * - Project scaffolding and building
- * - Testing with blockchain-specific matchers
- * - Enhanced Anchor development
- * - Test validator management with monitoring
- * - CI/CD and deployment automation
- * - Monitoring dashboard integration
- * - GitHub Actions template setup
+ * This CLI provides streamlined access to the official Solana development stack:
+ * - @solana/client + @solana/react-hooks for UI
+ * - @solana/kit for client/RPC/transaction operations
+ * - LiteSVM/Mollusk/Surfpool for testing
+ * - Anchor-first with Pinocchio option
+ * - Wallet-standard-first connections
  */
 
-const { Command } = require('commander');
+const { program } = require('commander');
 const chalk = require('chalk');
-const path = require('path');
-const fs = require('fs-extra');
+const { version } = require('../package.json');
 
-const program = new Command();
+// Command handlers
+const initCommands = require('../cli/commands/init');
+const kitCommands = require('../cli/commands/kit');
+const testCommands = require('../cli/commands/test');
+const anchorCommands = require('../cli/commands/anchor');
+const pinocchioCommands = require('../cli/commands/pinocchio');
+const walletCommands = require('../cli/commands/wallet');
+const securityCommands = require('../cli/commands/security');
+const compatCommands = require('../cli/commands/compat');
 
+// Configure main program
 program
   .name('solana-devex')
-  .description('Unified Solana Developer Experience Platform')
-  .version('1.0.0')
-  .option('-v, --verbose', 'enable verbose output')
-  .option('--config <path>', 'path to config file', 'solana-devex.config.js');
+  .description(chalk.cyan('🚀 Official Solana Stack Made Easy\n') + 
+               chalk.gray('DevEx layer for framework-kit + @solana/kit ecosystem'))
+  .version(version, '-v, --version', 'display version number')
+  .helpOption('-h, --help', 'display help for command');
 
-// ASCII art banner for the unified platform
-const banner = chalk.cyan(`
-╔═══════════════════════════════════════════════════════════╗
-║                 Solana DevEx Platform                     ║
-║           Unified Developer Experience Suite              ║
-╚═══════════════════════════════════════════════════════════╝
-`);
-
-// Display banner for interactive commands
-if (process.argv.length === 2) {
-  console.log(banner);
-  console.log(chalk.yellow('Use --help to see available commands\n'));
-}
-
-// ===== PROJECT MANAGEMENT COMMANDS =====
-
+// Core commands following official stack
 program
   .command('init')
-  .description('Initialize a new Solana project with full platform setup')
-  .argument('[name]', 'project name')
-  .option('--template <template>', 'project template (anchor, native, token, nft)', 'anchor')
-  .option('--testing', 'include advanced testing setup')
-  .option('--cicd', 'setup CI/CD pipeline')
-  .option('--monitoring', 'include monitoring dashboard')
-  .option('--validator', 'setup enhanced test validator')
-  .action(async (name, options) => {
-    const { initProject } = require('../packages/cli/lib/commands/init');
-    const { setupTesting } = require('../packages/jest-extensions/lib/setup');
-    const { setupAnchorEnhancements } = require('../packages/anchor-layer/lib/setup');
-    const { setupValidator } = require('../packages/test-validator/lib/setup');
-    const { setupCICD } = require('../cli/lib/commands/cicd-setup');
-    
-    console.log(chalk.blue('🚀 Initializing Solana project with full platform integration...'));
-    
-    // Initialize base project
-    await initProject(name, options);
-    
-    // Add platform integrations based on options
-    if (options.testing) {
-      console.log(chalk.green('📝 Setting up enhanced testing environment...'));
-      await setupTesting(name);
-    }
-    
-    if (options.cicd) {
-      console.log(chalk.green('🔄 Setting up CI/CD pipeline...'));
-      await setupCICD(name);
-    }
-    
-    if (options.monitoring) {
-      console.log(chalk.green('📊 Setting up monitoring dashboard...'));
-      // Setup monitoring integration
-    }
-    
-    if (options.validator) {
-      console.log(chalk.green('⚙️ Setting up enhanced test validator...'));
-      await setupValidator(name);
-    }
-    
-    console.log(chalk.green('✅ Project initialized successfully!'));
-    console.log(chalk.yellow('Next steps:'));
-    console.log(chalk.dim('  cd ' + (name || '.')));
-    console.log(chalk.dim('  solana-devex build'));
-    console.log(chalk.dim('  solana-devex test'));
-  });
+  .description('Initialize new project with official Solana stack')
+  .option('-t, --template <type>', 'project template', 'react-kit')
+  .option('--kit-only', 'pure @solana/kit project (no UI)')
+  .option('--anchor', 'include Anchor program workspace')
+  .option('--pinocchio', 'use Pinocchio for high-performance programs')
+  .option('--legacy', 'use legacy web3.js stack (not recommended)')
+  .action(initCommands.init);
 
-program
-  .command('build')
-  .description('Build Anchor programs and TypeScript clients')
-  .option('--release', 'build optimized release version')
-  .option('--verify', 'verify programs after build')
-  .option('--programs <programs>', 'comma-separated list of programs to build')
-  .option('--parallel', 'build programs in parallel')
-  .option('--watch', 'watch for changes and rebuild')
-  .action(async (options) => {
-    const { buildProject } = require('../packages/cli/lib/commands/build');
-    await buildProject(options);
-  });
+// @solana/kit operations
+const kit = program
+  .command('kit')
+  .description('Official @solana/kit operations');
 
-// ===== TESTING COMMANDS =====
+kit
+  .command('rpc')
+  .description('RPC client management with @solana/kit')
+  .option('-e, --endpoint <url>', 'RPC endpoint')
+  .action(kitCommands.rpc);
 
-program
+kit
+  .command('transaction')
+  .description('Build and send transactions with @solana/kit')
+  .option('-s, --simulate', 'simulate transaction only')
+  .action(kitCommands.transaction);
+
+kit
+  .command('client')
+  .description('Generate typed clients with Codama')
+  .option('-i, --idl <path>', 'IDL file path')
+  .action(kitCommands.client);
+
+// Testing with official stack (LiteSVM/Mollusk/Surfpool)
+const test = program
   .command('test')
-  .description('Run tests with blockchain-specific matchers and enhancements')
-  .option('--watch', 'watch for changes and re-run tests')
-  .option('--coverage', 'collect test coverage')
-  .option('--validator', 'start test validator automatically')
-  .option('--anchor', 'use Anchor testing enhancements')
-  .option('--pattern <pattern>', 'test file pattern')
-  .option('--parallel', 'run tests in parallel')
-  .action(async (options) => {
-    console.log(chalk.blue('🧪 Running tests with blockchain extensions...'));
-    
-    // Setup Jest with blockchain extensions
-    const jestConfig = require('../packages/jest-extensions/jest.config');
-    const { runTests } = require('../packages/jest-extensions/lib/runner');
-    
-    if (options.validator) {
-      console.log(chalk.green('🌐 Starting enhanced test validator...'));
-      const { startValidator } = require('../packages/test-validator/lib/commands/start');
-      await startValidator({ quiet: true });
-    }
-    
-    await runTests(options);
-  });
+  .description('Test with official testing stack');
 
-// ===== ANCHOR ENHANCEMENT COMMANDS =====
+test
+  .command('unit')
+  .description('Run unit tests with LiteSVM/Mollusk')
+  .option('--mollusk', 'use Mollusk testing patterns')
+  .option('--litesvm', 'use LiteSVM (default)')
+  .action(testCommands.unit);
 
+test
+  .command('integration')
+  .description('Run integration tests with Surfpool')
+  .option('--mainnet', 'test against mainnet state')
+  .option('--devnet', 'test against devnet state')
+  .action(testCommands.integration);
+
+test
+  .command('legacy')
+  .description('Fallback to solana-test-validator')
+  .action(testCommands.legacy);
+
+// Anchor (default) and Pinocchio (performance)
 program
   .command('anchor')
-  .description('Enhanced Anchor development tools')
-  .action(() => {
-    const anchorProgram = new Command();
-    
-    anchorProgram
-      .command('enhance')
-      .description('Add testing and monitoring enhancements to Anchor project')
-      .action(async () => {
-        const { enhanceAnchorProject } = require('../packages/anchor-layer/lib/commands/enhance');
-        await enhanceAnchorProject();
-      });
-    
-    anchorProgram
-      .command('monitor')
-      .description('Start Anchor program monitoring')
-      .action(async () => {
-        const { startMonitoring } = require('../packages/anchor-layer/lib/commands/monitor');
-        await startMonitoring();
-      });
-    
-    anchorProgram.parse(process.argv);
-  });
-
-// ===== VALIDATOR COMMANDS =====
+  .description('Anchor program development (default choice)')
+  .option('-b, --build', 'build programs')
+  .option('-t, --test', 'run Anchor tests')
+  .option('-d, --deploy', 'deploy to cluster')
+  .action(anchorCommands.main);
 
 program
-  .command('validator')
-  .description('Enhanced test validator management')
-  .action(() => {
-    const validatorProgram = new Command();
-    
-    validatorProgram
-      .command('start')
-      .description('Start enhanced test validator with monitoring')
-      .option('--port <port>', 'RPC port', '8899')
-      .option('--reset', 'reset validator state')
-      .option('--monitor', 'enable performance monitoring')
-      .action(async (options) => {
-        const { startValidator } = require('../packages/test-validator/cli/index');
-        await startValidator(options);
-      });
-    
-    validatorProgram
-      .command('stop')
-      .description('Stop test validator')
-      .action(async () => {
-        const { stopValidator } = require('../packages/test-validator/lib/commands/stop');
-        await stopValidator();
-      });
-    
-    validatorProgram
-      .command('monitor')
-      .description('Show validator performance dashboard')
-      .action(async () => {
-        const { showMonitor } = require('../packages/test-validator/lib/commands/monitor');
-        await showMonitor();
-      });
-    
-    validatorProgram.parse(process.argv);
-  });
+  .command('pinocchio')
+  .description('High-performance programs with Pinocchio')
+  .option('-o, --optimize', 'optimize for compute units')
+  .action(pinocchioCommands.main);
 
-// ===== CI/CD COMMANDS =====
-
+// Wallet-standard-first connections
 program
-  .command('cicd')
-  .description('CI/CD pipeline management')
-  .action(() => {
-    const cicdProgram = new Command();
-    
-    cicdProgram
-      .command('setup')
-      .description('Setup CI/CD pipeline for current project')
-      .action(async () => {
-        const { setupPipeline } = require('../cli/lib/commands/cicd-setup');
-        await setupPipeline();
-      });
-    
-    cicdProgram
-      .command('actions')
-      .description('Setup GitHub Actions templates')
-      .action(async () => {
-        const { setupGitHubActions } = require('../packages/github-actions/lib/setup');
-        await setupGitHubActions();
-      });
-    
-    cicdProgram.parse(process.argv);
-  });
+  .command('wallet')
+  .description('Wallet-standard connection patterns')
+  .option('-s, --setup', 'setup wallet connection')
+  .action(walletCommands.main);
 
-// ===== MONITORING COMMANDS =====
+// Automated security checklist
+program
+  .command('security')
+  .description('Automated security analysis and checklist')
+  .option('-a, --audit', 'run full security audit')
+  .option('-r, --risks', 'analyze signing/fee/CPI risks')
+  .action(securityCommands.main);
+
+// Legacy web3.js compatibility (contained boundaries)
+program
+  .command('compat')
+  .description('web3.js compatibility layer (use sparingly)')
+  .option('-m, --migrate', 'help migrate from web3.js to @solana/kit')
+  .action(compatCommands.main);
+
+// Platform management (existing functionality)
+program
+  .command('setup')
+  .description('Setup platform environment')
+  .action(() => require('../cli/platform').setup());
 
 program
   .command('monitor')
-  .description('Platform monitoring and dashboard')
-  .action(() => {
-    const monitorProgram = new Command();
-    
-    monitorProgram
-      .command('start')
-      .description('Start monitoring dashboard')
-      .option('--port <port>', 'dashboard port', '3000')
-      .action(async (options) => {
-        console.log(chalk.blue('📊 Starting monitoring dashboard...'));
-        const { spawn } = require('child_process');
-        const dashboard = spawn('npm', ['run', 'dev'], { 
-          stdio: 'inherit',
-          env: { ...process.env, PORT: options.port }
-        });
-      });
-    
-    monitorProgram
-      .command('api')
-      .description('Start monitoring API server')
-      .action(async () => {
-        const { spawn } = require('child_process');
-        const api = spawn('npm', ['run', 'api:dev'], { stdio: 'inherit' });
-      });
-    
-    monitorProgram.parse(process.argv);
-  });
-
-// ===== UTILITY COMMANDS =====
+  .description('Start monitoring dashboard')
+  .action(() => require('../cli/platform').monitor());
 
 program
   .command('config')
-  .description('Manage platform configuration')
-  .action(() => {
-    const configProgram = new Command();
-    
-    configProgram
-      .command('init')
-      .description('Initialize platform configuration')
-      .action(async () => {
-        const { initConfig } = require('../packages/shared/lib/config');
-        await initConfig();
-      });
-    
-    configProgram
-      .command('show')
-      .description('Show current configuration')
-      .action(async () => {
-        const { showConfig } = require('../packages/shared/lib/config');
-        await showConfig();
-      });
-    
-    configProgram.parse(process.argv);
-  });
+  .description('Configure platform settings')
+  .action(() => require('../cli/platform').config());
 
-program
-  .command('setup')
-  .description('Complete platform setup guide')
-  .action(async () => {
-    console.log(banner);
-    console.log(chalk.blue('🛠️ Welcome to the Solana DevEx Platform setup!'));
-    console.log(chalk.dim('This will guide you through setting up the complete development environment.\n'));
-    
-    const { runSetupWizard } = require('../lib/setup-wizard');
-    await runSetupWizard();
-  });
-
-// Help enhancement
-const originalHelp = program.outputHelp;
-program.outputHelp = function(cb) {
-  console.log(banner);
-  return originalHelp.call(this, cb);
-};
-
-// Error handling
+// Global error handling
 program.on('command:*', () => {
-  console.error(chalk.red('Invalid command: %s'), program.args.join(' '));
-  console.log(chalk.yellow('See --help for a list of available commands.'));
+  console.error(chalk.red(`Unknown command: ${program.args.join(' ')}`));
+  console.log(chalk.yellow('Run "solana-devex --help" to see available commands'));
   process.exit(1);
 });
 
-program.parse(process.argv);
+// Parse and execute
+program.parse();
 
 // Show help if no command provided
 if (!process.argv.slice(2).length) {
   program.outputHelp();
+  console.log('\n' + chalk.cyan('🎯 Quick Start:'));
+  console.log(chalk.gray('  solana-devex init my-project    # Create new official stack project'));
+  console.log(chalk.gray('  solana-devex test unit          # Run fast unit tests with LiteSVM'));
+  console.log(chalk.gray('  solana-devex security --audit   # Run security analysis'));
+  console.log('\n' + chalk.yellow('📚 Learn more: https://docs.solana-devex.io'));
 }
