@@ -23,7 +23,7 @@ const demoTeams = [
   {
     id: 'ore-mining',
     name: 'Ore Mining Team',
-    project: 'Ore (Grand Champion)',
+    project: 'Ore (Leading Project)',
     agents: 3,
     status: 'active',
     metrics: {
@@ -38,7 +38,7 @@ const demoTeams = [
   {
     id: 'banger-creators',
     name: 'Banger.lol Creators',
-    project: 'Banger.lol ($30K Winner)', 
+    project: 'Banger.lol (Leading Project)', 
     agents: 5,
     status: 'active',
     metrics: {
@@ -53,7 +53,7 @@ const demoTeams = [
   {
     id: 'high-tps-team',
     name: 'High TPS Optimizers',
-    project: 'High TPS Solana Client ($30K)',
+    project: 'High TPS Solana Client (Leading Project)',
     agents: 4,
     status: 'testing',
     metrics: {
@@ -68,7 +68,7 @@ const demoTeams = [
   {
     id: 'meshmap-builders',
     name: 'Meshmap City Builders',
-    project: 'Meshmap+City Champ ($30K)',
+    project: 'Meshmap+City Champ (Leading Project)',
     agents: 6,
     status: 'deploying',
     metrics: {
@@ -83,7 +83,7 @@ const demoTeams = [
   {
     id: 'urani-swap',
     name: 'Urani Swap Team', 
-    project: 'Urani Intent Aggregator ($30K)',
+    project: 'Urani Intent Aggregator (Leading Project)',
     agents: 3,
     status: 'active',
     metrics: {
