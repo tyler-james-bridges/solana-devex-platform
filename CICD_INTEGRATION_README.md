@@ -249,13 +249,13 @@ npm run webhook:start   # Start webhook handler
 ### Environment Variables
 ```bash
 # GitHub Integration
-GITHUB_TOKEN=ghp_...                    # Personal access token
-GITHUB_WEBHOOK_SECRET=your-secret      # Webhook verification
+GITHUB_TOKEN=github_pat_XXXXXXXXXX     # Personal access token
+GITHUB_WEBHOOK_SECRET=webhook_secret_placeholder # Webhook verification
 
 # Deployment Platforms  
-VERCEL_TOKEN=your-token                # Vercel API
-RAILWAY_TOKEN=your-token               # Railway API
-HEROKU_TOKEN=your-token                # Heroku API
+VERCEL_TOKEN=vercel_token_placeholder  # Vercel API
+RAILWAY_TOKEN=railway_token_placeholder # Railway API
+HEROKU_TOKEN=heroku_token_placeholder  # Heroku API
 
 # Server Configuration
 CICD_PORT=3001                         # CI/CD API port

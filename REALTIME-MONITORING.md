@@ -83,17 +83,17 @@ Configure your production RPC providers in `.env`:
 
 ```bash
 # Helius Configuration
-HELIUS_API_KEY=your-helius-api-key
+HELIUS_API_KEY=helius_api_key_placeholder
 HELIUS_MAINNET_URL=https://rpc.helius.xyz/
 HELIUS_MAINNET_WS=wss://rpc.helius.xyz/
 
 # QuickNode Configuration  
-QUICKNODE_API_KEY=your-quicknode-api-key
+QUICKNODE_API_KEY=quicknode_api_key_placeholder
 QUICKNODE_MAINNET_URL=https://solana-mainnet.quicknode.pro/v1/
 QUICKNODE_MAINNET_WS=wss://solana-mainnet.quicknode.pro/v1/
 
 # Alchemy Configuration
-ALCHEMY_API_KEY=your-alchemy-api-key
+ALCHEMY_API_KEY=alchemy_api_key_placeholder
 ALCHEMY_MAINNET_URL=https://solana-mainnet.g.alchemy.com/v2/
 ALCHEMY_MAINNET_WS=wss://solana-mainnet.g.alchemy.com/v2/
 
