@@ -63,3 +63,13 @@ test-results/
 
 # Local development
 .env.development.local
+
+# Internal documentation and planning
+*ANALYSIS*.md
+*IMPLEMENTATION*.md
+*SUMMARY*.md
+*GUIDE*.md
+integration-examples/
+planning/
+research/
+internal/
