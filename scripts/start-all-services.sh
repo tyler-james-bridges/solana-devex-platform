@@ -43,9 +43,9 @@ echo "Starting Frontend Dashboard (Port 3000)..."
 npm start > logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 
-echo "Starting Partnership APIs (Port 3004)..."  
-npm run partnerships > logs/partnerships.log 2>&1 &
-PARTNERSHIP_PID=$!
+echo "Starting Integration APIs (Port 3004)..."  
+npm run integrations > logs/integrations.log 2>&1 &
+INTEGRATION_PID=$!
 
 echo "Starting Demo Environment (Port 3005)..."
 npm run demo > logs/demo.log 2>&1 &
@@ -69,7 +69,7 @@ echo "🎉 Solana DevEx Platform is now running!"
 echo "========================================"
 echo ""
 echo "📱 Frontend Dashboard:    http://localhost:3000"
-echo "🤝 Partnership APIs:     http://localhost:3004/api/partnerships/health"
+echo "🔗 Integration APIs:     http://localhost:3004/api/integrations/health"
 echo "🎭 Demo Environment:      http://localhost:3005/api/demo/status"  
 echo "💚 Health Monitoring:     http://localhost:3002/api/health/protocols"
 echo ""
@@ -80,10 +80,10 @@ echo "• Partnership Status:     http://localhost:3004/api/partnerships/health"
 echo "• Demo Teams:             http://localhost:3005/api/demo/teams"
 echo "• Protocol Health:        http://localhost:3002/api/health/protocols"
 echo ""
-echo "🔧 PARTNERSHIP DEMOS:"
-echo "• SOLPRISM Integration:   curl http://localhost:3004/api/partnerships/solprism/status"
-echo "• AgentDEX Monitoring:    curl http://localhost:3004/api/partnerships/agentdx/status"
-echo "• SAID Discovery:         curl http://localhost:3004/api/partnerships/said/status"
+echo "🔧 INTEGRATION DEMOS:"
+echo "• SOLPRISM-Compatible:    curl http://localhost:3004/api/integrations/solprism/status"
+echo "• AgentDEX-Compatible:    curl http://localhost:3004/api/integrations/agentdx/status"
+echo "• SAID-Compatible:        curl http://localhost:3004/api/integrations/said/status"
 echo ""
 echo "🎬 DEMO SCENARIOS FOR JUDGES:"
 echo "• High Load Test:         curl -X POST http://localhost:3005/api/demo/scenario/high-load"
@@ -92,7 +92,7 @@ echo "• Protocol Issues:        curl -X POST http://localhost:3005/api/demo/sc
 echo ""
 
 # Store PIDs for cleanup
-echo "$FRONTEND_PID $PARTNERSHIP_PID $DEMO_PID $API_PID" > .service_pids
+echo "$FRONTEND_PID $INTEGRATION_PID $DEMO_PID $API_PID" > .service_pids
 
 echo "📜 Service PIDs stored in .service_pids"
 echo "🛑 To stop all services: ./scripts/stop-all-services.sh"

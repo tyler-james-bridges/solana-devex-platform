@@ -1,7 +1,7 @@
 /**
- * Partnership API Endpoints
- * Dedicated APIs for SOLPRISM, AgentDEX, SAID integrations
- * Ready for immediate integration by forum partners
+ * Integration API Endpoints
+ * Ready-to-use APIs for projects interested in DevEx infrastructure
+ * Compatible with SOLPRISM, AgentDEX, SAID, and other projects
  */
 
 const express = require('express');
@@ -13,28 +13,28 @@ const AgentDEXMonitor = require('./agentdex-monitor');
 const ProtocolHealthMonitor = require('./protocol-health-monitor');
 
 const app = express();
-const PORT = process.env.PARTNERSHIP_API_PORT || 3004;
+const PORT = process.env.INTEGRATION_API_PORT || 3004;
 
 // Security and middleware
 app.use(helmet());
 app.use(cors({
-  origin: '*', // Allow all origins for hackathon partnerships
+  origin: '*', // Allow all origins for hackathon integrations
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Partnership-Token']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Integration-Token']
 }));
 app.use(express.json({ limit: '10mb' }));
 
-// Partnership rate limiting - generous for partners
-const partnershipLimiter = rateLimit({
+// Integration rate limiting - generous for integrating projects
+const integrationLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 120, // 120 requests per minute for partners
+  max: 120, // 120 requests per minute for integrations
   message: {
-    error: 'Partnership rate limit exceeded',
+    error: 'Integration rate limit exceeded',
     message: 'Contact Tyler for increased limits: @tmoney145',
     retryAfter: 60
   }
 });
-app.use('/api/partnerships/', partnershipLimiter);
+app.use('/api/integrations/', integrationLimiter);
 
 // Initialize monitors
 const agentdexMonitor = new AgentDEXMonitor();
@@ -45,22 +45,22 @@ const protocolMonitor = new ProtocolHealthMonitor();
 // For @Mereum - Security-focused DevEx integration
 // ========================================
 
-app.get('/api/partnerships/solprism/status', (req, res) => {
+app.get('/api/integrations/solprism/status', (req, res) => {
   res.json({
-    partnership: 'SOLPRISM',
-    status: 'active',
-    integrations: ['security-scanning', 'formal-verification', 'audit-automation'],
+    integration: 'SOLPRISM-Compatible',
+    status: 'ready',
+    capabilities: ['security-scanning', 'formal-verification', 'audit-automation'],
     endpoints: {
-      securityScan: '/api/partnerships/solprism/security/scan',
-      formalVerification: '/api/partnerships/solprism/verification/start',
-      auditReport: '/api/partnerships/solprism/audit/report'
+      securityScan: '/api/integrations/solprism/security/scan',
+      formalVerification: '/api/integrations/solprism/verification/start',
+      auditReport: '/api/integrations/solprism/audit/report'
     },
-    documentation: 'https://solana-devex-platform.vercel.app/docs/partnerships/solprism',
-    contact: '@tmoney145 + @Mereum'
+    documentation: 'https://solana-devex-platform.vercel.app/docs/integrations/solprism',
+    contact: '@tmoney145 (ready for SOLPRISM team when interested)'
   });
 });
 
-app.post('/api/partnerships/solprism/security/scan', 
+app.post('/api/integrations/solprism/security/scan', 
   body('contractAddress').isString().notEmpty(),
   body('scanType').isIn(['basic', 'advanced', 'formal-verification']).optional(),
   (req, res) => {
