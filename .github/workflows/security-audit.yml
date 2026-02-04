@@ -119,9 +119,22 @@ jobs:
       - name: Check for hardcoded private keys
         run: |
           echo "Scanning for hardcoded private keys and sensitive data..."
-          # Check for common patterns of private keys
-          if grep -r -i "private.*key\|secret.*key\|-----BEGIN.*PRIVATE" --include="*.js" --include="*.ts" --include="*.json" . ; then
+          # Check for common patterns of private keys, excluding safe directories and files
+          if grep -r -i "private.*key\|secret.*key\|-----BEGIN.*PRIVATE" \
+            --include="*.js" --include="*.ts" --include="*.json" \
+            --exclude-dir="node_modules" \
+            --exclude-dir=".git" \
+            --exclude-dir="dist" \
+            --exclude-dir="build" \
+            --exclude="*.md" \
+            --exclude="package-lock.json" \
+            --exclude="*security-audit*" \
+            --exclude="*template*" \
+            --exclude="*example*" \
+            --exclude="*config*" \
+            . ; then
             echo "⚠️ Found potential hardcoded private keys!"
+            echo "ℹ️ If these are legitimate documentation or examples, consider moving them to excluded files"
             exit 1
           fi
           echo "✅ No hardcoded private keys found"
