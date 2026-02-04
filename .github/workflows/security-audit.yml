@@ -14,6 +14,8 @@ jobs:
   dependency-scan:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,22 +30,22 @@ jobs:
         run: npm install -g snyk
 
       - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-        if: secrets.SNYK_TOKEN != ''
+        run: snyk auth $SNYK_TOKEN
+        if: env.SNYK_TOKEN != ''
 
       - name: Install dependencies
         run: npm ci
 
       - name: Snyk test - Frontend
         run: snyk test --severity-threshold=medium
-        if: secrets.SNYK_TOKEN != ''
+        if: env.SNYK_TOKEN != ''
         continue-on-error: true
 
       - name: npm audit - Frontend (fallback when Snyk unavailable)
         run: |
           echo "Running npm audit as Snyk token not configured..."
           npm audit --audit-level moderate --production || echo "npm audit found vulnerabilities (non-blocking)"
-        if: secrets.SNYK_TOKEN == ''
+        if: env.SNYK_TOKEN == ''
 
       - name: Install API dependencies
         working-directory: ./api
@@ -52,7 +54,7 @@ jobs:
       - name: Snyk test - API
         working-directory: ./api
         run: snyk test --severity-threshold=medium
-        if: secrets.SNYK_TOKEN != ''
+        if: env.SNYK_TOKEN != ''
         continue-on-error: true
 
       - name: npm audit - API (fallback when Snyk unavailable)
@@ -60,7 +62,7 @@ jobs:
         run: |
           echo "Running npm audit as Snyk token not configured..."
           npm audit --audit-level moderate --production || echo "npm audit found vulnerabilities (non-blocking)"
-        if: secrets.SNYK_TOKEN == ''
+        if: env.SNYK_TOKEN == ''
 
       - name: Install CLI dependencies  
         working-directory: ./cli
@@ -69,7 +71,7 @@ jobs:
       - name: Snyk test - CLI
         working-directory: ./cli
         run: snyk test --severity-threshold=medium
-        if: secrets.SNYK_TOKEN != ''
+        if: env.SNYK_TOKEN != ''
         continue-on-error: true
 
       - name: npm audit - CLI (fallback when Snyk unavailable)
@@ -77,23 +79,23 @@ jobs:
         run: |
           echo "Running npm audit as Snyk token not configured..."
           npm audit --audit-level moderate --production || echo "npm audit found vulnerabilities (non-blocking)"
-        if: secrets.SNYK_TOKEN == ''
+        if: env.SNYK_TOKEN == ''
 
       - name: Snyk monitor - Frontend
         run: snyk monitor
-        if: github.ref == 'refs/heads/main' && secrets.SNYK_TOKEN != ''
+        if: github.ref == 'refs/heads/main' && env.SNYK_TOKEN != ''
         continue-on-error: true
 
       - name: Snyk monitor - API
         working-directory: ./api
         run: snyk monitor
-        if: github.ref == 'refs/heads/main' && secrets.SNYK_TOKEN != ''
+        if: github.ref == 'refs/heads/main' && env.SNYK_TOKEN != ''
         continue-on-error: true
 
       - name: Snyk monitor - CLI
         working-directory: ./cli
         run: snyk monitor
-        if: github.ref == 'refs/heads/main' && secrets.SNYK_TOKEN != ''
+        if: github.ref == 'refs/heads/main' && env.SNYK_TOKEN != ''
         continue-on-error: true
 
   # SAST (Static Application Security Testing)
