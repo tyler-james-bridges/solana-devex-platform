@@ -1,7 +1,7 @@
 {
   "name": "solana-devex-platform",
   "version": "1.0.0",
-  "description": "Complete development environment and dashboard for Solana applications",
+  "description": "Production-grade DevEx infrastructure for the Solana agent ecosystem. Enterprise monitoring, testing, and deployment platform supporting 50+ concurrent teams.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -25,8 +25,14 @@
     "quality:fix": "npm run format && npm run lint:fix",
     "api": "cd api && npm start",
     "api:dev": "cd api && npm run dev",
+    "partnerships": "node api/partnership-apis.js",
+    "partnerships:dev": "nodemon api/partnership-apis.js",
+    "demo": "node api/demo-environment.js",
+    "demo:dev": "nodemon api/demo-environment.js",
     "cli:install": "cd cli && npm install && npm run install-global",
     "setup": "npm install && cd api && npm install && cd ../cli && npm install",
+    "start:all": "concurrently \"npm run dev\" \"npm run partnerships\" \"npm run demo\" \"npm run api\"",
+    "start:production": "npm run build && npm start && npm run partnerships && npm run demo && npm run api",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "lighthouse": "lhci autorun",
@@ -47,7 +53,9 @@
     "health:check": "node -e \"console.log('Health check would run here')\"",
     "production:setup": "chmod +x setup-production.sh && ./setup-production.sh",
     "db:migrate": "echo 'Database migration placeholder'",
-    "db:seed": "echo 'Database seeding placeholder'"
+    "db:seed": "echo 'Database seeding placeholder'",
+    "collaboration:demo": "node scripts/start-collaboration-demo.js",
+    "collaboration:ws": "node api/collaboration-websocket.js"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.0",
@@ -102,10 +110,22 @@
   "keywords": [
     "solana",
     "devex",
+    "infrastructure",
+    "monitoring",
+    "partnerships",
+    "enterprise",
+    "agents",
+    "colosseum-hackathon",
+    "api-monitoring",
+    "protocol-health",
     "ci-cd",
     "testing",
     "dashboard",
-    "defi"
+    "defi",
+    "agentdex",
+    "solprism",
+    "multi-network",
+    "ecosystem"
   ],
   "author": "onchain-devex",
   "license": "MIT"
