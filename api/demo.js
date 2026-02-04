@@ -16,7 +16,7 @@ class ProductionDemo {
   }
 
   async run() {
-    console.log('🎯 PRODUCTION SOLANA PROTOCOL TESTING INFRASTRUCTURE DEMO');
+    console.log('[TARGET] PRODUCTION SOLANA PROTOCOL TESTING INFRASTRUCTURE DEMO');
     console.log('='.repeat(70));
     console.log('Built for: CloddsBot (103 skills), Makora (3 programs), SOLPRISM');
     console.log('='.repeat(70));
@@ -35,11 +35,11 @@ class ProductionDemo {
       // Demo 4: Production Features
       await this.demonstrateProductionFeatures();
       
-      console.log('\n🎉 DEMO COMPLETE - PRODUCTION INFRASTRUCTURE READY!');
+      console.log('\n[SUCCESS] DEMO COMPLETE - PRODUCTION INFRASTRUCTURE READY!');
       this.printQuickStart();
       
     } catch (error) {
-      console.error('❌ Demo failed:', error);
+      console.error('[ERROR] Demo failed:', error);
     } finally {
       await this.cleanup();
     }
@@ -49,7 +49,7 @@ class ProductionDemo {
    * Demonstrate direct protocol testing
    */
   async demonstrateDirectTesting() {
-    console.log('📊 DEMO 1: Direct Protocol Testing');
+    console.log('[INFO] Metrics DEMO 1: Direct Protocol Testing');
     console.log('-'.repeat(40));
     
     const tester = new ProductionTester({
@@ -57,10 +57,10 @@ class ProductionDemo {
       coverage: true
     });
 
-    console.log('🧪 Running Jupiter + Raydium tests...');
+    console.log('[TEST] Running Jupiter + Raydium tests...');
     const results = await tester.runProtocolTests(['jupiter', 'raydium']);
     
-    console.log('✅ Results:');
+    console.log('[SUCCESS] Results:');
     console.log(`   - Protocols: ${results.summary.total}`);
     console.log(`   - Passed: ${results.summary.passed}`);
     console.log(`   - Failed: ${results.summary.failed}`);
@@ -78,11 +78,11 @@ class ProductionDemo {
    * Demonstrate API server functionality
    */
   async demonstrateAPIServer() {
-    console.log('🌐 DEMO 2: Production API Server');
+    console.log('[WEB] DEMO 2: Production API Server');
     console.log('-'.repeat(40));
     
     // Start server
-    console.log('🚀 Starting API server...');
+    console.log('[INIT] Starting API server...');
     this.apiServer = new ProductionTestingAPI({ port: 3333 });
     await this.apiServer.start();
     
@@ -90,14 +90,14 @@ class ProductionDemo {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Test health endpoint
-    console.log('💚 Testing health endpoint...');
+    console.log('[HEALTH] Testing health endpoint...');
     const health = await this.makeRequest('GET', '/health');
     console.log(`   - Status: ${health.status}`);
     console.log(`   - Version: ${health.service}`);
     console.log(`   - Uptime: ${health.uptime}`);
     
     // Test protocol endpoint
-    console.log('🧪 Testing Jupiter via API...');
+    console.log('[TEST] Testing Jupiter via API...');
     const testResponse = await this.makeRequest('POST', '/api/test/protocol/jupiter', {
       async: false
     });
@@ -106,7 +106,7 @@ class ProductionDemo {
     console.log(`   - Results: ${testResponse.results.summary.passed}/${testResponse.results.summary.total} passed`);
     
     // Test export
-    console.log('📤 Testing result export...');
+    console.log('[EXPORT] Testing result export...');
     const exported = await this.makeRequest('GET', '/api/export/latest');
     console.log(`   - Export successful: ${exported.success}`);
     console.log(`   - Test ID: ${exported.testId}`);
@@ -117,10 +117,10 @@ class ProductionDemo {
    * Demonstrate external usage patterns
    */
   async demonstrateExternalUsage() {
-    console.log('🔌 DEMO 3: External Usage Patterns');
+    console.log('[POWER] DEMO 3: External Usage Patterns');
     console.log('-'.repeat(40));
     
-    console.log('🎯 CloddsBot Usage Pattern:');
+    console.log('[TARGET] CloddsBot Usage Pattern:');
     console.log('   const tester = new ProductionTester();');
     console.log('   const results = await tester.runProtocolTests(["jupiter", "raydium"]);');
     console.log('   // 103 skills can now test protocols!');
@@ -130,23 +130,23 @@ class ProductionDemo {
       options: { verbose: false },
       async: false
     });
-    console.log(`   ✅ CloddsBot test: ${cloddsResults.results.summary.passed}/${cloddsResults.results.summary.total} passed`);
+    console.log(`   [SUCCESS] CloddsBot test: ${cloddsResults.results.summary.passed}/${cloddsResults.results.summary.total} passed`);
     
-    console.log('\n🏗️ Makora Usage Pattern:');
+    console.log('\n[MAKORA] Makora Usage Pattern:');
     console.log('   curl -X POST http://localhost:3333/api/test/protocol/kamino');
     console.log('   // 3 programs can test individually!');
     
     const makoraResults = await this.makeRequest('POST', '/api/test/protocol/kamino', {
       async: false
     });
-    console.log(`   ✅ Makora test: ${makoraResults.results.summary.passed}/${makoraResults.results.summary.total} passed`);
+    console.log(`   [SUCCESS] Makora test: ${makoraResults.results.summary.passed}/${makoraResults.results.summary.total} passed`);
     
-    console.log('\n🔍 SOLPRISM Usage Pattern:');
+    console.log('\n[SEARCH] SOLPRISM Usage Pattern:');
     console.log('   GET /api/metrics - Live monitoring');
     console.log('   GET /api/test/history - Historical data');
     
     const metrics = await this.makeRequest('GET', '/api/metrics');
-    console.log(`   ✅ SOLPRISM monitoring: ${metrics.tests.total} total tests, ${metrics.tests.successRate} success rate`);
+    console.log(`   [SUCCESS] SOLPRISM monitoring: ${metrics.tests.total} total tests, ${metrics.tests.successRate} success rate`);
     console.log('');
   }
 
@@ -154,11 +154,11 @@ class ProductionDemo {
    * Demonstrate production features
    */
   async demonstrateProductionFeatures() {
-    console.log('⚡ DEMO 4: Production Features');
+    console.log('[FAST] DEMO 4: Production Features');
     console.log('-'.repeat(40));
     
     // Test concurrency
-    console.log('🚀 Testing concurrent execution...');
+    console.log('[INIT] Testing concurrent execution...');
     const concurrentPromises = [
       this.makeRequest('POST', '/api/test/protocol/jupiter'),
       this.makeRequest('POST', '/api/test/protocol/raydium'),
@@ -166,29 +166,29 @@ class ProductionDemo {
     ];
     
     const concurrentResults = await Promise.all(concurrentPromises);
-    console.log(`   ✅ Started ${concurrentResults.length} concurrent tests`);
+    console.log(`   [SUCCESS] Started ${concurrentResults.length} concurrent tests`);
     
     // Wait for completion
-    console.log('⏳ Waiting for completion...');
+    console.log('[WAITING] Waiting for completion...');
     await new Promise(resolve => setTimeout(resolve, 3000));
     
     // Check results
     const history = await this.makeRequest('GET', '/api/test/history?limit=5');
-    console.log(`   ✅ History shows ${history.tests.length} recent tests`);
+    console.log(`   [SUCCESS] History shows ${history.tests.length} recent tests`);
     
     // Test export formats
-    console.log('📊 Testing export formats...');
+    console.log('[INFO] Metrics Testing export formats...');
     try {
       await this.makeRequest('GET', '/api/export/latest?format=csv');
-      console.log('   ✅ CSV export working');
+      console.log('   [SUCCESS] CSV export working');
     } catch (e) {
-      console.log('   ⚠️ CSV export pending (no completed tests)');
+      console.log('   [WARNING] CSV export pending (no completed tests)');
     }
     
     // Test documentation
-    console.log('📖 Testing API documentation...');
+    console.log('[DOCS] Testing API documentation...');
     const docs = await this.makeRequest('GET', '/api/docs');
-    console.log(`   ✅ Documentation available: ${Object.keys(docs.endpoints).length} endpoint categories`);
+    console.log(`   [SUCCESS] Documentation available: ${Object.keys(docs.endpoints).length} endpoint categories`);
     console.log('');
   }
 
@@ -215,21 +215,21 @@ class ProductionDemo {
    * Print quick start guide
    */
   printQuickStart() {
-    console.log('🚀 QUICK START GUIDE');
+    console.log('[INIT] QUICK START GUIDE');
     console.log('='.repeat(50));
     console.log('');
-    console.log('🎯 FOR IMMEDIATE USE:');
+    console.log('[TARGET] FOR IMMEDIATE USE:');
     console.log('');
-    console.log('1️⃣ START API SERVER:');
+    console.log('[1] START API SERVER:');
     console.log('   npm run testing-server');
     console.log('   # Server: http://localhost:3333');
     console.log('   # Dashboard: http://localhost:3333/dashboard');
     console.log('');
-    console.log('2️⃣ RUN DIRECT TESTS:');
+    console.log('[2] RUN DIRECT TESTS:');
     console.log('   npm run test:protocols');
     console.log('   # Tests all protocols directly');
     console.log('');
-    console.log('3️⃣ API USAGE:');
+    console.log('[3] API USAGE:');
     console.log('   # Test all protocols');
     console.log('   curl -X POST http://localhost:3333/api/test/protocols');
     console.log('');
@@ -239,27 +239,27 @@ class ProductionDemo {
     console.log('   # Get results');
     console.log('   curl http://localhost:3333/api/test/{testId}/results');
     console.log('');
-    console.log('4️⃣ EXPORT RESULTS:');
+    console.log('[4] EXPORT RESULTS:');
     console.log('   # JSON: GET /api/export/latest');
     console.log('   # CSV:  GET /api/export/latest?format=csv');
     console.log('   # HTML: GET /api/export/latest?format=html');
     console.log('');
-    console.log('🎉 PRODUCTION FEATURES:');
-    console.log('   ✅ Real protocol testing simulation');
-    console.log('   ✅ Live transaction simulation');
-    console.log('   ✅ Performance benchmarking');
-    console.log('   ✅ Coverage reporting');
-    console.log('   ✅ Multiple export formats');
-    console.log('   ✅ Real-time API');
-    console.log('   ✅ Live dashboard');
-    console.log('   ✅ Concurrent testing');
-    console.log('   ✅ Production-grade error handling');
+    console.log('[SUCCESS] PRODUCTION FEATURES:');
+    console.log('   [SUCCESS] Real protocol testing simulation');
+    console.log('   [SUCCESS] Live transaction simulation');
+    console.log('   [SUCCESS] Performance benchmarking');
+    console.log('   [SUCCESS] Coverage reporting');
+    console.log('   [SUCCESS] Multiple export formats');
+    console.log('   [SUCCESS] Real-time API');
+    console.log('   [SUCCESS] Live dashboard');
+    console.log('   [SUCCESS] Concurrent testing');
+    console.log('   [SUCCESS] Production-grade error handling');
     console.log('');
-    console.log('📊 DASHBOARD: http://localhost:3333/dashboard');
-    console.log('📖 API DOCS: http://localhost:3333/api/docs');
-    console.log('💚 HEALTH: http://localhost:3333/health');
+    console.log('[INFO] Metrics DASHBOARD: http://localhost:3333/dashboard');
+    console.log('[DOCS] API DOCS: http://localhost:3333/api/docs');
+    console.log('[HEALTH] HEALTH: http://localhost:3333/health');
     console.log('');
-    console.log('🎯 READY FOR PRODUCTION USE TODAY!');
+    console.log('[TARGET] READY FOR PRODUCTION USE TODAY!');
     console.log('='.repeat(50));
   }
 
@@ -268,7 +268,7 @@ class ProductionDemo {
    */
   async cleanup() {
     if (this.apiServer) {
-      console.log('🧹 Stopping demo server...');
+      console.log('[CLEANUP] Stopping demo server...');
       await this.apiServer.stop();
     }
   }
@@ -280,11 +280,11 @@ if (require.main === module) {
   
   demo.run()
     .then(() => {
-      console.log('\n✨ Demo completed successfully!');
+      console.log('\n[SUCCESS] Demo completed successfully!');
       process.exit(0);
     })
     .catch(error => {
-      console.error('\n❌ Demo failed:', error);
+      console.error('\n[ERROR] Demo failed:', error);
       process.exit(1);
     });
 }

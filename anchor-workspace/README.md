@@ -2,7 +2,7 @@
 
 Ultra-fast Solana protocol testing with LiteSVM and comprehensive Anchor integration.
 
-## 🚀 Overview
+## Overview
 
 This testing framework replaces traditional mock testing with production-grade Solana stack testing, offering:
 
@@ -12,7 +12,7 @@ This testing framework replaces traditional mock testing with production-grade S
 - **Fast Execution**: Full test suite runs in seconds, not minutes
 - **Comprehensive Coverage**: All major DeFi protocols with realistic scenarios
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```
 anchor-workspace/
@@ -31,7 +31,7 @@ anchor-workspace/
 └── target/                  # Build outputs and generated types
 ```
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Setup Environment
 
@@ -93,7 +93,7 @@ solana-devex litetest all --verbose
 solana-devex litetest all --concurrent
 ```
 
-## 🧪 Test Suites
+## Test Suites
 
 ### Jupiter V6 Integration (`jupiter.test.ts`)
 
@@ -170,7 +170,7 @@ Cross-protocol workflows testing:
 - **Performance Benchmarks**: End-to-end timing
 - **Concurrent Operations**: Parallel protocol testing
 
-## 🛠 LiteSVM Helper Utilities
+## LiteSVM Helper Utilities
 
 The `litesvm-helper.ts` provides powerful testing utilities:
 
@@ -208,7 +208,7 @@ async function myTest(env) {
 }
 ```
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 LiteSVM delivers exceptional performance:
 
@@ -226,7 +226,7 @@ LiteSVM delivers exceptional performance:
 | Full Protocol Suite | 15s | 5min |
 | Memory Usage | 50MB | 2GB |
 
-## 🔧 Configuration
+## Configuration
 
 ### Anchor.toml Configuration
 
@@ -256,7 +256,7 @@ The `tsconfig.json` is optimized for fast compilation and includes path mappings
 }
 ```
 
-## 🏗 Adding New Tests
+## Adding New Tests
 
 ### 1. Create Protocol Test File
 
@@ -296,7 +296,7 @@ Update CLI in `cli/devex-cli.js` to include the new protocol.
 
 Add cross-protocol scenarios to `protocol-tests.ts`.
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -345,7 +345,7 @@ npm run test:unit
 npm run test:snapshot
 ```
 
-## 🔄 Continuous Integration
+## Continuous Integration
 
 ### GitHub Actions Configuration
 
@@ -370,7 +370,7 @@ npm run test:coverage
 npm run test:profile
 ```
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [LiteSVM Documentation](https://github.com/LiteSVM/litesvm)
 - [Anchor Framework](https://anchor-lang.com/)
@@ -379,7 +379,7 @@ npm run test:profile
 - [Drift Protocol SDK](https://docs.drift.trade/)
 - [Raydium SDK](https://docs.raydium.io/)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -387,12 +387,12 @@ npm run test:profile
 4. Update documentation
 5. Submit a pull request
 
-## 📄 License
+## License
 
 MIT License - see LICENSE file for details.
 
 ---
 
-**Built for the Solana DevEx Platform** 🚀
+**Built for the Solana DevEx Platform**
 
 *Ultra-fast testing for the next generation of Solana applications*

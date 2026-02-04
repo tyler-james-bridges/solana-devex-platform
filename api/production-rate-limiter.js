@@ -66,7 +66,7 @@ class ProductionRateLimiter {
       this.startCleanupProcess();
     }
     
-    console.log('🛡️ Production rate limiter initialized');
+    console.log('[SHIELD]️ Production rate limiter initialized');
   }
   
   /**
@@ -443,7 +443,7 @@ class ProductionRateLimiter {
       this.options.limits[limitType] = Math.max(1, adjustedLimit);
     });
     
-    console.log(`🔄 Rate limits adjusted by factor ${loadFactor.toFixed(2)} due to system load: ${(systemLoad * 100).toFixed(1)}%`);
+    console.log(`[SYNC] Rate limits adjusted by factor ${loadFactor.toFixed(2)} due to system load: ${(systemLoad * 100).toFixed(1)}%`);
   }
   
   /**
@@ -452,7 +452,7 @@ class ProductionRateLimiter {
   async addToWhitelist(ip) {
     if (!this.options.whitelistIPs.includes(ip)) {
       this.options.whitelistIPs.push(ip);
-      console.log(`✅ Added ${ip} to whitelist`);
+      console.log(`[SUCCESS] Added ${ip} to whitelist`);
     }
   }
   
@@ -466,7 +466,7 @@ class ProductionRateLimiter {
       // Store blacklist reason in Redis
       await this.redis.setex(`${this.options.keyPrefix}blacklist:${ip}`, 86400, reason);
       
-      console.log(`⛔ Added ${ip} to blacklist: ${reason}`);
+      console.log(`[BLOCKED] Added ${ip} to blacklist: ${reason}`);
     }
   }
   
@@ -478,7 +478,7 @@ class ProductionRateLimiter {
     if (index !== -1) {
       this.options.blacklistIPs.splice(index, 1);
       await this.redis.del(`${this.options.keyPrefix}blacklist:${ip}`);
-      console.log(`✅ Removed ${ip} from blacklist`);
+      console.log(`[SUCCESS] Removed ${ip} from blacklist`);
     }
   }
   
@@ -514,7 +514,7 @@ class ProductionRateLimiter {
       }
     }, this.options.cleanupInterval);
     
-    console.log('🧹 Rate limiter cleanup process started');
+    console.log('[BROOM] Rate limiter cleanup process started');
   }
   
   /**
@@ -563,7 +563,7 @@ class ProductionRateLimiter {
       const duration = Date.now() - startTime;
       
       if (cleanedKeys > 0) {
-        console.log(`🧹 Cleaned up ${cleanedKeys} expired rate limit keys in ${duration}ms`);
+        console.log(`[BROOM] Cleaned up ${cleanedKeys} expired rate limit keys in ${duration}ms`);
       }
       
     } catch (error) {
@@ -580,7 +580,7 @@ class ProductionRateLimiter {
     
     if (keys.length > 0) {
       await this.redis.del(...keys);
-      console.log(`🔄 Reset rate limits for IP: ${ip} (${keys.length} keys)`);
+      console.log(`[SYNC] Reset rate limits for IP: ${ip} (${keys.length} keys)`);
     }
   }
   
@@ -629,7 +629,7 @@ class ProductionRateLimiter {
    * Graceful shutdown
    */
   async close() {
-    console.log('🔌 Closing rate limiter...');
+    console.log('[POWER] Closing rate limiter...');
     
     // Save current stats to Redis for persistence
     await this.redis.setex(
@@ -639,7 +639,7 @@ class ProductionRateLimiter {
     );
     
     this.redis.disconnect();
-    console.log('✅ Rate limiter closed');
+    console.log('[SUCCESS] Rate limiter closed');
   }
 }
 

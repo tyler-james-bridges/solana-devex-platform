@@ -5,7 +5,7 @@
 const { Connection } = require('@solana/web3.js');
 const axios = require('axios');
 
-console.log('🔍 Testing Real Solana Network Data Integration...\n');
+console.log('[SEARCH] Testing Real Solana Network Data Integration...\n');
 
 async function testRealDataIntegration() {
   // Test 1: Direct RPC Connection
@@ -17,12 +17,12 @@ async function testRealDataIntegration() {
     const blockHeight = await connection.getBlockHeight();
     const epochInfo = await connection.getEpochInfo();
     
-    console.log(`   ✅ Current Slot: ${slot}`);
-    console.log(`   ✅ Block Height: ${blockHeight}`);
-    console.log(`   ✅ Current Epoch: ${epochInfo.epoch}`);
-    console.log(`   ✅ RPC Connection: WORKING\n`);
+    console.log(`   [SUCCESS] Current Slot: ${slot}`);
+    console.log(`   [SUCCESS] Block Height: ${blockHeight}`);
+    console.log(`   [SUCCESS] Current Epoch: ${epochInfo.epoch}`);
+    console.log(`   [SUCCESS] RPC Connection: WORKING\n`);
   } catch (error) {
-    console.log(`   ❌ RPC Connection Failed: ${error.message}\n`);
+    console.log(`   [ERROR] RPC Connection Failed: ${error.message}\n`);
   }
   
   // Test 2: Protocol Health Endpoints
@@ -44,14 +44,14 @@ async function testRealDataIntegration() {
       });
       const latency = Date.now() - startTime;
       
-      console.log(`   ✅ ${endpoint.name}: ${response.status} (${latency}ms)`);
+      console.log(`   [SUCCESS] ${endpoint.name}: ${response.status} (${latency}ms)`);
     } catch (error) {
       if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
-        console.log(`   ❌ ${endpoint.name}: Network error (${error.code})`);
+        console.log(`   [ERROR] ${endpoint.name}: Network error (${error.code})`);
       } else if (error.response) {
-        console.log(`   ⚠️  ${endpoint.name}: ${error.response.status} (endpoint exists but may not be healthy)`);
+        console.log(`   [WARNING]  ${endpoint.name}: ${error.response.status} (endpoint exists but may not be healthy)`);
       } else {
-        console.log(`   ❌ ${endpoint.name}: ${error.message}`);
+        console.log(`   [ERROR] ${endpoint.name}: ${error.message}`);
       }
     }
   }
@@ -67,23 +67,23 @@ async function testRealDataIntegration() {
     });
     
     const data = response.data;
-    console.log(`   ✅ API Response: ${response.status}`);
-    console.log(`   📊 Network Providers: ${Object.keys(data.network).length}`);
-    console.log(`   🔗 Protocols Monitored: ${data.protocols.length}`);
-    console.log(`   📈 AgentDEX Endpoints: ${data.agentdex ? data.agentdx.endpoints.length : 0}`);
+    console.log(`   [SUCCESS] API Response: ${response.status}`);
+    console.log(`   [INFO] Metrics Network Providers: ${Object.keys(data.network).length}`);
+    console.log(`   [LINK] Protocols Monitored: ${data.protocols.length}`);
+    console.log(`   [INFO] Analytics AgentDEX Endpoints: ${data.agentdex ? data.agentdx.endpoints.length : 0}`);
     
     // Check if we have real data
     if (Object.keys(data.network).length === 0) {
-      console.log('   ⚠️  No network data collected yet (monitoring may need more time)');
+      console.log('   [WARNING]  No network data collected yet (monitoring may need more time)');
     } else {
-      console.log('   ✅ Real network data is being collected!');
+      console.log('   [SUCCESS] Real network data is being collected!');
     }
   } catch (error) {
-    console.log(`   ❌ API Server Error: ${error.message}`);
+    console.log(`   [ERROR] API Server Error: ${error.message}`);
   }
   
   console.log('');
-  console.log('🔍 Real Data Integration Test Complete!');
+  console.log('[SEARCH] Real Data Integration Test Complete!');
   console.log('');
   console.log('Next Steps:');
   console.log('1. If RPC connection works: Real network data should be available');

@@ -113,7 +113,7 @@ class RealTimeProtocolMonitor extends EventEmitter {
           });
           this.connections.set(provider.name, connection);
           
-          console.log(`✅ Connected to ${provider.name} RPC (${network})`);
+          console.log(`[SUCCESS] Connected to ${provider.name} RPC (${network})`);
         }
         
         // Setup WebSocket connection for real-time updates
@@ -134,7 +134,7 @@ class RealTimeProtocolMonitor extends EventEmitter {
       const ws = new WebSocket(wsUrl);
       
       ws.on('open', () => {
-        console.log(`🔗 WebSocket connected: ${providerName}`);
+        console.log(`[LINK] WebSocket connected: ${providerName}`);
         
         // Subscribe to slot updates
         ws.send(JSON.stringify({
@@ -285,7 +285,7 @@ class RealTimeProtocolMonitor extends EventEmitter {
     if (this.isMonitoring) return;
     
     this.isMonitoring = true;
-    console.log('🚀 Starting real-time protocol monitoring...');
+    console.log('[INIT] Starting real-time protocol monitoring...');
 
     // Start network monitoring
     this.startNetworkMonitoring();
@@ -817,7 +817,7 @@ class RealTimeProtocolMonitor extends EventEmitter {
       timestamp: new Date().toISOString()
     });
 
-    console.log('🛑 Real-time monitoring stopped');
+    console.log('[STOP] Real-time monitoring stopped');
   }
 
   /**

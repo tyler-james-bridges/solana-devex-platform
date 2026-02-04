@@ -484,8 +484,8 @@ class RealCICDIntegration {
           
           // Parse test output (this would need to be adapted for different test frameworks)
           const testLines = testOutput.stdout.split('\n');
-          results.total = testLines.filter(line => line.includes('✓') || line.includes('✗')).length;
-          results.passed = testLines.filter(line => line.includes('✓')).length;
+          results.total = testLines.filter(line => line.includes('[CHECK]') || line.includes('✗')).length;
+          results.passed = testLines.filter(line => line.includes('[CHECK]')).length;
           results.failed = results.total - results.passed;
           
         } catch (testError) {

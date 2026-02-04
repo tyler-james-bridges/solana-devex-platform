@@ -113,7 +113,7 @@ class DeploymentAutomation extends EventEmitter {
     const anchorTomlPath = path.join(projectPath, 'Anchor.toml');
     try {
       await fs.access(anchorTomlPath);
-      this.log(deployment, 'info', '✓ Anchor.toml found');
+      this.log(deployment, 'info', '[CHECK] Anchor.toml found');
     } catch {
       throw new Error('Anchor.toml not found. This does not appear to be an Anchor project.');
     }
@@ -136,7 +136,7 @@ class DeploymentAutomation extends EventEmitter {
       }
       
       deployment.programs = programDirs;
-      this.log(deployment, 'info', `✓ Found ${programDirs.length} program(s): ${programDirs.join(', ')}`);
+      this.log(deployment, 'info', `[CHECK] Found ${programDirs.length} program(s): ${programDirs.join(', ')}`);
     } catch (error) {
       throw new Error(`Programs validation failed: ${error.message}`);
     }
@@ -147,7 +147,7 @@ class DeploymentAutomation extends EventEmitter {
       if (gitStatus.trim()) {
         this.log(deployment, 'warn', '⚠ Uncommitted changes detected in git repository');
       } else {
-        this.log(deployment, 'info', '✓ Git repository is clean');
+        this.log(deployment, 'info', '[CHECK] Git repository is clean');
       }
     } catch {
       this.log(deployment, 'warn', '⚠ Not a git repository or git not available');
@@ -177,14 +177,14 @@ class DeploymentAutomation extends EventEmitter {
       const buildTime = Date.now() - buildStartTime;
       deployment.metrics.buildTime = buildTime;
       
-      this.log(deployment, 'info', `✓ Build completed in ${buildTime}ms`);
+      this.log(deployment, 'info', `[CHECK] Build completed in ${buildTime}ms`);
       
       // Verify build outputs
       for (const program of deployment.programs) {
         const programBinary = path.join(projectPath, 'target', 'deploy', `${program.replace(/-/g, '_')}.so`);
         try {
           const stat = await fs.stat(programBinary);
-          this.log(deployment, 'info', `✓ Program binary exists: ${program} (${stat.size} bytes)`);
+          this.log(deployment, 'info', `[CHECK] Program binary exists: ${program} (${stat.size} bytes)`);
         } catch {
           throw new Error(`Program binary not found: ${program}`);
         }
@@ -215,19 +215,19 @@ class DeploymentAutomation extends EventEmitter {
       const rpcLatency = parseFloat(rpcTest) * 1000; // Convert to ms
       
       deployment.metrics.rpcLatency = rpcLatency;
-      this.log(deployment, 'info', `✓ RPC connectivity: ${network.rpc} (${rpcLatency.toFixed(2)}ms)`);
+      this.log(deployment, 'info', `[CHECK] RPC connectivity: ${network.rpc} (${rpcLatency.toFixed(2)}ms)`);
       
       // Test WebSocket connectivity (optional)
       try {
         // WebSocket test would go here
-        this.log(deployment, 'info', `✓ WebSocket connectivity: ${network.ws}`);
+        this.log(deployment, 'info', `[CHECK] WebSocket connectivity: ${network.ws}`);
       } catch {
         this.log(deployment, 'warn', '⚠ WebSocket connectivity test skipped');
       }
       
       // Configure Solana CLI for the network
       await execAsync(`solana config set --url ${network.rpc}`, { cwd: deployment.projectPath });
-      this.log(deployment, 'info', `✓ Solana CLI configured for ${deployment.network}`);
+      this.log(deployment, 'info', `[CHECK] Solana CLI configured for ${deployment.network}`);
       
     } catch (error) {
       throw new Error(`Network connectivity check failed: ${error.message}`);
@@ -248,14 +248,14 @@ class DeploymentAutomation extends EventEmitter {
       const walletAddress = walletInfo.trim();
       
       deployment.metrics.walletAddress = walletAddress;
-      this.log(deployment, 'info', `✓ Wallet address: ${walletAddress}`);
+      this.log(deployment, 'info', `[CHECK] Wallet address: ${walletAddress}`);
       
       // Check balance
       const { stdout: balanceInfo } = await execAsync('solana balance', { cwd: deployment.projectPath });
       const balance = parseFloat(balanceInfo.split(' ')[0]);
       
       deployment.metrics.walletBalance = balance;
-      this.log(deployment, 'info', `✓ Wallet balance: ${balance} SOL`);
+      this.log(deployment, 'info', `[CHECK] Wallet balance: ${balance} SOL`);
       
       // Check minimum balance requirements
       const minimumBalance = deployment.network === 'mainnet' ? 1.0 : 0.1;
@@ -265,7 +265,7 @@ class DeploymentAutomation extends EventEmitter {
           await execAsync('solana airdrop 2', { cwd: deployment.projectPath });
           const { stdout: newBalanceInfo } = await execAsync('solana balance', { cwd: deployment.projectPath });
           const newBalance = parseFloat(newBalanceInfo.split(' ')[0]);
-          this.log(deployment, 'info', `✓ Airdrop successful. New balance: ${newBalance} SOL`);
+          this.log(deployment, 'info', `[CHECK] Airdrop successful. New balance: ${newBalance} SOL`);
           deployment.metrics.walletBalance = newBalance;
         } else {
           throw new Error(`Insufficient balance: ${balance} SOL. Minimum required: ${minimumBalance} SOL`);
@@ -320,7 +320,7 @@ class DeploymentAutomation extends EventEmitter {
       if (grepResult.includes('private') || grepResult.includes('secret')) {
         this.log(deployment, 'warn', '⚠ Potential hardcoded keys detected. Review output carefully.');
       } else {
-        this.log(deployment, 'info', '✓ No hardcoded keys detected');
+        this.log(deployment, 'info', '[CHECK] No hardcoded keys detected');
       }
     } catch (error) {
       this.log(deployment, 'warn', '⚠ Security scan failed, continuing deployment');
@@ -353,7 +353,7 @@ class DeploymentAutomation extends EventEmitter {
       const programIds = this.extractProgramIds(deployOutput);
       deployment.programIds = programIds;
       
-      this.log(deployment, 'info', `✓ Deployment completed in ${deploymentTime}ms`);
+      this.log(deployment, 'info', `[CHECK] Deployment completed in ${deploymentTime}ms`);
       
       for (const [program, id] of Object.entries(programIds)) {
         this.log(deployment, 'info', `  ${program}: ${id}`);
@@ -383,11 +383,11 @@ class DeploymentAutomation extends EventEmitter {
           throw new Error(`Program ${program} (${programId}) not found on chain`);
         }
         
-        this.log(deployment, 'info', `✓ Program verified on chain: ${program} (${programId})`);
+        this.log(deployment, 'info', `[CHECK] Program verified on chain: ${program} (${programId})`);
         
         // Additional verification for executable programs
         if (accountInfo.includes('Executable: true')) {
-          this.log(deployment, 'info', `✓ Program is executable: ${program}`);
+          this.log(deployment, 'info', `[CHECK] Program is executable: ${program}`);
         }
         
       } catch (error) {
@@ -440,7 +440,7 @@ class DeploymentAutomation extends EventEmitter {
       }
       
       await fs.writeFile(anchorTomlPath, anchorToml);
-      this.log(deployment, 'info', '✓ Anchor.toml updated with program IDs');
+      this.log(deployment, 'info', '[CHECK] Anchor.toml updated with program IDs');
       
       // Generate deployment summary
       const summary = {
@@ -453,7 +453,7 @@ class DeploymentAutomation extends EventEmitter {
       
       const summaryPath = path.join(projectPath, `deployment-${network}-${Date.now()}.json`);
       await fs.writeFile(summaryPath, JSON.stringify(summary, null, 2));
-      this.log(deployment, 'info', `✓ Deployment summary saved: ${path.basename(summaryPath)}`);
+      this.log(deployment, 'info', `[CHECK] Deployment summary saved: ${path.basename(summaryPath)}`);
       
     } catch (error) {
       this.log(deployment, 'warn', `⚠ Registry update failed: ${error.message}`);

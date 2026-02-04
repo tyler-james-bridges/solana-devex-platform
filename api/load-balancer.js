@@ -67,14 +67,14 @@ class LoadBalancer extends EventEmitter {
       throw new Error('LoadBalancer can only run in master process');
     }
     
-    console.log('⚖️ Load balancer initialized');
+    console.log('[BALANCE]️ Load balancer initialized');
   }
   
   /**
    * Start the load balancer
    */
   start() {
-    console.log(`🚀 Starting load balancer with ${this.options.workers} workers`);
+    console.log(`[INIT] Starting load balancer with ${this.options.workers} workers`);
     
     // Spawn initial workers
     for (let i = 0; i < this.options.workers; i++) {
@@ -139,17 +139,17 @@ class LoadBalancer extends EventEmitter {
     
     worker.on('online', () => {
       workerInfo.status = 'online';
-      console.log(`✅ Worker ${workerId} (PID ${worker.process.pid}) online`);
+      console.log(`[SUCCESS] Worker ${workerId} (PID ${worker.process.pid}) online`);
     });
     
     worker.on('listening', () => {
       workerInfo.status = 'ready';
-      console.log(`🎧 Worker ${workerId} listening`);
+      console.log(`[AUDIO] Worker ${workerId} listening`);
     });
     
     worker.on('disconnect', () => {
       workerInfo.status = 'disconnected';
-      console.log(`🔌 Worker ${workerId} disconnected`);
+      console.log(`[POWER] Worker ${workerId} disconnected`);
     });
     
     worker.on('exit', (code, signal) => {
@@ -175,7 +175,7 @@ class LoadBalancer extends EventEmitter {
    */
   setupClusterEvents() {
     cluster.on('fork', (worker) => {
-      console.log(`🍴 Worker ${worker.id} forked`);
+      console.log(`[FORK] Worker ${worker.id} forked`);
     });
     
     cluster.on('online', (worker) => {
@@ -186,7 +186,7 @@ class LoadBalancer extends EventEmitter {
     });
     
     cluster.on('listening', (worker, address) => {
-      console.log(`👂 Worker ${worker.id} listening on ${address.address}:${address.port}`);
+      console.log(`[LISTEN] Worker ${worker.id} listening on ${address.address}:${address.port}`);
     });
     
     cluster.on('disconnect', (worker) => {
@@ -247,7 +247,7 @@ class LoadBalancer extends EventEmitter {
     const workerInfo = this.workers.get(workerId);
     if (!workerInfo) return;
     
-    console.log(`💀 Worker ${workerId} exited (code: ${code}, signal: ${signal})`);
+    console.log(`[DEAD] Worker ${workerId} exited (code: ${code}, signal: ${signal})`);
     
     // Check if we should restart the worker
     const shouldRestart = this.shouldRestartWorker(workerInfo, code, signal);
@@ -258,7 +258,7 @@ class LoadBalancer extends EventEmitter {
     this.updateActiveWorkerCount();
     
     if (shouldRestart) {
-      console.log(`🔄 Restarting worker ${workerId}`);
+      console.log(`[SYNC] Restarting worker ${workerId}`);
       workerInfo.restarts++;
       this.metrics.restarts++;
       
@@ -313,7 +313,7 @@ class LoadBalancer extends EventEmitter {
    * Start health monitoring
    */
   startHealthMonitoring() {
-    console.log('🏥 Starting worker health monitoring');
+    console.log('[HEALTH] Starting worker health monitoring');
     
     this.healthInterval = setInterval(() => {
       this.checkWorkerHealth();
@@ -338,7 +338,7 @@ class LoadBalancer extends EventEmitter {
         
         // Kill unresponsive worker
         if (timeSinceHeartbeat > timeout * 2) {
-          console.error(`💀 Killing unresponsive worker ${workerId}`);
+          console.error(`[DEAD] Killing unresponsive worker ${workerId}`);
           try {
             workerInfo.worker.kill('SIGTERM');
           } catch (error) {
@@ -356,7 +356,7 @@ class LoadBalancer extends EventEmitter {
    * Start auto-scaling
    */
   startAutoScaling() {
-    console.log('📈 Starting auto-scaling');
+    console.log('[INFO] Analytics Starting auto-scaling');
     
     this.scalingInterval = setInterval(() => {
       this.checkScaling();
@@ -400,7 +400,7 @@ class LoadBalancer extends EventEmitter {
     const newWorkerCount = Math.min(activeWorkers + 1, this.options.maxWorkers);
     
     if (newWorkerCount > activeWorkers) {
-      console.log(`📈 Scaling up: ${activeWorkers} → ${newWorkerCount} workers`);
+      console.log(`[INFO] Analytics Scaling up: ${activeWorkers} → ${newWorkerCount} workers`);
       
       this.scalingState.isScaling = true;
       this.scalingState.lastScale = Date.now();
@@ -431,7 +431,7 @@ class LoadBalancer extends EventEmitter {
     const newWorkerCount = Math.max(activeWorkers.length - 1, this.options.minWorkers);
     
     if (newWorkerCount < activeWorkers.length) {
-      console.log(`📉 Scaling down: ${activeWorkers.length} → ${newWorkerCount} workers`);
+      console.log(`[DOWN] Scaling down: ${activeWorkers.length} → ${newWorkerCount} workers`);
       
       this.scalingState.isScaling = true;
       this.scalingState.lastScale = Date.now();
@@ -700,7 +700,7 @@ class LoadBalancer extends EventEmitter {
    * Graceful shutdown
    */
   async shutdown() {
-    console.log('🔌 Shutting down load balancer...');
+    console.log('[POWER] Shutting down load balancer...');
     
     // Clear intervals
     if (this.healthInterval) clearInterval(this.healthInterval);
@@ -711,7 +711,7 @@ class LoadBalancer extends EventEmitter {
     const shutdownPromises = [];
     
     for (const [workerId, workerInfo] of this.workers.entries()) {
-      console.log(`📤 Shutting down worker ${workerId}`);
+      console.log(`[EXPORT] Shutting down worker ${workerId}`);
       
       const shutdownPromise = new Promise((resolve) => {
         const timeout = setTimeout(() => {
@@ -734,7 +734,7 @@ class LoadBalancer extends EventEmitter {
     
     await Promise.all(shutdownPromises);
     
-    console.log('✅ Load balancer shutdown complete');
+    console.log('[SUCCESS] Load balancer shutdown complete');
     this.emit('shutdown');
   }
 }

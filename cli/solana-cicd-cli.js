@@ -76,7 +76,7 @@ project
       if (result.success) {
         spinner.succeed(`Project created successfully at: ${result.projectPath}`);
         
-        console.log('\n' + chalk.green('📁 Project Structure:'));
+        console.log('\n' + chalk.green('[FOLDER] Project Structure:'));
         result.structure.slice(0, 20).forEach(item => {
           console.log(`  ${item}`);
         });
@@ -85,7 +85,7 @@ project
           console.log(`  ${chalk.gray(`... and ${result.structure.length - 20} more items`)}`);
         }
         
-        console.log('\n' + chalk.yellow('📋 Next Steps:'));
+        console.log('\n' + chalk.yellow('[CLIPBOARD] Next Steps:'));
         console.log(`  1. cd ${name}`);
         console.log(`  2. npm install`);
         console.log(`  3. anchor build`);
@@ -144,7 +144,7 @@ deploy
     console.log(banner);
     
     if (options.network === 'mainnet') {
-      console.log(chalk.red.bold('⚠️  MAINNET DEPLOYMENT WARNING'));
+      console.log(chalk.red.bold('[WARNING]  MAINNET DEPLOYMENT WARNING'));
       console.log(chalk.yellow('This will deploy to Solana mainnet with real SOL.'));
       
       const { confirm } = await inquirer.prompt([{
@@ -177,12 +177,12 @@ deploy
     
     deployment.on('deployment:completed', (result) => {
       spinner.succeed(`Deployment completed to ${options.network}`);
-      console.log('\n' + chalk.green('✅ Deployment Summary:'));
+      console.log('\n' + chalk.green('[SUCCESS] Deployment Summary:'));
       console.log(`   Network: ${result.network}`);
       console.log(`   Duration: ${result.endTime - result.startTime}ms`);
       console.log(`   Programs Deployed: ${Object.keys(result.programIds).length}`);
       
-      console.log('\n' + chalk.cyan('📋 Program IDs:'));
+      console.log('\n' + chalk.cyan('[CLIPBOARD] Program IDs:'));
       Object.entries(result.programIds).forEach(([program, id]) => {
         console.log(`   ${program}: ${id}`);
       });
@@ -190,7 +190,7 @@ deploy
     
     deployment.on('deployment:failed', ({ deployment, error }) => {
       spinner.fail(`Deployment failed: ${error.message}`);
-      console.log('\n' + chalk.red('❌ Deployment Logs:'));
+      console.log('\n' + chalk.red('[ERROR] Deployment Logs:'));
       deployment.logs.slice(-5).forEach(log => {
         console.log(`   [${log.level.toUpperCase()}] ${log.message}`);
       });
@@ -211,19 +211,19 @@ deploy
     if (deploymentId) {
       const status = deployment.getDeploymentStatus(deploymentId);
       if (status) {
-        console.log(chalk.cyan('📊 Deployment Status:'));
+        console.log(chalk.cyan('[INFO] Metrics Deployment Status:'));
         console.log(JSON.stringify(status, null, 2));
       } else {
-        console.log(chalk.red(`❌ Deployment not found: ${deploymentId}`));
+        console.log(chalk.red(`[ERROR] Deployment not found: ${deploymentId}`));
       }
     } else {
       const deployments = deployment.listDeployments();
       if (deployments.length === 0) {
-        console.log(chalk.yellow('📭 No deployments found'));
+        console.log(chalk.yellow('[EMPTY] No deployments found'));
       } else {
-        console.log(chalk.cyan('📋 Recent Deployments:'));
+        console.log(chalk.cyan('[CLIPBOARD] Recent Deployments:'));
         deployments.slice(-10).forEach(d => {
-          const status = d.status === 'completed' ? chalk.green('✓') : 
+          const status = d.status === 'completed' ? chalk.green('[CHECK]') : 
                         d.status === 'failed' ? chalk.red('✗') : chalk.yellow('⏳');
           console.log(`   ${status} ${d.id} - ${d.network} (${d.status})`);
         });
@@ -281,7 +281,7 @@ workflow
       
       spinner.succeed(`CI/CD workflows generated in ${options.output}`);
       
-      console.log('\n' + chalk.yellow('📋 Next Steps:'));
+      console.log('\n' + chalk.yellow('[CLIPBOARD] Next Steps:'));
       console.log('  1. Review the generated workflow files');
       console.log('  2. Configure GitHub secrets for deployment keys');
       console.log('  3. Push to GitHub to trigger the pipeline');
@@ -296,7 +296,7 @@ workflow
   .description('Display required GitHub secrets')
   .option('-n, --network <network>', 'Target network', 'all')
   .action(async (options) => {
-    console.log(chalk.cyan('🔐 Required GitHub Secrets:'));
+    console.log(chalk.cyan('[SECURITY] Required GitHub Secrets:'));
     
     const secrets = {
       all: [
@@ -324,10 +324,10 @@ workflow
     } else if (secrets[options.network]) {
       secrets[options.network].forEach(secret => console.log(`  • ${secret}`));
     } else {
-      console.log(chalk.red(`❌ Unknown network: ${options.network}`));
+      console.log(chalk.red(`[ERROR] Unknown network: ${options.network}`));
     }
     
-    console.log('\n' + chalk.gray('💡 Configure these in your GitHub repository: Settings → Secrets and variables → Actions'));
+    console.log('\n' + chalk.gray('[INFO] Configure these in your GitHub repository: Settings → Secrets and variables → Actions'));
   });
 
 /**
@@ -359,7 +359,7 @@ monitor
   .option('--json', 'Output as JSON')
   .action(async (options) => {
     // Metrics implementation would go here
-    console.log(chalk.cyan('📊 Deployment Metrics:'));
+    console.log(chalk.cyan('[INFO] Metrics Deployment Metrics:'));
     console.log('  Coming soon - deployment analytics and performance metrics');
   });
 
@@ -374,10 +374,10 @@ async function runProjectWizard(name) {
       message: 'What type of project do you want to create?',
       choices: [
         { name: '🔷 Basic - Simple Solana program', value: 'basic' },
-        { name: '💰 DeFi - Decentralized finance protocols', value: 'defi' },
+        { name: '[MONEY] DeFi - Decentralized finance protocols', value: 'defi' },
         { name: '🖼️  NFT - Non-fungible token projects', value: 'nft' },
         { name: '🏛️  DAO - Decentralized autonomous organization', value: 'dao' },
-        { name: '🤖 Agent - Trading and automation bots', value: 'agent' },
+        { name: '[BOT] Agent - Trading and automation bots', value: 'agent' },
         { name: '🎮 Gaming - Blockchain gaming projects', value: 'gaming' }
       ]
     },

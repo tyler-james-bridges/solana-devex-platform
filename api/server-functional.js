@@ -96,7 +96,7 @@ let realTimeMetrics = {
 
 // Start live monitoring and handle events
 liveMonitor.on('health_update', (healthData) => {
-  console.log('📊 Health update received');
+  console.log('[INFO] Metrics Health update received');
   
   // Update protocol health with real data
   if (healthData.protocols) {
@@ -125,7 +125,7 @@ liveMonitor.on('health_update', (healthData) => {
 });
 
 liveMonitor.on('monitoring_started', () => {
-  console.log('✅ Live monitoring started');
+  console.log('[SUCCESS] Live monitoring started');
 });
 
 liveMonitor.on('health_check_error', (error) => {
@@ -208,7 +208,7 @@ app.post('/api/tests/run',
       realTimeMetrics.successRate = (passedTests / results.length) * 100;
       realTimeMetrics.avgLatency = results.reduce((acc, r) => acc + (r.latency || 0), 0) / results.length;
       
-      console.log(`✅ Completed ${results.length} protocol tests, ${passedTests} passed`);
+      console.log(`[SUCCESS] Completed ${results.length} protocol tests, ${passedTests} passed`);
       
       // Broadcast update
       broadcastUpdate();
@@ -325,7 +325,7 @@ app.post('/api/pipelines/deploy',
         }
       }
       
-      console.log(`🚀 Deployment ${result.status}: ${name} to ${environment}`);
+      console.log(`[INIT] Deployment ${result.status}: ${name} to ${environment}`);
       broadcastUpdate();
       
     } catch (error) {
@@ -375,7 +375,7 @@ app.post('/api/projects/create',
       );
       
       if (result.success) {
-        console.log(`📁 Created project: ${name} at ${result.projectPath}`);
+        console.log(`[FOLDER] Created project: ${name} at ${result.projectPath}`);
         res.json({
           success: true,
           message: 'Project created successfully',
@@ -458,7 +458,7 @@ const wss = new WebSocket.Server({ server });
 let wsClients = new Set();
 
 wss.on('connection', (ws) => {
-  console.log('📡 Client connected to WebSocket');
+  console.log('[NETWORK] Client connected to WebSocket');
   wsClients.add(ws);
   
   // Send initial data
@@ -474,7 +474,7 @@ wss.on('connection', (ws) => {
   }));
   
   ws.on('close', () => {
-    console.log('📡 Client disconnected from WebSocket');
+    console.log('[NETWORK] Client disconnected from WebSocket');
     wsClients.delete(ws);
   });
   
@@ -531,33 +531,33 @@ app.use((req, res) => {
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received, shutting down gracefully');
+  console.log('[STOP] SIGTERM received, shutting down gracefully');
   
   liveMonitor.stopMonitoring();
   
   server.close(() => {
-    console.log('✅ HTTP server closed');
+    console.log('[SUCCESS] HTTP server closed');
     process.exit(0);
   });
 });
 
 process.on('SIGINT', () => {
-  console.log('🛑 SIGINT received, shutting down gracefully');
+  console.log('[STOP] SIGINT received, shutting down gracefully');
   
   liveMonitor.stopMonitoring();
   
   server.close(() => {
-    console.log('✅ HTTP server closed');
+    console.log('[SUCCESS] HTTP server closed');
     process.exit(0);
   });
 });
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Solana DevEx Platform API started on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Solana RPC: ${rpcEndpoint}`);
-  console.log(`⚡ Features: Real Testing ✅ | Live Monitoring ✅ | Functional CI/CD ✅`);
+  console.log(`[INIT] Solana DevEx Platform API started on port ${PORT}`);
+  console.log(`[INFO] Metrics Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`[LINK] Solana RPC: ${rpcEndpoint}`);
+  console.log(`[FAST] Features: Real Testing [SUCCESS] | Live Monitoring [SUCCESS] | Functional CI/CD [SUCCESS]`);
 });
 
 module.exports = { app, server };

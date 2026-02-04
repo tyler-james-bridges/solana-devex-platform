@@ -108,7 +108,7 @@ class ProductionDatabase {
       this.stats.errors++;
     });
     
-    console.log('📊 Database pools initialized');
+    console.log('[INFO] Metrics Database pools initialized');
   }
   
   /**
@@ -185,7 +185,7 @@ class ProductionDatabase {
         await this.createPartitions();
       }
       
-      console.log('✅ Database schema initialized');
+      console.log('[SUCCESS] Database schema initialized');
     } catch (error) {
       console.error('❌ Schema initialization failed:', error);
       throw error;
@@ -229,7 +229,7 @@ class ProductionDatabase {
       }
     }
     
-    console.log('📈 Database indexes created');
+    console.log('[INFO] Analytics Database indexes created');
   }
   
   /**
@@ -267,7 +267,7 @@ class ProductionDatabase {
       }
     }
     
-    console.log('🗂️ Database partitions created');
+    console.log('[FOLDER] Database partitions created');
   }
   
   /**
@@ -569,7 +569,7 @@ class ProductionDatabase {
       this.flushEventsBatch();
     }, this.options.batchTimeout);
     
-    console.log('🔄 Batch processing started');
+    console.log('[SYNC] Batch processing started');
   }
   
   /**
@@ -612,7 +612,7 @@ class ProductionDatabase {
         this.stats.batchesProcessed++;
         
         const duration = Date.now() - startTime;
-        console.log(`📊 Flushed ${batch.length} metrics in ${duration}ms`);
+        console.log(`[INFO] Metrics Flushed ${batch.length} metrics in ${duration}ms`);
         
       } finally {
         client.release();
@@ -679,7 +679,7 @@ class ProductionDatabase {
       this.optimizeTables();
     }, 6 * 60 * 60 * 1000);
     
-    console.log('🧹 Maintenance tasks started');
+    console.log('[BROOM] Maintenance tasks started');
   }
   
   /**
@@ -711,7 +711,7 @@ class ProductionDatabase {
         WHERE timestamp < $1
       `, [cutoffDate.toISOString()]);
       
-      console.log(`🗑️ Cleaned up data older than ${this.options.retentionDays} days`);
+      console.log(`[CLEANUP]️ Cleaned up data older than ${this.options.retentionDays} days`);
       
     } catch (error) {
       console.error('Data cleanup failed:', error);
@@ -743,7 +743,7 @@ class ProductionDatabase {
     for (const table of tables) {
       try {
         await this.executeQuery(`VACUUM ANALYZE ${table}`);
-        console.log(`🔧 Optimized table: ${table}`);
+        console.log(`[CONFIG] Optimized table: ${table}`);
       } catch (error) {
         console.warn(`Failed to vacuum table ${table}:`, error.message);
       }
@@ -815,7 +815,7 @@ class ProductionDatabase {
    * Graceful shutdown
    */
   async close() {
-    console.log('🔌 Closing database connections...');
+    console.log('[POWER] Closing database connections...');
     
     // Flush remaining batches
     await this.flushMetricsBatch();
@@ -828,7 +828,7 @@ class ProductionDatabase {
     // Close Redis
     this.redis.disconnect();
     
-    console.log('✅ Database connections closed');
+    console.log('[SUCCESS] Database connections closed');
   }
 }
 

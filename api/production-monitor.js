@@ -96,7 +96,7 @@ class ProductionMonitor extends EventEmitter {
     // Start processing
     this.startProcessing();
     
-    console.log('📊 Production monitor initialized');
+    console.log('[INFO] Metrics Production monitor initialized');
   }
   
   /**
@@ -127,7 +127,7 @@ class ProductionMonitor extends EventEmitter {
     if (this.isMonitoring) return;
     
     this.isMonitoring = true;
-    console.log('🚀 Starting production monitoring...');
+    console.log('[INIT] Starting production monitoring...');
     
     // Start network monitoring
     for (const [network, connection] of this.connections.entries()) {
@@ -158,7 +158,7 @@ class ProductionMonitor extends EventEmitter {
    * Network monitoring with WebSocket subscriptions
    */
   async startNetworkMonitoring(network, connection) {
-    console.log(`📡 Starting ${network} network monitoring`);
+    console.log(`[NETWORK] Starting ${network} network monitoring`);
     
     const networkState = {
       latency: new MetricsBuffer(1000),
@@ -265,7 +265,7 @@ class ProductionMonitor extends EventEmitter {
    * Protocol-specific monitoring
    */
   async startProtocolMonitoring(protocol) {
-    console.log(`🔍 Starting ${protocol} protocol monitoring`);
+    console.log(`[SEARCH] Starting ${protocol} protocol monitoring`);
     
     const protocolConfig = this.getProtocolConfig(protocol);
     if (!protocolConfig) {
@@ -335,7 +335,7 @@ class ProductionMonitor extends EventEmitter {
    * System resource monitoring
    */
   startSystemMonitoring() {
-    console.log('💻 Starting system monitoring');
+    console.log('[DESKTOP] Starting system monitoring');
     
     const systemState = {
       memory: new MetricsBuffer(1000),
@@ -452,7 +452,7 @@ class ProductionMonitor extends EventEmitter {
     testJob.startedAt = Date.now();
     this.testExecutor.running.set(testJob.id, testJob);
     
-    console.log(`🧪 Starting test: ${testJob.id} (${testJob.protocols.join(', ')})`);
+    console.log(`[TEST] Starting test: ${testJob.id} (${testJob.protocols.join(', ')})`);
     
     // Execute test asynchronously
     this.executeTest(testJob).finally(() => {
@@ -516,7 +516,7 @@ class ProductionMonitor extends EventEmitter {
         timestamp: Date.now()
       });
       
-      console.log(`✅ Test completed: ${testJob.id} - ${overallStatus} (${testJob.duration}ms)`);
+      console.log(`[SUCCESS] Test completed: ${testJob.id} - ${overallStatus} (${testJob.duration}ms)`);
       
     } catch (error) {
       console.error(`❌ Test execution failed: ${testJob.id}`, error);
@@ -755,7 +755,7 @@ class ProductionMonitor extends EventEmitter {
    * Graceful shutdown
    */
   async close() {
-    console.log('🔌 Closing production monitor...');
+    console.log('[POWER] Closing production monitor...');
     
     this.isMonitoring = false;
     
@@ -776,7 +776,7 @@ class ProductionMonitor extends EventEmitter {
     // Wait for running tests to complete
     const runningTests = Array.from(this.testExecutor.running.values());
     if (runningTests.length > 0) {
-      console.log(`⏳ Waiting for ${runningTests.length} tests to complete...`);
+      console.log(`[WAITING] Waiting for ${runningTests.length} tests to complete...`);
       await Promise.allSettled(runningTests.map(test => 
         new Promise(resolve => {
           const checkCompletion = () => {
@@ -791,7 +791,7 @@ class ProductionMonitor extends EventEmitter {
       ));
     }
     
-    console.log('✅ Production monitor closed');
+    console.log('[SUCCESS] Production monitor closed');
   }
   
   // Protocol configuration and test implementations
@@ -932,7 +932,7 @@ class ProductionMonitor extends EventEmitter {
   
   startPredictiveMonitoring() {
     // Simplified predictive monitoring
-    console.log('🔮 Starting predictive monitoring');
+    console.log('[PREDICT] Starting predictive monitoring');
   }
 }
 

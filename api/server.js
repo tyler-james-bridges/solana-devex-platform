@@ -54,7 +54,7 @@ const authMiddleware = (req, res, next) => {
   
   // SECURITY PATCH: Auth required in production
   if (!process.env.API_KEY) {
-    console.error('🚨 SECURITY: API_KEY environment variable required');
+    console.error('[SECURITY] SECURITY: API_KEY environment variable required');
     return res.status(503).json({ 
       error: 'Service unavailable',
       message: 'API_KEY configuration required' 
@@ -134,11 +134,11 @@ liveMonitor.on('health_update', (healthData) => {
 });
 
 liveMonitor.on('monitoring_started', () => {
-  console.log('✅ Live monitoring started');
+  console.log('[OK] Live monitoring started');
 });
 
 liveMonitor.on('health_check_error', (error) => {
-  console.error('❌ Health check error:', error.message);
+  console.error('[ERROR] Health check error:', error.message);
 });
 
 // Start monitoring
@@ -419,12 +419,6 @@ app.post('/api/pipelines/deploy',
   };
   
   simulateDeployment();
-  
-  res.json({
-    message: 'Deployment started',
-    deploymentId: deploymentId,
-    deployment: deployment
-  });
 });
 
 // Real-time metrics
@@ -590,12 +584,12 @@ initializeMockData();
 setInterval(() => {
   if (testResults.length > 100) {
     testResults = testResults.slice(-100);
-    console.log('🧹 Cleaned old test results');
+    console.log('[CLEANUP] Cleaned old test results');
   }
   
   if (deployments.length > 50) {
     deployments = deployments.slice(-50);
-    console.log('🧹 Cleaned old deployment records');
+    console.log('[CLEANUP] Cleaned old deployment records');
   }
   
   // Clean disconnected WebSocket clients

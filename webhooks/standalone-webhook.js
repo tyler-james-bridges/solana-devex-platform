@@ -199,7 +199,7 @@ class StandaloneWebhook {
         }
       );
 
-      console.log(`✅ Forwarded ${eventType} to CI/CD system`);
+      console.log(`[SUCCESS] Forwarded ${eventType} to CI/CD system`);
       return response.data;
 
     } catch (error) {
@@ -222,7 +222,7 @@ class StandaloneWebhook {
       sender: data.sender?.login
     };
 
-    console.log(`📝 Webhook log:`, JSON.stringify(logEntry, null, 2));
+    console.log(`[LOG] Webhook log:`, JSON.stringify(logEntry, null, 2));
 
     // Could also write to a file or send to a logging service
     // fs.appendFileSync('webhook.log', JSON.stringify(logEntry) + '\n');
@@ -230,29 +230,29 @@ class StandaloneWebhook {
 
   start() {
     this.app.listen(this.port, () => {
-      console.log(`\n🚀 Standalone Webhook Handler started!`);
-      console.log(`📡 Project: ${this.projectName}`);
-      console.log(`🌍 Port: ${this.port}`);
-      console.log(`🔗 CI/CD Server: ${this.cicdServerUrl}`);
-      console.log(`🔒 Webhook Secret: ${this.webhookSecret ? 'Configured' : 'Not configured'}`);
-      console.log('\n📋 Endpoints:');
+      console.log(`\n[INIT] Standalone Webhook Handler started!`);
+      console.log(`[NETWORK] Project: ${this.projectName}`);
+      console.log(`[GLOBAL] Port: ${this.port}`);
+      console.log(`[LINK] CI/CD Server: ${this.cicdServerUrl}`);
+      console.log(`[LOCK] Webhook Secret: ${this.webhookSecret ? 'Configured' : 'Not configured'}`);
+      console.log('\n[CLIPBOARD] Endpoints:');
       console.log(`   GitHub: http://localhost:${this.port}/webhook/github`);
       console.log(`   Generic: http://localhost:${this.port}/webhook/generic`);
       console.log(`   Health: http://localhost:${this.port}/health`);
       console.log(`   Status: http://localhost:${this.port}/status`);
       console.log(`   Config: http://localhost:${this.port}/config`);
-      console.log('\n⚡ Ready to receive webhooks!');
+      console.log('\n[FAST] Ready to receive webhooks!');
       console.log('');
     });
 
     // Graceful shutdown
     process.on('SIGINT', () => {
-      console.log('\n🛑 Shutting down webhook handler...');
+      console.log('\n[STOP] Shutting down webhook handler...');
       process.exit(0);
     });
 
     process.on('SIGTERM', () => {
-      console.log('\n🛑 Shutting down webhook handler...');
+      console.log('\n[STOP] Shutting down webhook handler...');
       process.exit(0);
     });
 
@@ -381,7 +381,7 @@ name = "webhook"
     files.forEach(([filename, content]) => {
       const filePath = path.join(projectPath, filename);
       fs.writeFileSync(filePath, content);
-      console.log(`✅ Created ${filename}`);
+      console.log(`[SUCCESS] Created ${filename}`);
     });
 
     // Create README
@@ -457,10 +457,10 @@ Ready to use with Makora, SOLPRISM, or any project!
 `;
 
     fs.writeFileSync(path.join(projectPath, 'README.md'), readme);
-    console.log(`✅ Created README.md`);
+    console.log(`[SUCCESS] Created README.md`);
 
-    console.log(`\n🎉 Deployment files created in ${projectPath}`);
-    console.log('📋 Next steps:');
+    console.log(`\n[SUCCESS] Deployment files created in ${projectPath}`);
+    console.log('[CLIPBOARD] Next steps:');
     console.log('1. Run: npm install');
     console.log('2. Copy: cp .env.example .env');
     console.log('3. Edit: .env with your settings');

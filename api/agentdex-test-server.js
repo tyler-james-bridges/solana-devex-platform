@@ -20,7 +20,7 @@ const agentdxMonitor = new AgentDEXMonitor({
   monitoringInterval: 10000, // 10 seconds for testing
 });
 
-console.log('🚀 Initializing AgentDEX monitor...');
+console.log('[INIT] Initializing AgentDEX monitor...');
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -93,7 +93,7 @@ app.post('/api/agentdx/monitoring/:action', async (req, res) => {
   try {
     if (action === 'start') {
       await agentdxMonitor.startMonitoring();
-      console.log('✅ AgentDEX monitoring started');
+      console.log('[SUCCESS] AgentDEX monitoring started');
       res.json({
         message: 'AgentDEX monitoring started',
         status: 'monitoring',
@@ -101,7 +101,7 @@ app.post('/api/agentdx/monitoring/:action', async (req, res) => {
       });
     } else if (action === 'stop') {
       agentdxMonitor.stopMonitoring();
-      console.log('⏹️ AgentDEX monitoring stopped');
+      console.log('[STOP] AgentDEX monitoring stopped');
       res.json({
         message: 'AgentDEX monitoring stopped',
         status: 'stopped',
@@ -121,45 +121,45 @@ app.post('/api/agentdx/monitoring/:action', async (req, res) => {
 
 // AgentDEX monitor event handlers
 agentdxMonitor.on('monitoring-started', (data) => {
-  console.log('🚀 AgentDEX monitoring started - 13 endpoints');
+  console.log('[INIT] AgentDEX monitoring started - 13 endpoints');
 });
 
 agentdxMonitor.on('monitoring-stopped', (data) => {
-  console.log('⏹️ AgentDEX monitoring stopped');
+  console.log('[STOP] AgentDEX monitoring stopped');
 });
 
 agentdxMonitor.on('agentdx-metrics', (data) => {
-  console.log(`📊 AgentDEX metrics - ${data.aggregated.healthyEndpoints}/${data.aggregated.totalEndpoints} healthy`);
+  console.log(`[INFO] Metrics AgentDEX metrics - ${data.aggregated.healthyEndpoints}/${data.aggregated.totalEndpoints} healthy`);
 });
 
 agentdxMonitor.on('endpoint-checked', (data) => {
-  console.log(`🔍 ${data.endpoint}: ${data.metrics.status} (${data.metrics.responseTime.toFixed(0)}ms)`);
+  console.log(`[SEARCH] ${data.endpoint}: ${data.metrics.status} (${data.metrics.responseTime.toFixed(0)}ms)`);
 });
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 AgentDEX Test Server running on port ${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}/api/dashboard/data`);
-  console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
-  console.log(`🎯 AgentDEX Metrics: http://localhost:${PORT}/api/agentdx/metrics`);
-  console.log(`🔧 Start monitoring: curl -X POST http://localhost:${PORT}/api/agentdx/monitoring/start`);
+  console.log(`[INIT] AgentDEX Test Server running on port ${PORT}`);
+  console.log(`[INFO] Metrics Dashboard: http://localhost:${PORT}/api/dashboard/data`);
+  console.log(`[HEALTH] Health: http://localhost:${PORT}/api/health`);
+  console.log(`[TARGET] AgentDEX Metrics: http://localhost:${PORT}/api/agentdx/metrics`);
+  console.log(`[CONFIG] Start monitoring: curl -X POST http://localhost:${PORT}/api/agentdx/monitoring/start`);
   
   // Auto-start monitoring for demo
   setTimeout(() => {
-    console.log('🚀 Auto-starting AgentDEX monitoring...');
+    console.log('[INIT] Auto-starting AgentDEX monitoring...');
     agentdxMonitor.startMonitoring().catch(console.error);
   }, 2000);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🔄 Shutting down gracefully...');
+  console.log('[SYNC] Shutting down gracefully...');
   agentdxMonitor.stopMonitoring();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('\\n🔄 Shutting down gracefully...');
+  console.log('\\n[SYNC] Shutting down gracefully...');
   agentdxMonitor.stopMonitoring();
   process.exit(0);
 });

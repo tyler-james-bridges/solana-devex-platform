@@ -122,7 +122,7 @@ class ProtocolHealthMonitor extends EventEmitter {
     }
 
     this.isMonitoring = true;
-    console.log('🔄 Starting comprehensive protocol health monitoring...');
+    console.log('[SYNC] Starting comprehensive protocol health monitoring...');
 
     // Start monitoring each protocol
     for (const [protocolName, protocolConfig] of Object.entries(this.protocols)) {
@@ -137,7 +137,7 @@ class ProtocolHealthMonitor extends EventEmitter {
       timestamp: new Date().toISOString()
     });
 
-    console.log('✅ Protocol health monitoring started');
+    console.log('[SUCCESS] Protocol health monitoring started');
   }
 
   /**
@@ -149,7 +149,7 @@ class ProtocolHealthMonitor extends EventEmitter {
     }
 
     this.isMonitoring = false;
-    console.log('⏹️ Stopping protocol health monitoring...');
+    console.log('[STOP] Stopping protocol health monitoring...');
 
     // Clear all intervals
     this.monitoringIntervals.forEach((interval, protocol) => {
@@ -199,7 +199,7 @@ class ProtocolHealthMonitor extends EventEmitter {
     uptimeData.totalChecks++;
 
     try {
-      console.log(`🔍 Checking ${protocolConfig.name} health...`);
+      console.log(`[SEARCH] Checking ${protocolConfig.name} health...`);
 
       // Check API endpoints
       const endpointResults = await this.checkApiEndpoints(protocolName, protocolConfig);

@@ -94,21 +94,21 @@ class ProductionSolanaProtocolTester {
   async initialize() {
     if (this.isInitialized) return;
     
-    console.log('🚀 Initializing Production Solana Protocol Testing Environment...');
+    console.log('[INIT] Initializing Production Solana Protocol Testing Environment...');
     
     try {
       if (this.options.realNetwork) {
         // Connect to real Solana network
         this.connection = new Connection('https://api.devnet.solana.com', 'confirmed');
-        console.log('🌐 Connected to Solana Devnet');
+        console.log('[WEB] Connected to Solana Devnet');
       } else {
         // Use mock environment for fast testing
         this.mockSVM = new MockLiteSVM();
         this.connection = new Connection('http://localhost:8899', 'confirmed');
-        console.log('⚡ Using Mock SVM for fast testing');
+        console.log('[FAST] Using Mock SVM for fast testing');
       }
 
-      console.log('✅ Testing Environment Ready');
+      console.log('[SUCCESS] Testing Environment Ready');
       this.isInitialized = true;
       
     } catch (error) {
@@ -121,7 +121,7 @@ class ProductionSolanaProtocolTester {
    * Run Comprehensive Protocol Test Suite
    */
   async runProtocolTests(protocols = ['jupiter', 'raydium', 'kamino', 'drift', 'marinade']) {
-    console.log('🧪 Starting Comprehensive Protocol Testing...');
+    console.log('[TEST] Starting Comprehensive Protocol Testing...');
     
     await this.initialize();
     const startTime = Date.now();
@@ -151,7 +151,7 @@ class ProductionSolanaProtocolTester {
       
       // Run protocol tests
       for (const protocol of protocols) {
-        console.log(`\n🔬 Testing ${protocol.toUpperCase()} Protocol...`);
+        console.log(`\n[TEST] Testing ${protocol.toUpperCase()} Protocol...`);
         
         try {
           const protocolResult = await this.runProtocolTest(protocol, testWallet);
@@ -189,10 +189,10 @@ class ProductionSolanaProtocolTester {
       results.summary.duration = Date.now() - startTime;
       results.summary.testVelocity = this.calculateTestVelocity(results);
       
-      console.log(`\n🎯 Testing Complete:`);
-      console.log(`   ✅ Passed: ${results.summary.passed}/${results.summary.total}`);
-      console.log(`   ⏱️  Duration: ${results.summary.duration}ms`);
-      console.log(`   🚀 Velocity: ${results.summary.testVelocity.toFixed(2)} tests/sec`);
+      console.log(`\n[TARGET] Testing Complete:`);
+      console.log(`   [SUCCESS] Passed: ${results.summary.passed}/${results.summary.total}`);
+      console.log(`   [TIMING]  Duration: ${results.summary.duration}ms`);
+      console.log(`   [INIT] Velocity: ${results.summary.testVelocity.toFixed(2)} tests/sec`);
       
       return results;
       
@@ -258,7 +258,7 @@ class ProductionSolanaProtocolTester {
    * Test Jupiter Protocol - Real swap functionality
    */
   async testJupiterProtocol(testWallet) {
-    console.log('🪐 Testing Jupiter V6 Swap Protocol...');
+    console.log('[SATURN] Testing Jupiter V6 Swap Protocol...');
     
     const tests = [];
     const transactions = [];
@@ -326,7 +326,7 @@ class ProductionSolanaProtocolTester {
    * Test Raydium Protocol - AMM functionality
    */
   async testRaydiumProtocol(testWallet) {
-    console.log('🌊 Testing Raydium AMM Protocol...');
+    console.log('[WAVE] Testing Raydium AMM Protocol...');
     
     const tests = [];
     const transactions = [];
@@ -389,7 +389,7 @@ class ProductionSolanaProtocolTester {
    * Test Kamino Protocol - Lending functionality
    */
   async testKaminoProtocol(testWallet) {
-    console.log('💰 Testing Kamino Lending Protocol...');
+    console.log('[MONEY] Testing Kamino Lending Protocol...');
     
     const tests = [];
     
@@ -446,7 +446,7 @@ class ProductionSolanaProtocolTester {
    * Test Drift Protocol - Perpetuals
    */
   async testDriftProtocol(testWallet) {
-    console.log('⚡ Testing Drift Perpetuals Protocol...');
+    console.log('[FAST] Testing Drift Perpetuals Protocol...');
     
     const tests = [];
     
@@ -485,7 +485,7 @@ class ProductionSolanaProtocolTester {
    * Test Marinade Protocol - Liquid Staking
    */
   async testMarinadeProtocol(testWallet) {
-    console.log('🌊 Testing Marinade Liquid Staking...');
+    console.log('[WAVE] Testing Marinade Liquid Staking...');
     
     const tests = [];
     
@@ -528,14 +528,14 @@ class ProductionSolanaProtocolTester {
     
     try {
       if (this.options.verbose) {
-        console.log(`   🧪 Running: ${testName}`);
+        console.log(`   [TEST] Running: ${testName}`);
       }
       
       const result = await testFunction();
       const duration = Date.now() - startTime;
       
       if (this.options.verbose) {
-        console.log(`   ✅ ${testName} (${duration}ms)`);
+        console.log(`   [SUCCESS] ${testName} (${duration}ms)`);
       }
       
       return {
@@ -549,7 +549,7 @@ class ProductionSolanaProtocolTester {
       const duration = Date.now() - startTime;
       
       if (this.options.verbose) {
-        console.log(`   ❌ ${testName} failed: ${error.message} (${duration}ms)`);
+        console.log(`   [ERROR] ${testName} failed: ${error.message} (${duration}ms)`);
       }
       
       return {
@@ -573,7 +573,7 @@ class ProductionSolanaProtocolTester {
       const txId = crypto.randomBytes(32).toString('hex');
       
       if (this.options.verbose) {
-        console.log(`     📜 Transaction simulated: ${txId.substring(0, 8)}...`);
+        console.log(`     [SCROLL] Transaction simulated: ${txId.substring(0, 8)}...`);
       }
       
       return txId;
@@ -721,7 +721,7 @@ class ProductionSolanaProtocolTester {
       const report = this.generateTestReport(results);
       await fs.writeFile(filepath, JSON.stringify(report, null, 2));
       
-      console.log(`📊 Test results saved to: ${filepath}`);
+      console.log(`[INFO] Metrics Test results saved to: ${filepath}`);
       
       // Also save latest results
       const latestPath = path.join(outputDir, 'latest-results.json');
@@ -775,7 +775,7 @@ class ProductionSolanaProtocolTester {
     this.mockSVM = null;
     this.connection = null;
     this.isInitialized = false;
-    console.log('🧹 Cleanup completed');
+    console.log('[BROOM] Cleanup completed');
   }
 }
 
@@ -789,17 +789,17 @@ if (require.main === module) {
     coverage: true
   });
 
-  console.log('🚀 Production Solana Protocol Tester - Starting Tests...\n');
+  console.log('[INIT] Production Solana Protocol Tester - Starting Tests...\n');
 
   tester.runProtocolTests()
     .then(results => {
-      console.log('\n🎯 Final Results:', JSON.stringify(results.summary, null, 2));
+      console.log('\n[TARGET] Final Results:', JSON.stringify(results.summary, null, 2));
       return tester.saveResults(results);
     })
     .then(filepath => {
-      console.log(`\n📄 Results saved to: ${filepath}`);
-      console.log('\n🎉 PRODUCTION TESTING INFRASTRUCTURE READY!');
-      console.log('✅ Use this for CloddsBot (103 skills), Makora (3 programs), SOLPRISM');
+      console.log(`\n[FILE] Results saved to: ${filepath}`);
+      console.log('\n[SUCCESS] PRODUCTION TESTING INFRASTRUCTURE READY!');
+      console.log('[SUCCESS] Use this for CloddsBot (103 skills), Makora (3 programs), SOLPRISM');
       process.exit(0);
     })
     .catch(error => {

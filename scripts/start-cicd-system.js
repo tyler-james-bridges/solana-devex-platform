@@ -24,18 +24,18 @@ class CICDSystemStarter {
   }
 
   async start() {
-    console.log('🚀 Starting Real CI/CD Integration System Setup...\n');
+    console.log('[INIT] Starting Real CI/CD Integration System Setup...\n');
     
     try {
       // Check if configuration already exists
       const configExists = await this.checkExistingConfig();
       
       if (!configExists) {
-        console.log('📝 Setting up CI/CD configuration...\n');
+        console.log('[LOG] Setting up CI/CD configuration...\n');
         await this.collectConfiguration();
         await this.saveConfiguration();
       } else {
-        console.log('📄 Loading existing configuration...\n');
+        console.log('[FILE] Loading existing configuration...\n');
         await this.loadConfiguration();
       }
       
@@ -77,7 +77,7 @@ class CICDSystemStarter {
         }
       }
       
-      console.log('✅ Configuration loaded successfully');
+      console.log('[SUCCESS] Configuration loaded successfully');
     } catch (error) {
       throw new Error(`Failed to load configuration: ${error.message}`);
     }
@@ -88,7 +88,7 @@ class CICDSystemStarter {
     console.log('You can leave fields blank to configure them later.\n');
 
     // GitHub Configuration
-    console.log('🔧 GitHub Integration:');
+    console.log('[CONFIG] GitHub Integration:');
     this.config.GITHUB_TOKEN = await this.promptInput(
       'GitHub Personal Access Token (repo, admin:repo_hook permissions): ',
       'Optional - needed for webhook management and status updates'
@@ -100,7 +100,7 @@ class CICDSystemStarter {
     ) || this.generateWebhookSecret();
 
     // Deployment Platform APIs
-    console.log('\n🚀 Deployment Platform APIs:');
+    console.log('\n[INIT] Deployment Platform APIs:');
     this.config.VERCEL_TOKEN = await this.promptInput(
       'Vercel API Token: ',
       'Optional - for Vercel deployment monitoring'
@@ -117,7 +117,7 @@ class CICDSystemStarter {
     );
 
     // Server Configuration
-    console.log('\n🌐 Server Configuration:');
+    console.log('\n[WEB] Server Configuration:');
     this.config.CICD_PORT = await this.promptInput('CI/CD Server Port (default 3001): ', '') || '3001';
     
     this.config.PUBLIC_URL = await this.promptInput(
@@ -131,7 +131,7 @@ class CICDSystemStarter {
     ) || this.config.PUBLIC_URL;
 
     // Notification Configuration
-    console.log('\n📢 Notifications (Optional):');
+    console.log('\n[ANNOUNCE] Notifications (Optional):');
     this.config.DISCORD_WEBHOOK_URL = await this.promptInput(
       'Discord Webhook URL: ',
       'Optional - for build/deployment notifications'
@@ -186,11 +186,11 @@ NODE_ENV=production
 `;
 
     await fs.writeFile(this.configPath, configContent);
-    console.log(`✅ Configuration saved to ${this.configPath}`);
+    console.log(`[SUCCESS] Configuration saved to ${this.configPath}`);
   }
 
   async installDependencies() {
-    console.log('\n📦 Installing CI/CD dependencies...');
+    console.log('\n[PACKAGE] Installing CI/CD dependencies...');
     
     const requiredPackages = [
       '@octokit/rest',
@@ -223,7 +223,7 @@ NODE_ENV=production
         await execAsync('npm install', { cwd: apiDir });
       }
       
-      console.log('✅ Dependencies installed');
+      console.log('[SUCCESS] Dependencies installed');
     } catch (error) {
       console.warn('⚠️  Could not auto-install dependencies:', error.message);
       console.log('Please run manually: cd api && npm install');
@@ -231,7 +231,7 @@ NODE_ENV=production
   }
 
   async startCICDServer() {
-    console.log('\n🚀 Starting CI/CD Integration Server...');
+    console.log('\n[INIT] Starting CI/CD Integration Server...');
     
     const serverScript = `
 const RealCICDIntegration = require('./real-cicd-integration');
@@ -241,15 +241,15 @@ const path = require('path');
 // Load CI/CD configuration
 dotenv.config({ path: path.join(__dirname, '..', '.env.cicd') });
 
-console.log('🔧 CI/CD Integration Server Starting...');
-console.log('📊 Dashboard will be available at:', process.env.DASHBOARD_URL || 'http://localhost:3000');
-console.log('🔗 Webhook endpoint:', process.env.PUBLIC_URL + '/api/webhooks/github');
+console.log('[CONFIG] CI/CD Integration Server Starting...');
+console.log('[INFO] Metrics Dashboard will be available at:', process.env.DASHBOARD_URL || 'http://localhost:3000');
+console.log('[LINK] Webhook endpoint:', process.env.PUBLIC_URL + '/api/webhooks/github');
 console.log('');
 
 const cicd = new RealCICDIntegration();
 
 process.on('SIGINT', () => {
-  console.log('\\n🛑 Shutting down CI/CD Integration Server...');
+  console.log('\\n[STOP] Shutting down CI/CD Integration Server...');
   process.exit(0);
 });
 
@@ -274,8 +274,8 @@ process.on('unhandledRejection', (reason, promise) => {
       }
     });
     
-    console.log('✅ Server script created');
-    console.log(`📂 Starting server from: ${serverPath}`);
+    console.log('[SUCCESS] Server script created');
+    console.log(`[FOLDER] Starting server from: ${serverPath}`);
     
     // Start the server
     const serverProcess = spawn('node', [serverPath], {
@@ -291,12 +291,12 @@ process.on('unhandledRejection', (reason, promise) => {
     // Give server time to start
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    console.log('✅ CI/CD Integration Server is running!');
+    console.log('[SUCCESS] CI/CD Integration Server is running!');
   }
 
   displayUsageInfo() {
-    console.log('\n🎉 CI/CD Integration System is ready!');
-    console.log('\n📋 Next Steps:');
+    console.log('\n[SUCCESS] CI/CD Integration System is ready!');
+    console.log('\n[CLIPBOARD] Next Steps:');
     console.log('');
     
     if (this.config.GITHUB_TOKEN) {
@@ -329,17 +329,17 @@ process.on('unhandledRejection', (reason, promise) => {
     console.log(`   ws://localhost:${this.config.CICD_PORT}/ws/cicd`);
     console.log('');
     
-    console.log('📚 For integration with Makora and SOLPRISM:');
+    console.log('[DOCS] For integration with Makora and SOLPRISM:');
     console.log('   1. Add webhook URL to your GitHub repository settings');
     console.log('   2. Configure deployment tokens in .env.cicd');
     console.log('   3. Use the API endpoints to trigger builds and monitor status');
     console.log('');
     
-    console.log('🔧 Configuration file: .env.cicd');
-    console.log('📝 Edit this file to update API tokens and settings');
+    console.log('[CONFIG] Configuration file: .env.cicd');
+    console.log('[LOG] Edit this file to update API tokens and settings');
     console.log('');
     
-    console.log('🆘 Support:');
+    console.log('[HELP] Support:');
     console.log('   • Health check: curl http://localhost:' + this.config.CICD_PORT + '/api/health');
     console.log('   • Logs: Check the server console for real-time information');
     console.log('   • Issues: The system logs detailed information about webhook events');

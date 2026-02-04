@@ -105,45 +105,45 @@ class SimpleProtocolMonitor {
 async function exampleUsage() {
   const monitor = new SimpleProtocolMonitor();
 
-  console.log('🔍 Solana Protocol Health Monitor Example');
+  console.log('[SEARCH] Solana Protocol Health Monitor Example');
   console.log('==========================================');
 
   // Example 1: Check if Jupiter is healthy before doing a swap
-  console.log('\n📊 Example 1: Check protocol health before operations');
+  console.log('\n[INFO] Metrics Example 1: Check protocol health before operations');
   const jupiterHealthy = await monitor.isProtocolHealthy('jupiter');
-  console.log(`Jupiter is ${jupiterHealthy ? 'healthy ✅' : 'degraded/down ❌'}`);
+  console.log(`Jupiter is ${jupiterHealthy ? 'healthy [SUCCESS]' : 'degraded/down [ERROR]'}`);
 
   if (jupiterHealthy) {
-    console.log('✅ Safe to proceed with Jupiter swap');
+    console.log('[SUCCESS] Safe to proceed with Jupiter swap');
   } else {
-    console.log('⚠️  Consider using alternative DEX or retrying later');
+    console.log('[WARNING]  Consider using alternative DEX or retrying later');
   }
 
   // Example 2: Get the best DEX for swapping based on current health
-  console.log('\n🚀 Example 2: Choose best DEX for swapping');
+  console.log('\n[INIT] Example 2: Choose best DEX for swapping');
   const bestDex = await monitor.getBestProtocolFor('swap', ['jupiter', 'raydium']);
   console.log(`Best DEX for swapping: ${bestDex || 'None available'}`);
 
   // Example 3: Monitor for lending protocols
-  console.log('\n💰 Example 3: Choose best lending protocol');
+  console.log('\n[MONEY] Example 3: Choose best lending protocol');
   const bestLending = await monitor.getBestProtocolFor('lending', ['kamino']);
   console.log(`Best lending protocol: ${bestLending || 'None available'}`);
 
   // Example 4: Continuous monitoring
-  console.log('\n🔄 Example 4: Starting continuous monitoring...');
+  console.log('\n[SYNC] Example 4: Starting continuous monitoring...');
   
   let monitoringInterval;
   
   const handleHealthUpdate = (data) => {
     if (data.status === 'alert') {
-      console.log(`🚨 ALERT: System status is ${data.overallStatus}`);
+      console.log(`[ALERT] ALERT: System status is ${data.overallStatus}`);
       data.alerts.forEach(alert => {
         console.log(`   - ${alert.protocol}: ${alert.message}`);
       });
     } else if (data.status === 'healthy') {
-      console.log(`✅ All systems healthy (${new Date().toLocaleTimeString()})`);
+      console.log(`[SUCCESS] All systems healthy (${new Date().toLocaleTimeString()})`);
     } else if (data.status === 'error') {
-      console.log(`❌ Health check error: ${data.message}`);
+      console.log(`[ERROR] Health check error: ${data.message}`);
     }
   };
 
@@ -153,11 +153,11 @@ async function exampleUsage() {
     
     // Clean shutdown on SIGINT
     process.on('SIGINT', () => {
-      console.log('\n🛑 Stopping monitoring...');
+      console.log('\n[STOP] Stopping monitoring...');
       if (monitoringInterval) {
         clearInterval(monitoringInterval);
       }
-      console.log('✅ Monitoring stopped');
+      console.log('[SUCCESS] Monitoring stopped');
       process.exit(0);
     });
 
@@ -182,7 +182,7 @@ class CloddsBot {
   }
 
   async executeSwap(inputToken, outputToken, amount) {
-    console.log(`\n🤖 CloddsBot: Planning swap ${inputToken} -> ${outputToken}`);
+    console.log(`\n[BOT] CloddsBot: Planning swap ${inputToken} -> ${outputToken}`);
 
     // Check protocol health before swap
     const bestDex = await this.monitor.getBestProtocolFor('swap', ['jupiter', 'raydium']);
@@ -191,7 +191,7 @@ class CloddsBot {
       throw new Error('No healthy DEX available for swapping');
     }
 
-    console.log(`✅ Using ${bestDex} for swap (healthiest option)`);
+    console.log(`[SUCCESS] Using ${bestDex} for swap (healthiest option)`);
     
     // Your actual swap logic would go here
     // This is just a demonstration
@@ -214,7 +214,7 @@ class SuperRouter {
   }
 
   async findBestRoute(operation, protocols) {
-    console.log(`\n🛣️  SuperRouter: Finding best route for ${operation}`);
+    console.log(`\n[ROUTE]️  SuperRouter: Finding best route for ${operation}`);
 
     const healthyProtocols = [];
     
@@ -223,7 +223,7 @@ class SuperRouter {
       if (isHealthy) {
         healthyProtocols.push(protocol);
       }
-      console.log(`   ${protocol}: ${isHealthy ? 'healthy ✅' : 'degraded ❌'}`);
+      console.log(`   ${protocol}: ${isHealthy ? 'healthy [SUCCESS]' : 'degraded [ERROR]'}`);
     }
 
     return {
@@ -243,7 +243,7 @@ class Makora {
   }
 
   async rebalancePortfolio(positions) {
-    console.log('\n📊 Makora: Rebalancing portfolio');
+    console.log('\n[INFO] Metrics Makora: Rebalancing portfolio');
 
     // Check health of all protocols we might use
     const protocolHealth = {};
@@ -255,7 +255,7 @@ class Makora {
 
     console.log('Protocol health check:');
     Object.entries(protocolHealth).forEach(([protocol, healthy]) => {
-      console.log(`   ${protocol}: ${healthy ? 'healthy ✅' : 'degraded ❌'}`);
+      console.log(`   ${protocol}: ${healthy ? 'healthy [SUCCESS]' : 'degraded [ERROR]'}`);
     });
 
     // Only proceed with rebalancing if critical protocols are healthy
@@ -263,25 +263,25 @@ class Makora {
     const criticalHealthy = criticalProtocols.every(p => protocolHealth[p]);
 
     if (!criticalHealthy) {
-      console.log('⚠️  Postponing rebalancing due to critical protocol issues');
+      console.log('[WARNING]  Postponing rebalancing due to critical protocol issues');
       return { status: 'postponed', reason: 'Critical protocols unhealthy' };
     }
 
-    console.log('✅ Proceeding with rebalancing');
+    console.log('[SUCCESS] Proceeding with rebalancing');
     return { status: 'executed', protocolHealth };
   }
 }
 
 // Run examples if this script is executed directly
 if (require.main === module) {
-  console.log('🚀 Starting Solana Protocol Health Monitor Examples\n');
+  console.log('[INIT] Starting Solana Protocol Health Monitor Examples\n');
   
   // Run the main examples
   exampleUsage().then(() => {
     // If continuous monitoring is not started, run integration examples
     setTimeout(async () => {
       console.log('\n' + '='.repeat(60));
-      console.log('🔧 Integration Examples for Hackathon Projects');
+      console.log('[CONFIG] Integration Examples for Hackathon Projects');
       console.log('='.repeat(60));
 
       try {
@@ -297,15 +297,15 @@ if (require.main === module) {
         const makora = new Makora();
         await makora.rebalancePortfolio([]);
 
-        console.log('\n✅ Integration examples completed');
+        console.log('\n[SUCCESS] Integration examples completed');
       } catch (error) {
         console.error('❌ Integration examples failed:', error.message);
-        console.log('💡 Make sure the health monitoring API is running on port 3002');
+        console.log('[INFO] Make sure the health monitoring API is running on port 3002');
       }
     }, 5000);
   }).catch(error => {
     console.error('❌ Examples failed:', error.message);
-    console.log('💡 Make sure the health monitoring API is running on port 3002');
+    console.log('[INFO] Make sure the health monitoring API is running on port 3002');
     process.exit(1);
   });
 }

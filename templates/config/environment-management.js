@@ -675,13 +675,13 @@ const options = program.opts();
 
 async function deploy() {
   try {
-    console.log(chalk.cyan(\`🚀 Deploying to \${options.environment}...\`));
+    console.log(chalk.cyan(\`[INIT] Deploying to \${options.environment}...\`));
     
     // Load environment configuration
     const config = EnvironmentUtils.loadConfig(options.environment);
     EnvironmentUtils.validateConfig(config);
     
-    console.log(chalk.green('✓ Configuration loaded and validated'));
+    console.log(chalk.green('[CHECK] Configuration loaded and validated'));
     
     // Health check
     const health = await EnvironmentUtils.healthCheck(options.environment);
@@ -689,21 +689,21 @@ async function deploy() {
       throw new Error(\`Network health check failed: \${health.error}\`);
     }
     
-    console.log(chalk.green(\`✓ Network health check passed (\${health.latency}ms)\`));
+    console.log(chalk.green(\`[CHECK] Network health check passed (\${health.latency}ms)\`));
     
     if (options.dryRun) {
-      console.log(chalk.yellow('🔍 Dry run mode - no actual deployment'));
+      console.log(chalk.yellow('[SEARCH] Dry run mode - no actual deployment'));
       return;
     }
     
     // Execute deployment
-    console.log(chalk.blue('📦 Building programs...'));
+    console.log(chalk.blue('[PACKAGE] Building programs...'));
     // Add build logic here
     
-    console.log(chalk.blue('🔄 Deploying programs...'));
+    console.log(chalk.blue('[SYNC] Deploying programs...'));
     // Add deployment logic here
     
-    console.log(chalk.green('✅ Deployment completed successfully!'));
+    console.log(chalk.green('[SUCCESS] Deployment completed successfully!'));
     
   } catch (error) {
     console.error(chalk.red(\`❌ Deployment failed: \${error.message}\`));
@@ -743,7 +743,7 @@ const options = program.opts();
 
 async function setupEnvironment() {
   try {
-    console.log(chalk.cyan(\`🔧 Setting up \${options.environment} environment...\`));
+    console.log(chalk.cyan(\`[CONFIG] Setting up \${options.environment} environment...\`));
     
     // Set environment
     EnvironmentUtils.setEnvironment(options.environment);
@@ -751,10 +751,10 @@ async function setupEnvironment() {
     // Load configuration
     const config = EnvironmentUtils.loadConfig(options.environment);
     
-    console.log(chalk.green('✓ Environment configuration loaded'));
+    console.log(chalk.green('[CHECK] Environment configuration loaded'));
     
     if (options.initWallet) {
-      console.log(chalk.blue('👛 Setting up wallet configuration...'));
+      console.log(chalk.blue('[WALLET] Setting up wallet configuration...'));
       // Add wallet setup logic here
     }
     
@@ -762,7 +762,7 @@ async function setupEnvironment() {
     const envDir = path.join(process.cwd(), '.env', options.environment);
     await fs.mkdir(envDir, { recursive: true });
     
-    console.log(chalk.green(\`✅ Environment setup completed for \${options.environment}\`));
+    console.log(chalk.green(\`[SUCCESS] Environment setup completed for \${options.environment}\`));
     
   } catch (error) {
     console.error(chalk.red(\`❌ Environment setup failed: \${error.message}\`));
