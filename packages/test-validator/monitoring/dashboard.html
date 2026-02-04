@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Test Validator - Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            color: #9945FF;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-running {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-stopped {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .widget h3 {
+            color: #374151;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #9945FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #8b39ff;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .environment-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .environment-selector select {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            font-weight: 500;
+        }
+
+        .logs-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logs-header {
+            color: #f9fafb;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logs-content {
+            background: #111827;
+            border-radius: 6px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #d1d5db;
+        }
+
+        .log-line {
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-cpu {
+            background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+        }
+
+        .progress-memory {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 200px;
+            margin-top: 15px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-success {
+            background: #16a34a;
+        }
+
+        .notification-error {
+            background: #dc2626;
+        }
+
+        .notification-warning {
+            background: #f59e0b;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <h1>⚡ Solana Test Validator Dashboard</h1>
+            </div>
+            <div id="status-badge" class="status-badge status-stopped">
+                <div class="status-dot"></div>
+                <span id="status-text">Stopped</span>
+            </div>
+        </div>
+
+        <!-- Environment Selector -->
+        <div class="environment-selector">
+            <label for="environment-select"><strong>Environment:</strong></label>
+            <select id="environment-select">
+                <option value="development">Development</option>
+            </select>
+            <button class="btn btn-primary" onclick="refreshEnvironments()">🔄 Refresh</button>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h3>🎮 Control Panel</h3>
+            <div class="controls-grid">
+                <button id="start-btn" class="btn btn-primary" onclick="startValidator()">
+                    ▶️ Start Validator
+                </button>
+                <button id="stop-btn" class="btn btn-danger" onclick="stopValidator()">
+                    ⏹️ Stop Validator
+                </button>
+                <button id="restart-btn" class="btn btn-warning" onclick="restartValidator()">
+                    🔄 Restart Validator
+                </button>
+                <button id="reset-btn" class="btn btn-danger" onclick="resetValidator()">
+                    🧹 Reset Ledger
+                </button>
+            </div>
+        </div>
+
+        <!-- Metrics Dashboard -->
+        <div class="dashboard-grid">
+            <!-- System Metrics -->
+            <div class="widget">
+                <h3>💻 System Metrics</h3>
+                <div class="metric-row">
+                    <span class="metric-label">CPU Usage:</span>
+                    <span id="cpu-usage" class="metric-value">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="cpu-progress" class="progress-fill progress-cpu" style="width: 0%"></div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Memory Usage:</span>
+                    <span id="memory-usage" class="metric-value">0 MB</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="memory-progress" class="progress-fill progress-memory" style="width: 0%"></div>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Load Average:</span>
+                    <span id="load-avg" class="metric-value">0.00</span>
+                </div>
+            </div>
+
+            <!-- Validator Metrics -->
+            <div class="widget">
+                <h3>⛓️ Validator Metrics</h3>
+                <div class="metric-row">
+                    <span class="metric-label">Status:</span>
+                    <span id="validator-status" class="metric-value">Stopped</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">PID:</span>
+                    <span id="validator-pid" class="metric-value">N/A</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Uptime:</span>
+                    <span id="validator-uptime" class="metric-value">N/A</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">TPS:</span>
+                    <span id="validator-tps" class="metric-value">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Block Height:</span>
+                    <span id="block-height" class="metric-value">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Slot Height:</span>
+                    <span id="slot-height" class="metric-value">0</span>
+                </div>
+            </div>
+
+            <!-- Storage Metrics -->
+            <div class="widget">
+                <h3>💾 Storage Metrics</h3>
+                <div class="metric-row">
+                    <span class="metric-label">Ledger Size:</span>
+                    <span id="ledger-size" class="metric-value">0 MB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Free Space:</span>
+                    <span id="free-space" class="metric-value">0 GB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Total Space:</span>
+                    <span id="total-space" class="metric-value">0 GB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Disk Usage:</span>
+                    <span id="disk-usage" class="metric-value">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Charts -->
+        <div class="widget">
+            <h3>📊 Real-time Performance</h3>
+            <div class="chart-container">
+                <canvas id="performance-chart" width="800" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="logs-container">
+            <div class="logs-header">
+                <h3>📜 Validator Logs</h3>
+                <button class="btn btn-primary" onclick="clearLogs()">Clear</button>
+            </div>
+            <div id="logs-content" class="logs-content">
+                <div class="log-line">Waiting for validator logs...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Dashboard {
+            constructor() {
+                this.ws = null;
+                this.isConnecting = false;
+                this.reconnectInterval = null;
+                this.cpuHistory = [];
+                this.memoryHistory = [];
+                this.maxHistoryPoints = 50;
+                this.chart = null;
+                
+                this.initializeWebSocket();
+                this.setupEventListeners();
+                this.loadEnvironments();
+                this.initializeChart();
+            }
+
+            initializeWebSocket() {
+                if (this.isConnecting) return;
+                this.isConnecting = true;
+
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}`;
+
+                this.ws = new WebSocket(wsUrl);
+
+                this.ws.onopen = () => {
+                    console.log('WebSocket connected');
+                    this.isConnecting = false;
+                    this.showNotification('Connected to monitoring server', 'success');
+                    
+                    if (this.reconnectInterval) {
+                        clearInterval(this.reconnectInterval);
+                        this.reconnectInterval = null;
+                    }
+                };
+
+                this.ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        this.handleMessage(data);
+                    } catch (error) {
+                        console.error('Failed to parse WebSocket message:', error);
+                    }
+                };
+
+                this.ws.onclose = () => {
+                    console.log('WebSocket disconnected');
+                    this.isConnecting = false;
+                    this.scheduleReconnect();
+                };
+
+                this.ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    this.isConnecting = false;
+                };
+            }
+
+            scheduleReconnect() {
+                if (this.reconnectInterval) return;
+                
+                this.showNotification('Connection lost. Attempting to reconnect...', 'warning');
+                this.reconnectInterval = setInterval(() => {
+                    this.initializeWebSocket();
+                }, 5000);
+            }
+
+            handleMessage(data) {
+                switch (data.type) {
+                    case 'status':
+                        this.updateStatus(data.data.status);
+                        if (data.data.metrics) {
+                            this.updateMetrics(data.data.metrics);
+                        }
+                        break;
+                    case 'metrics':
+                        this.updateMetrics(data.data);
+                        break;
+                    default:
+                        console.log('Unknown message type:', data.type);
+                }
+            }
+
+            updateStatus(status) {
+                const statusBadge = document.getElementById('status-badge');
+                const statusText = document.getElementById('status-text');
+                const startBtn = document.getElementById('start-btn');
+                const stopBtn = document.getElementById('stop-btn');
+                const restartBtn = document.getElementById('restart-btn');
+                const resetBtn = document.getElementById('reset-btn');
+
+                if (status.running) {
+                    statusBadge.className = 'status-badge status-running';
+                    statusText.textContent = 'Running';
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    resetBtn.disabled = false;
+                } else {
+                    statusBadge.className = 'status-badge status-stopped';
+                    statusText.textContent = 'Stopped';
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    restartBtn.disabled = true;
+                    resetBtn.disabled = false;
+                }
+
+                // Update validator metrics
+                document.getElementById('validator-status').textContent = status.running ? 'Running' : 'Stopped';
+                document.getElementById('validator-pid').textContent = status.pid || 'N/A';
+                document.getElementById('validator-uptime').textContent = status.uptime || 'N/A';
+            }
+
+            updateMetrics(metrics) {
+                if (!metrics) return;
+
+                // System metrics
+                if (metrics.system) {
+                    const cpu = metrics.system.cpu.usage;
+                    const memory = metrics.system.memory;
+                    
+                    document.getElementById('cpu-usage').textContent = `${cpu.toFixed(1)}%`;
+                    document.getElementById('cpu-progress').style.width = `${Math.min(cpu, 100)}%`;
+                    
+                    document.getElementById('memory-usage').textContent = `${memory.used} MB`;
+                    document.getElementById('memory-progress').style.width = `${memory.usage}%`;
+                    
+                    document.getElementById('load-avg').textContent = metrics.system.load.avg1.toFixed(2);
+
+                    // Update history for charts
+                    this.cpuHistory.push(cpu);
+                    this.memoryHistory.push(memory.usage);
+                    
+                    if (this.cpuHistory.length > this.maxHistoryPoints) {
+                        this.cpuHistory.shift();
+                        this.memoryHistory.shift();
+                    }
+                    
+                    this.updateChart();
+                }
+
+                // Validator metrics
+                if (metrics.validator) {
+                    document.getElementById('validator-tps').textContent = metrics.validator.tps.toFixed(2);
+                    document.getElementById('block-height').textContent = metrics.validator.blockHeight;
+                    document.getElementById('slot-height').textContent = metrics.validator.slotHeight;
+                }
+
+                // Storage metrics
+                if (metrics.storage) {
+                    document.getElementById('ledger-size').textContent = `${metrics.storage.ledgerSize} MB`;
+                    document.getElementById('free-space').textContent = `${metrics.storage.freeSpace} GB`;
+                    document.getElementById('total-space').textContent = `${metrics.storage.totalSpace} GB`;
+                    document.getElementById('disk-usage').textContent = `${metrics.storage.usage}%`;
+                }
+            }
+
+            initializeChart() {
+                const canvas = document.getElementById('performance-chart');
+                this.chart = canvas.getContext('2d');
+                this.updateChart();
+            }
+
+            updateChart() {
+                if (!this.chart) return;
+
+                const canvas = this.chart.canvas;
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // Clear canvas
+                this.chart.clearRect(0, 0, width, height);
+
+                if (this.cpuHistory.length === 0) return;
+
+                // Draw background
+                this.chart.fillStyle = '#f9fafb';
+                this.chart.fillRect(0, 0, width, height);
+
+                // Draw grid
+                this.chart.strokeStyle = '#e5e7eb';
+                this.chart.lineWidth = 1;
+                
+                // Horizontal lines
+                for (let i = 0; i <= 5; i++) {
+                    const y = (height / 5) * i;
+                    this.chart.beginPath();
+                    this.chart.moveTo(0, y);
+                    this.chart.lineTo(width, y);
+                    this.chart.stroke();
+                }
+
+                // Draw CPU line
+                if (this.cpuHistory.length > 1) {
+                    this.chart.strokeStyle = '#ef4444';
+                    this.chart.lineWidth = 2;
+                    this.chart.beginPath();
+                    
+                    this.cpuHistory.forEach((value, index) => {
+                        const x = (width / (this.maxHistoryPoints - 1)) * index;
+                        const y = height - (height * value / 100);
+                        
+                        if (index === 0) {
+                            this.chart.moveTo(x, y);
+                        } else {
+                            this.chart.lineTo(x, y);
+                        }
+                    });
+                    
+                    this.chart.stroke();
+                }
+
+                // Draw Memory line
+                if (this.memoryHistory.length > 1) {
+                    this.chart.strokeStyle = '#3b82f6';
+                    this.chart.lineWidth = 2;
+                    this.chart.beginPath();
+                    
+                    this.memoryHistory.forEach((value, index) => {
+                        const x = (width / (this.maxHistoryPoints - 1)) * index;
+                        const y = height - (height * value / 100);
+                        
+                        if (index === 0) {
+                            this.chart.moveTo(x, y);
+                        } else {
+                            this.chart.lineTo(x, y);
+                        }
+                    });
+                    
+                    this.chart.stroke();
+                }
+
+                // Draw legend
+                this.chart.fillStyle = '#374151';
+                this.chart.font = '12px sans-serif';
+                this.chart.fillText('🔴 CPU Usage', 10, 20);
+                this.chart.fillText('🔵 Memory Usage', 10, 35);
+            }
+
+            async loadEnvironments() {
+                try {
+                    const response = await fetch('/api/environments');
+                    const environments = await response.json();
+                    
+                    const select = document.getElementById('environment-select');
+                    select.innerHTML = '';
+                    
+                    environments.forEach(env => {
+                        const option = document.createElement('option');
+                        option.value = env.name;
+                        option.textContent = `${env.name} (Port: ${env.port})`;
+                        select.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Failed to load environments:', error);
+                    this.showNotification('Failed to load environments', 'error');
+                }
+            }
+
+            setupEventListeners() {
+                // Refresh button
+                window.refreshEnvironments = () => this.loadEnvironments();
+                
+                // Control buttons
+                window.startValidator = () => this.controlValidator('start');
+                window.stopValidator = () => this.controlValidator('stop');
+                window.restartValidator = () => this.controlValidator('restart');
+                window.resetValidator = () => this.controlValidator('reset');
+                window.clearLogs = () => this.clearLogs();
+            }
+
+            async controlValidator(action) {
+                const environment = document.getElementById('environment-select').value;
+                const button = document.getElementById(`${action}-btn`);
+                
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = `<div class="spinner"></div> ${button.textContent}`;
+                }
+
+                try {
+                    let response;
+                    
+                    switch (action) {
+                        case 'start':
+                            response = await fetch('/api/validator/start', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ environment })
+                            });
+                            break;
+                        case 'stop':
+                            response = await fetch('/api/validator/stop', {
+                                method: 'POST'
+                            });
+                            break;
+                        case 'restart':
+                            response = await fetch('/api/validator/restart', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ environment })
+                            });
+                            break;
+                        case 'reset':
+                            if (!confirm('Are you sure you want to reset the validator? This will delete all ledger data.')) {
+                                return;
+                            }
+                            response = await fetch('/api/validator/reset', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ hard: false })
+                            });
+                            break;
+                    }
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.showNotification(`Validator ${action} successful`, 'success');
+                        
+                        if (action === 'start' && result.rpcUrl) {
+                            this.addLogLine(`Validator started - RPC: ${result.rpcUrl}`);
+                        }
+                    } else {
+                        const error = await response.json();
+                        this.showNotification(`Failed to ${action} validator: ${error.error}`, 'error');
+                    }
+                } catch (error) {
+                    this.showNotification(`Error: ${error.message}`, 'error');
+                } finally {
+                    if (button) {
+                        button.disabled = false;
+                        button.innerHTML = button.textContent.replace(/.*? /, '');
+                    }
+                }
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+
+            addLogLine(message) {
+                const logsContent = document.getElementById('logs-content');
+                const timestamp = new Date().toLocaleTimeString();
+                const logLine = document.createElement('div');
+                logLine.className = 'log-line';
+                logLine.textContent = `[${timestamp}] ${message}`;
+                
+                logsContent.appendChild(logLine);
+                logsContent.scrollTop = logsContent.scrollHeight;
+                
+                // Limit log lines
+                const logLines = logsContent.querySelectorAll('.log-line');
+                if (logLines.length > 100) {
+                    logLines[0].remove();
+                }
+            }
+
+            clearLogs() {
+                const logsContent = document.getElementById('logs-content');
+                logsContent.innerHTML = '<div class="log-line">Logs cleared</div>';
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new Dashboard();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+# Example: Multi-Program Anchor Project with Advanced CI/CD
+# Copy this file to .github/workflows/ci.yml for complex Anchor projects
+
+name: Multi-Program Anchor CI/CD
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy to environment'
+        required: true
+        default: 'devnet'
+        type: choice
+        options:
+        - devnet
+        - testnet
+        - mainnet-beta
+
+env:
+  SOLANA_VERSION: "1.18.26"
+  ANCHOR_VERSION: "0.30.1"
+  NODE_VERSION: "20"
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      programs: ${{ steps.changes.outputs.programs }}
+      tests: ${{ steps.changes.outputs.tests }}
+      frontend: ${{ steps.changes.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            programs:
+              - 'programs/**'
+              - 'Anchor.toml'
+              - 'Cargo.toml'
+            tests:
+              - 'tests/**'
+              - 'package.json'
+            frontend:
+              - 'app/**'
+              - 'frontend/**'
+
+  lint-and-format:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.programs == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Setup Node.js
+        if: needs.changes.outputs.tests == 'true' || needs.changes.outputs.frontend == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: needs.changes.outputs.tests == 'true' || needs.changes.outputs.frontend == 'true'
+        run: npm ci
+
+      - name: Check TypeScript/JavaScript formatting
+        if: needs.changes.outputs.tests == 'true' || needs.changes.outputs.frontend == 'true'
+        run: |
+          npm run lint || true
+          npm run prettier:check || true
+
+  security-audit:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.programs == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install security audit tools
+        run: |
+          cargo install cargo-audit cargo-geiger --quiet
+
+      - name: Run dependency audit
+        run: cargo audit
+
+      - name: Check for unsafe code
+        run: cargo geiger --format GitHubMarkdown >> $GITHUB_STEP_SUMMARY
+
+  build-programs:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.programs == 'true'
+    strategy:
+      matrix:
+        program:
+          - token-program
+          - staking-program
+          - governance-program
+          # Add your program names here
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Anchor CLI
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked --force
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: build-${{ matrix.program }}-${{ runner.os }}
+
+      - name: Build specific program
+        run: |
+          # Build only the specific program
+          anchor build -p ${{ matrix.program }}
+
+      - name: Upload program artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.program }}-artifacts
+          path: |
+            target/deploy/${{ matrix.program }}.so
+            target/idl/${{ matrix.program }}.json
+          retention-days: 7
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.programs == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run unit tests
+        run: cargo test --workspace --lib
+
+      - name: Generate test coverage
+        run: |
+          cargo install cargo-tarpaulin --quiet
+          cargo tarpaulin --out Xml --output-dir ./coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/cobertura.xml
+          flags: rust-unit-tests
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: [build-programs, changes]
+    if: needs.changes.outputs.tests == 'true'
+    strategy:
+      matrix:
+        test-suite:
+          - token-tests
+          - staking-tests
+          - governance-tests
+          - cross-program-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Setup Anchor CLI
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked --force
+
+      - name: Download all program artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Restore program artifacts
+        run: |
+          mkdir -p target/deploy target/idl
+          find ./artifacts -name "*.so" -exec cp {} target/deploy/ \;
+          find ./artifacts -name "*.json" -exec cp {} target/idl/ \;
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start local validator with programs
+        run: |
+          # Start validator with pre-deployed programs
+          programs=""
+          for so_file in target/deploy/*.so; do
+            if [ -f "$so_file" ]; then
+              program_name=$(basename "$so_file" .so)
+              program_id=$(anchor keys list | grep "$program_name" | cut -d':' -f2 | tr -d ' ')
+              if [ -n "$program_id" ]; then
+                programs="$programs --bpf-program $program_id $so_file"
+              fi
+            fi
+          done
+          
+          solana-test-validator $programs --detach --reset --quiet
+          timeout 60s bash -c 'until solana cluster-version; do sleep 1; done'
+
+      - name: Run integration tests
+        run: |
+          # Configure Solana CLI
+          solana config set --url localhost
+          solana-keygen new --no-bip39-passphrase --silent
+          
+          # Run specific test suite
+          npm run test:${{ matrix.test-suite }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.test-suite }}
+          path: |
+            test-results/
+            coverage/
+          retention-days: 7
+
+  end-to-end-tests:
+    runs-on: ubuntu-latest
+    needs: [integration-tests, changes]
+    if: needs.changes.outputs.frontend == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # Setup Solana environment (same as integration tests)
+      - name: Setup Solana environment
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked --force
+
+      - name: Download all program artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Restore and deploy programs
+        run: |
+          mkdir -p target/deploy target/idl
+          find ./artifacts -name "*.so" -exec cp {} target/deploy/ \;
+          find ./artifacts -name "*.json" -exec cp {} target/idl/ \;
+          
+          solana-test-validator --detach --reset --quiet
+          timeout 60s bash -c 'until solana cluster-version; do sleep 1; done'
+          
+          solana config set --url localhost
+          solana-keygen new --no-bip39-passphrase --silent
+          anchor deploy
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: |
+          if [ -d "app" ]; then
+            cd app && npm ci && npm run build
+          fi
+          if [ -d "frontend" ]; then
+            cd frontend && npm ci && npm run build
+          fi
+
+      - name: Run E2E tests
+        run: |
+          # Install Playwright or your E2E testing framework
+          npx playwright install
+          npm run test:e2e
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+      (github.ref == 'refs/heads/staging' && github.event_name == 'push')
+    
+    environment: 
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'mainnet-beta') || (github.ref == 'refs/heads/staging' && 'testnet') || 'devnet' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # Setup deployment environment (same as previous steps)
+      - name: Setup deployment tools
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          cargo install --git https://github.com/coral-xyz/anchor --tag v${{ env.ANCHOR_VERSION }} anchor-cli --locked --force
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all program artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Restore program artifacts
+        run: |
+          mkdir -p target/deploy target/idl
+          find ./artifacts -name "*.so" -exec cp {} target/deploy/ \;
+          find ./artifacts -name "*.json" -exec cp {} target/idl/ \;
+
+      - name: Setup deployment wallet
+        env:
+          DEPLOY_WALLET_SECRET: ${{ secrets.DEPLOY_WALLET_SECRET }}
+        run: |
+          echo "$DEPLOY_WALLET_SECRET" > deploy-wallet.json
+          solana config set --keypair deploy-wallet.json
+          
+          ENVIRONMENT="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'mainnet-beta') || (github.ref == 'refs/heads/staging' && 'testnet') || 'devnet' }}"
+          solana config set --url https://api.$ENVIRONMENT.solana.com
+
+      - name: Deploy programs
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'mainnet-beta') || (github.ref == 'refs/heads/staging' && 'testnet') || 'devnet' }}"
+          
+          # Deploy each program individually with verification
+          for program_dir in programs/*/; do
+            if [ -d "$program_dir" ]; then
+              program_name=$(basename "$program_dir")
+              echo "Deploying $program_name to $ENVIRONMENT..."
+              
+              anchor deploy -p "$program_name" --provider.cluster "$ENVIRONMENT"
+              
+              # Verify deployment
+              program_id=$(anchor keys list | grep "$program_name" | cut -d':' -f2 | tr -d ' ')
+              if solana account "$program_id" >/dev/null 2>&1; then
+                echo "✅ $program_name deployed successfully at $program_id"
+              else
+                echo "❌ $program_name deployment verification failed"
+                exit 1
+              fi
+            fi
+          done
+
+      - name: Update IDLs
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'mainnet-beta') || (github.ref == 'refs/heads/staging' && 'testnet') || 'devnet' }}"
+          
+          for idl_file in target/idl/*.json; do
+            if [ -f "$idl_file" ]; then
+              program_name=$(basename "$idl_file" .json)
+              echo "Updating IDL for $program_name..."
+              anchor idl upgrade "$idl_file" --provider.cluster "$ENVIRONMENT"
+            fi
+          done
+
+      - name: Clean up
+        if: always()
+        run: rm -f deploy-wallet.json
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always() && needs.deploy.result != 'skipped'
+    steps:
+      - name: Notify deployment result
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ needs.deploy.result }}
+          channel: '#solana-deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

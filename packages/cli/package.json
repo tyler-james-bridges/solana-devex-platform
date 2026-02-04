@@ -1,0 +1,74 @@
+{
+  "name": "solana-devex",
+  "version": "1.0.0",
+  "description": "Foundry-style CLI for Solana development - Enhanced developer experience with unified command structure",
+  "main": "index.js",
+  "bin": {
+    "solana-devex": "./bin/solana-devex.js"
+  },
+  "scripts": {
+    "start": "node bin/solana-devex.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "build": "echo 'CLI ready to use'",
+    "prepublishOnly": "npm test && npm run lint",
+    "dev": "node bin/solana-devex.js",
+    "link": "npm link",
+    "unlink": "npm unlink"
+  },
+  "keywords": [
+    "solana",
+    "foundry",
+    "blockchain",
+    "cli",
+    "anchor",
+    "defi",
+    "web3",
+    "devex",
+    "development",
+    "build-tools",
+    "cross-chain"
+  ],
+  "author": "Solana DevEx Platform",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1",
+    "fs-extra": "^11.2.0",
+    "yaml": "^2.3.4",
+    "glob": "^10.3.10",
+    "chokidar": "^3.5.3",
+    "semver": "^7.5.4",
+    "cross-spawn": "^7.0.3",
+    "axios": "^1.6.2",
+    "@solana/web3.js": "^1.87.6",
+    "@coral-xyz/anchor": "^0.29.0",
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.1.1",
+    "@types/node": "^20.10.5",
+    "@types/fs-extra": "^11.0.4"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "templates/",
+    "README.md"
+  ],
+  "preferGlobal": true,
+  "publishConfig": {
+    "access": "public"
+  }
+}

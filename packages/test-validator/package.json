@@ -1,0 +1,72 @@
+{
+  "name": "solana-test-validator-extension",
+  "version": "1.0.0",
+  "description": "Enhanced Solana test validator with performance metrics, automation, and developer productivity features",
+  "main": "lib/index.js",
+  "bin": {
+    "solana-test-ext": "./cli/index.js",
+    "stve": "./cli/index.js"
+  },
+  "scripts": {
+    "start": "node cli/index.js",
+    "dev": "nodemon cli/index.js",
+    "test": "jest",
+    "build": "tsc",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "solana",
+    "test-validator",
+    "blockchain",
+    "development",
+    "devops",
+    "monitoring",
+    "automation"
+  ],
+  "author": "Tyler James Bridges",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.5",
+    "ora": "^5.4.1",
+    "boxen": "^5.1.2",
+    "node-cron": "^3.0.2",
+    "express": "^4.18.2",
+    "ws": "^8.13.0",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0",
+    "pidusage": "^3.0.2",
+    "systeminformation": "^5.17.12",
+    "yaml": "^2.2.1",
+    "fs-extra": "^11.1.0",
+    "execa": "^5.1.1",
+    "nanoid": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.0",
+    "@types/jest": "^29.4.0",
+    "@types/express": "^4.17.17",
+    "@types/ws": "^8.5.4",
+    "@types/blessed": "^0.1.21",
+    "@types/fs-extra": "^11.0.1",
+    "typescript": "^4.9.5",
+    "jest": "^29.4.3",
+    "nodemon": "^2.0.20",
+    "eslint": "^8.36.0",
+    "prettier": "^2.8.4",
+    "ts-jest": "^29.0.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tylerjames-bridges/solana-test-validator-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tylerjames-bridges/solana-test-validator-extension/issues"
+  },
+  "homepage": "https://github.com/tylerjames-bridges/solana-test-validator-extension#readme"
+}

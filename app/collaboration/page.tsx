@@ -96,7 +96,10 @@ export default function CollaborationDashboard() {
   useEffect(() => {
     // Initialize WebSocket connection for real-time updates
     const connectWebSocket = () => {
-      const ws = new WebSocket('ws://localhost:3001/ws/collaboration')
+      const wsUrl = process.env.NODE_ENV === 'production' 
+        ? 'wss://onchain-devex.tools/ws/collaboration'
+        : 'ws://localhost:3001/ws/collaboration'
+      const ws = new WebSocket(wsUrl)
       
       ws.onopen = () => {
         console.log('Connected to collaboration dashboard')

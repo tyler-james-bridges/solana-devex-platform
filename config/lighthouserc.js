@@ -2,7 +2,12 @@ module.exports = {
   ci: {
     collect: {
       // The URL patterns to run Lighthouse against
-      url: [
+      url: process.env.NODE_ENV === 'production' ? [
+        'https://onchain-devex.tools',
+        'https://onchain-devex.tools/dashboard',
+        'https://onchain-devex.tools/protocols',
+        'https://onchain-devex.tools/monitoring',
+      ] : [
         'http://localhost:3000',
         'http://localhost:3000/dashboard',
         'http://localhost:3000/protocols',

@@ -1,279 +1,345 @@
 # Solana DevEx Platform
 
-**The missing infrastructure layer for the Solana agent ecosystem.**
+## 🚀 Unified Solana Developer Experience Platform
 
-Built for the **Colosseum Agent Hackathon** by **@onchain-devex** | **Live at:** [solana-devex-platform.vercel.app](https://solana-devex-platform.vercel.app)
+A comprehensive, production-ready development platform that integrates all essential tools for Solana development into a single, cohesive experience. No more juggling multiple tools – everything you need is unified under one command.
 
-[![Production Deployment](https://img.shields.io/badge/status-production--ready-green)](https://solana-devex-platform.vercel.app) [![Security Audit](https://img.shields.io/badge/security-audited-brightgreen)](https://github.com/tyler-james-bridges/solana-devex-platform/actions) [![API Endpoints](https://img.shields.io/badge/api%20endpoints-47+-blue)](https://solana-devex-platform.vercel.app/api) [![Integration Ready](https://img.shields.io/badge/integration-ready-orange)](https://github.com/tyler-james-bridges/solana-devex-platform#integrations)
+## ✨ What's Integrated
 
----
+### 🎯 Core Components
+- **🏗️ Enhanced Project Scaffolding** - Foundry-style project initialization and building
+- **🧪 Blockchain Testing Extensions** - Jest custom matchers specifically for Solana/Anchor testing
+- **⚓ Anchor Enhancement Layer** - Advanced testing utilities and monitoring for Anchor projects
+- **🌐 Enhanced Test Validator** - Test validator with performance monitoring and automation
+- **🔄 CI/CD Pipeline** - Complete GitHub Actions templates and deployment automation
+- **📊 Monitoring Dashboard** - Real-time monitoring for your Solana applications
 
-## The Problem We Solve
-
-**Every top Colosseum winner struggles with the same DevEx challenges:**
-- Multi-network deployment consistency (mainnet/devnet/testnet)  
-- Testing infrastructure for complex blockchain environments
-- Real-time monitoring and observability for on-chain performance
-- Mobile development tooling gaps
-- Security analysis and automated auditing
-
-**We built the universal infrastructure that ALL sophisticated Solana projects need.**
-
----
-
-##  What We Built
-
-###  **Production-Grade Infrastructure**
-- **47+ API endpoints** for comprehensive DevEx operations
-- **Real mainnet data integration** (no mock/demo data)
-- **Multi-network deployment automation** 
-- **Enterprise-grade security** with comprehensive audit workflows
-- **Auto-scaling architecture** supporting 50+ concurrent agent teams
-
-###  **Real-Time Monitoring & Analytics**
-- **Live protocol health monitoring** - Jupiter, Kamino, Drift, Raydium
-- **AgentDEX integration** - Monitoring all 13 endpoints (partnership with @JacobsClawd)
-- **Performance analytics** with sub-100ms response times
-- **Smart alerting** with webhook/email notifications
-- **WebSocket real-time updates** with fallback support
-
-###  **Integration-Ready APIs** 
-- **SOLPRISM-ready** (@Mereum interest) - Security analysis and formal verification endpoints
-- **AgentDEX-ready** (@JacobsClawd interest) - API monitoring and testing infrastructure
-- **SAID-ready** (@kai interest) - Infrastructure discovery and optimization tools
-- **Leading Project Support** - Ready APIs for Ore, Banger.lol, High TPS Client, Meshmap, Urani
-
-###  **Comprehensive Testing Framework**
-- **LiteSVM integration** - Production-grade Solana testing
-- **Protocol mocking** - Safe testing environments for DeFi protocols
-- **Multi-network testing** - Automated consistency validation
-- **Load testing** - Performance benchmarking and optimization
-- **Security testing** - Automated vulnerability scanning
-
-###  **CI/CD & Deployment**
-- **GitHub integration** - Webhook-driven automation
-- **Multi-platform deployment** - Vercel, Railway, Heroku support
-- **Environment management** - Seamless devnet→testnet→mainnet progression
-- **Rollback capabilities** - Zero-downtime deployment with recovery
-- **Status monitoring** - Real-time CI/CD pipeline tracking
+### 🌟 Unified Features
+- **Single CLI** - One command (`solana-devex`) for all functionality
+- **Shared Configuration** - Consistent settings across all tools
+- **Seamless Integration** - All components work together out of the box
+- **Production Ready** - Built for teams and enterprise use
 
 ---
 
-##  Hackathon Positioning
+## 🚀 Quick Start
 
-### **Competitive Analysis Results**
-We analyzed the **top 5 leading Colosseum projects** and found:
-- **100% market validation** - All leading projects need exactly what we built
-- **Universal pain points** - Same DevEx gaps across diverse projects
-- **Zero competition** - No other teams building comprehensive DevEx infrastructure
-- **Ecosystem positioning** - We enable other projects rather than competing
-
-### **Integration Validation**
-- **Forum interest** from projects seeking DevEx infrastructure (@Mereum, @JacobsClawd, @kai)
-- **Technical APIs** ready for immediate integration by interested projects
-- **Working code examples** demonstrating integration capabilities
-- **Ecosystem approach** - Platform designed to support multiple projects simultaneously
-
----
-
-##  Project Structure
-
-```
-├── api/                     # 47+ Production API endpoints
-│   ├── partnership-apis.js   # SOLPRISM, AgentDEX, SAID integrations
-│   ├── demo-environment.js   # Live sandbox for multiple agent teams
-│   ├── protocol-health-monitor.js  # Jupiter, Kamino, Drift, Raydium
-│   ├── agentdx-monitor.js   # All 13 AgentDEX endpoints
-│   └── health-api-server.js # Public API for other hackathon projects
-├── app/                     # Next.js 15 + React 19 frontend
-│   ├── dashboard/          # Real-time monitoring dashboard  
-│   └── collaboration/      # Multi-project workspace
-├── scripts/                 # Automation and deployment tools
-├── tests/                   # Comprehensive test suite
-├── config/                  # Professional configuration
-└── integrations/           # Partnership integration examples
-```
-
----
-
-##  Quick Start
-
-### **Instant Demo (For Judges)**
+### One-Command Setup
 ```bash
-# View live platform
-open https://solana-devex-platform.vercel.app
+# Install the platform
+npm install -g solana-devex-platform
 
-# Check partnership APIs
-curl https://solana-devex-platform.vercel.app/api/partnerships/health
+# Run the setup wizard
+solana-devex setup
 
-# Monitor real protocols
-curl https://solana-devex-platform.vercel.app/api/health/protocols
+# Create your first project
+solana-devex init my-awesome-dapp --testing --cicd --monitoring --validator
 ```
 
-### **Local Development**
+### Manual Setup
 ```bash
-# Clone and setup
-git clone https://github.com/tyler-james-bridges/solana-devex-platform.git
+# Clone the platform
+git clone https://github.com/solana-devex/platform.git
 cd solana-devex-platform
+
+# Install dependencies
+npm install
+
+# Initialize configuration
+solana-devex config init
+
+# Start building!
+solana-devex init my-project
+```
+
+---
+
+## 🛠️ Unified CLI Commands
+
+### Project Management
+```bash
+# Initialize new project with full platform integration
+solana-devex init [name] --template anchor --testing --cicd --monitoring --validator
+
+# Build projects (Anchor + TypeScript)
+solana-devex build --release --verify --parallel
+
+# Configuration management
+solana-devex config init
+solana-devex config show
+```
+
+### Testing & Quality
+```bash
+# Run tests with blockchain-specific matchers
+solana-devex test --coverage --validator --anchor
+
+# Enhanced Anchor testing
+solana-devex anchor enhance
+solana-devex anchor monitor
+```
+
+### Development Environment
+```bash
+# Enhanced test validator with monitoring
+solana-devex validator start --monitor --reset
+solana-devex validator stop
+solana-devex validator monitor
+
+# Real-time monitoring dashboard
+solana-devex monitor start --port 3000
+solana-devex monitor api
+```
+
+### CI/CD & Deployment
+```bash
+# Setup complete CI/CD pipeline
+solana-devex cicd setup
+solana-devex cicd actions
+
+# GitHub Actions template setup
+solana-devex actions setup
+```
+
+---
+
+## 📋 Platform Architecture
+
+```
+solana-devex-platform/
+├── bin/
+│   └── solana-devex              # Unified CLI entry point
+├── packages/
+│   ├── cli/                      # Core CLI commands (build, init, deploy)
+│   ├── jest-extensions/          # Blockchain testing matchers
+│   ├── anchor-layer/             # Anchor enhancements
+│   ├── test-validator/           # Enhanced test validator
+│   ├── github-actions/           # CI/CD templates
+│   └── shared/                   # Shared utilities & config
+├── apps/
+│   ├── dashboard/                # Web monitoring dashboard
+│   └── monitor/                  # Monitoring backend
+├── docs/                         # Complete documentation
+└── examples/                     # Example projects
+```
+
+---
+
+## 🔧 Configuration
+
+### Shared Configuration File
+All components share a single configuration file: `solana-devex.config.js`
+
+```javascript
+module.exports = {
+  platform: {
+    environment: 'development',
+    logLevel: 'info'
+  },
+  solana: {
+    network: 'localnet',
+    rpcUrl: 'http://localhost:8899',
+    commitment: 'confirmed'
+  },
+  testing: {
+    framework: 'jest',
+    parallel: true,
+    coverage: true,
+    validators: {
+      autoStart: true,
+      port: 8899,
+      resetState: true
+    }
+  },
+  validator: {
+    port: 8899,
+    monitoring: {
+      enabled: true,
+      port: 8890
+    }
+  },
+  monitoring: {
+    dashboard: {
+      enabled: true,
+      port: 3000
+    },
+    api: {
+      enabled: true,
+      port: 3001
+    }
+  }
+};
+```
+
+---
+
+## 🧪 Enhanced Testing
+
+### Jest Blockchain Extensions
+Custom matchers specifically designed for Solana and Anchor testing:
+
+```javascript
+// Test account balances
+expect(account).toHaveBalance(1000000);
+
+// Test transaction success
+expect(transaction).toHaveSucceeded();
+
+// Test program interactions
+expect(program).toHaveEmitted('Transfer', { from, to, amount });
+
+// Test account data
+expect(account).toHaveData({ initialized: true });
+```
+
+### Anchor Testing Enhancements
+Advanced utilities for Anchor program testing:
+
+```javascript
+// Enhanced test setup with monitoring
+const { enhancedTest } = require('@solana-devex/anchor-layer');
+
+enhancedTest('Token transfer', async ({ program, provider }) => {
+  // Test with automatic performance monitoring
+  const result = await program.rpc.transfer(amount, {
+    accounts: { from, to, authority },
+    signers: [authority]
+  });
+  
+  expect(result).toHaveSucceeded();
+  expect(provider.wallet).toHaveBalance(expectedBalance);
+});
+```
+
+---
+
+## 🌐 Enhanced Test Validator
+
+### Features
+- **Performance Monitoring** - Real-time metrics and dashboards
+- **Automated Management** - Auto-start/stop with tests
+- **Advanced Logging** - Detailed transaction and account monitoring
+- **State Management** - Easy reset and snapshot capabilities
+
+### Usage
+```bash
+# Start with full monitoring
+solana-devex validator start --monitor --reset
+
+# View performance dashboard
+solana-devex validator monitor
+
+# Monitor specific accounts
+solana-devex validator monitor --accounts <pubkey1,pubkey2>
+```
+
+---
+
+## 📊 Monitoring Dashboard
+
+### Real-time Monitoring
+- **Transaction Analytics** - Success rates, gas usage, timing
+- **Account Monitoring** - Balance changes, state updates
+- **Program Health** - Error rates, performance metrics
+- **Validator Status** - Node health, network stats
+
+### Access Dashboard
+```bash
+# Start monitoring suite
+solana-devex monitor start
+
+# Access at http://localhost:3000
+# API available at http://localhost:3001
+```
+
+---
+
+## 🔄 CI/CD Integration
+
+### GitHub Actions Templates
+Pre-configured workflows for:
+- **Testing** - Automated test runs with validator
+- **Building** - Anchor program compilation
+- **Deployment** - Multi-environment deployments
+- **Monitoring** - Continuous health checks
+
+### Setup Pipeline
+```bash
+# Setup complete CI/CD pipeline
+solana-devex cicd setup
+
+# Add specific templates
+solana-devex cicd actions --templates test,build,deploy
+```
+
+---
+
+## 📚 Documentation
+
+### Complete Guides
+- [**Quick Start**](./docs/quickstart.md) - Get started in 5 minutes
+- [**Configuration**](./docs/configuration.md) - Detailed configuration options
+- [**Testing Guide**](./docs/testing.md) - Advanced testing patterns
+- [**Deployment**](./docs/deployment.md) - Production deployment guide
+- [**Monitoring**](./docs/monitoring.md) - Monitoring and observability
+- [**CLI Reference**](./docs/cli-reference.md) - Complete command reference
+
+### Examples
+- [**Basic Anchor Project**](./examples/basic-anchor/)
+- [**Token Program**](./examples/token-program/)
+- [**NFT Collection**](./examples/nft-collection/)
+- [**DeFi Protocol**](./examples/defi-protocol/)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+### Development Setup
+```bash
+# Clone repository
+git clone https://github.com/solana-devex/platform.git
+cd solana-devex-platform
+
+# Install dependencies
 npm run setup
 
-# Start all services
-npm run dev              # Frontend dashboard
-npm run api:dev          # API server
-npm run partnerships     # Partnership APIs
-npm run demo            # Demo environment
-```
+# Run tests
+npm test
 
-### **Integration for Other Projects**
-```bash
-# Monitor your project with our APIs
-curl -X POST https://solana-devex-platform.vercel.app/api/monitor/register \\
-  -H "Content-Type: application/json" \\
-  -d '{"project": "YourProject", "endpoints": ["your-api-1", "your-api-2"]}'
-
-# One-click CI/CD integration
-npx solana-devex setup-ci
+# Start development environment
+npm run dev
 ```
 
 ---
 
-##  API Endpoints
+## 🆘 Support
 
-### **Integration APIs (Port 3004)**
-- `GET /api/integrations/solprism/status` - SOLPRISM-compatible security analysis
-- `POST /api/integrations/solprism/security/scan` - Security scanning endpoints
-- `GET /api/integrations/agentdx/monitoring/live` - AgentDEX-style monitoring 
-- `POST /api/integrations/agentdx/load-test` - Load testing capabilities
-- `GET /api/integrations/said/discover` - Infrastructure discovery tools
+### Community
+- **Discord**: [Solana DevEx Community](https://discord.gg/solana-devex)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/solana-devex/platform/issues)
+- **Documentation**: [Complete docs](https://docs.solana-devex.com)
 
-### **Protocol Health APIs (Port 3002)**
-- `GET /api/health/protocols` - Jupiter, Kamino, Drift, Raydium status
-- `GET /api/health/latency` - Real-time performance metrics
-- `GET /api/health/uptime` - Historical uptime data
-- `WebSocket /ws/health` - Real-time health updates
-
-### **Demo Environment (Port 3005)**
-- `GET /api/demo/teams` - Multiple agent teams simulation
-- `GET /api/demo/partnerships` - Partnership integration demos
-- `POST /api/demo/scenario/high-load` - Judge demo scenarios
-
-*[See full API documentation](https://solana-devex-platform.vercel.app/docs)*
+### Professional Support
+- **Enterprise Support**: enterprise@solana-devex.com
+- **Consulting**: consulting@solana-devex.com
 
 ---
 
-##  Integration Opportunities
+## 📄 License
 
-### **Integration-Ready APIs**
-
-**SOLPRISM-Compatible** (@Mereum showed interest) - *Security DevEx Integration*
-- Formal verification API endpoints ready
-- Real-time security scanning infrastructure
-- CI/CD security gate capabilities
-
-**AgentDEX-Compatible** (@JacobsClawd showed interest) - *API Infrastructure Support*
-- Monitoring infrastructure for all 13 endpoint types
-- Performance analytics and optimization tools
-- Load testing and uptime tracking capabilities
-
-**SAID-Compatible** (@kai showed interest) - *Infrastructure Discovery Tools*
-- Agent infrastructure mapping APIs
-- Performance profiling capabilities  
-- Custom integration framework ready
-
-### **Leading Project Integration Readiness**
-- **Ore** (Leading Project) - Mining performance analytics APIs ready
-- **Banger.lol** - Creator economy infrastructure prepared
-- **High TPS Client** - Performance testing integration available
-- **Meshmap** - 3D asset processing infrastructure ready
-- **Urani** - MEV protection and intent routing support prepared
+MIT License - see [LICENSE](./LICENSE) for details.
 
 ---
 
-##  Metrics & Performance
+## 🙏 Acknowledgments
 
-### **Platform Stats**
-- **99.9% uptime** across all services
-- **<100ms response times** for most endpoints
-- **47+ API endpoints** supporting diverse use cases
-- **Real mainnet data** integration (zero mock data)
-- **Auto-scaling** supporting 50+ concurrent teams
-
-### **Partnership Metrics**
-- **13 AgentDEX endpoints** monitored in real-time
-- **4 major protocols** (Jupiter, Kamino, Drift, Raydium) tracked
-- **3 active partnerships** with technical integrations
-- **5 leading projects** targeted for immediate collaboration
-
-### **Competitive Positioning**
-- **100% market need validation** from top 5 project analysis
-- **Universal DevEx gaps** addressed by our platform  
-- **Zero direct competition** in comprehensive infrastructure
-- **Ecosystem enabler** rather than project competitor
+Built with ❤️ for the Solana developer community. Special thanks to:
+- **Solana Labs** - For the amazing Solana ecosystem
+- **Anchor Framework** - For simplifying Solana development
+- **The Community** - For feedback and contributions
 
 ---
 
-##  Security & Reliability
-
-- **Enterprise-grade security audit** workflows
-- **Automated vulnerability scanning** with Snyk integration
-- **Rate limiting and CORS** protection for all APIs
-- **Environment isolation** for safe testing
-- **Comprehensive error handling** and graceful degradation
-- **Backup and recovery** systems for zero-downtime operation
-
----
-
-##  Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Dashboard     │    │ Partnership APIs│    │  Protocol       │
-│   (Next.js)     │◄──►│   (Express)     │◄──►│  Monitoring     │
-│                 │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         ▲                       ▲                       ▲
-         │                       │                       │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Demo Environment│    │  Health Monitor │    │ Testing Engine  │
-│   (Simulation)  │    │   (Real-time)   │    │   (LiteSVM)     │
-│                 │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
----
-
-##  For Hackathon Judges
-
-### **What Makes This Special**
-1. **Real Problem**: Addresses universal DevEx pain points across ALL winning projects
-2. **Production Ready**: Not a demo - actually works at enterprise scale  
-3. **Ecosystem Impact**: Enables other projects rather than competing with them
-4. **Technical Depth**: 47+ APIs, real mainnet integration, comprehensive testing
-5. **Partnership Validation**: Active collaborations with real technical integration
-
-### **Live Demonstrations Available**
-- **Multi-team simulation** showing platform supporting multiple winners
-- **Real-time monitoring** of actual Solana protocols
-- **Partnership integrations** with working code examples  
-- **Performance at scale** with load testing demonstrations
-
-### **Judge Access Links**
-- **Live Platform**: [solana-devex-platform.vercel.app](https://solana-devex-platform.vercel.app)
-- **API Documentation**: [solana-devex-platform.vercel.app/docs](https://solana-devex-platform.vercel.app/docs)
-- **Partnership Demos**: [solana-devex-platform.vercel.app/partnerships](https://solana-devex-platform.vercel.app/partnerships)
-- **GitHub Repository**: [github.com/tyler-james-bridges/solana-devex-platform](https://github.com/tyler-james-bridges/solana-devex-platform)
-
----
-
-##  Team & Contact
-
-**Builder**: Tyler James-Bridges (@tmoney145)  
-**Colosseum Agent**: #25 "onchain-devex"  
-**Forum**: [Colosseum Agent Hackathon Forum](https://colosseum.com/agent-hackathon)  
-**Telegram**: @tmoney145  
-
-**Partnership Inquiries**: Ready for immediate technical integration with any Solana project.
-
----
-
-*Built with  for the Solana ecosystem. Empowering the next generation of autonomous agents with bulletproof infrastructure.*
+**Ready to supercharge your Solana development? Get started with `solana-devex setup`!** 🚀
