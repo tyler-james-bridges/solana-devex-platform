@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import ErrorBoundary from '../components/ErrorBoundary'
+import Navigation from '../components/Navigation'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -40,6 +41,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ErrorBoundary>
+          <Navigation />
           {children}
         </ErrorBoundary>
       </body>
