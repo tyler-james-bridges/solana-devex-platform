@@ -433,4 +433,4 @@ This monitoring system is production-ready and designed specifically for hackath
 1. `npm install && npm start`
 2. Open `dashboard.html` in your browser
 3. Integrate with your project using the examples
-4. Build something amazing! 🎯
+4. Build something amazing!

@@ -185,7 +185,7 @@ app.get('/api/metrics/protocols', authMiddleware, (req, res) => {
 
 // WebSocket connection handling
 wss.on('connection', (ws, req) => {
-  console.log('📡 WebSocket client connected for REAL data');
+  console.log('[NETWORK] WebSocket client connected for REAL data');
   connectedClients.add(ws);
 
   // Send initial real data
@@ -217,7 +217,7 @@ wss.on('connection', (ws, req) => {
   });
 
   ws.on('close', () => {
-    console.log('📡 WebSocket client disconnected');
+    console.log('[NETWORK] WebSocket client disconnected');
     connectedClients.delete(ws);
   });
 
@@ -246,7 +246,7 @@ function broadcastRealDataUpdate(data) {
 }
 
 // Start the real data collection
-console.log('🚀 Starting REAL Solana network data collection...');
+console.log('[INIT] Starting REAL Solana network data collection...');
 realDataCollector.startCollection(10000); // Collect every 10 seconds
 
 // Broadcast updates when new real data is available
@@ -259,7 +259,7 @@ setInterval(() => {
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🔄 Shutting down gracefully...');
+  console.log('[SYNC] Shutting down gracefully...');
   realDataCollector.stopCollection();
   
   wss.clients.forEach(client => {
@@ -267,21 +267,21 @@ process.on('SIGTERM', () => {
   });
   
   server.close(() => {
-    console.log('✅ Server shut down successfully');
+    console.log('[SUCCESS] Server shut down successfully');
     process.exit(0);
   });
 });
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 REAL DATA Solana DevEx API server running on port ${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}/api/dashboard/data`);
-  console.log(`🔗 WebSocket: ws://localhost:${PORT}`);
-  console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
-  console.log(`🌐 Network: MAINNET (REAL DATA)`);
-  console.log(`🔴 DATA MODE: 100% REAL SOLANA NETWORK DATA`);
+  console.log(`[INIT] REAL DATA Solana DevEx API server running on port ${PORT}`);
+  console.log(`[INFO] Metrics Dashboard: http://localhost:${PORT}/api/dashboard/data`);
+  console.log(`[LINK] WebSocket: ws://localhost:${PORT}`);
+  console.log(`[HEALTH] Health: http://localhost:${PORT}/api/health`);
+  console.log(`[WEB] Network: MAINNET (REAL DATA)`);
+  console.log(`[LIVE] DATA MODE: 100% REAL SOLANA NETWORK DATA`);
   console.log('');
-  console.log('✅ NO MOCK DATA - NO SIMULATIONS - REAL SOLANA ONLY');
+  console.log('[SUCCESS] NO MOCK DATA - NO SIMULATIONS - REAL SOLANA ONLY');
 });
 
 module.exports = { app, server, wss };

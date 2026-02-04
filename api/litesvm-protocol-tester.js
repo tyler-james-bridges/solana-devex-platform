@@ -58,7 +58,7 @@ class ProductionLiteSVMTester {
   async initialize() {
     if (this.isInitialized) return;
     
-    console.log('🚀 Initializing Production LiteSVM Testing Environment...');
+    console.log('[INIT] Initializing Production LiteSVM Testing Environment...');
     
     try {
       // Initialize LiteSVM with production settings
@@ -91,7 +91,7 @@ class ProductionLiteSVMTester {
         }
       );
 
-      console.log('✅ LiteSVM Environment Ready');
+      console.log('[SUCCESS] LiteSVM Environment Ready');
       this.isInitialized = true;
       
     } catch (error) {
@@ -104,7 +104,7 @@ class ProductionLiteSVMTester {
    * Deploy Real Programs for Testing
    */
   async deployRealPrograms() {
-    console.log('📦 Deploying Real Protocol Programs...');
+    console.log('[PACKAGE] Deploying Real Protocol Programs...');
     
     const programs = [
       {
@@ -136,10 +136,10 @@ class ProductionLiteSVMTester {
           // Deploy real program binary
           await this.deployProgramBinary(program.programId, programPath);
           deployedPrograms[program.name] = program.programId;
-          console.log(`✅ Deployed ${program.name} at ${program.programId.toString()}`);
+          console.log(`[SUCCESS] Deployed ${program.name} at ${program.programId.toString()}`);
         } catch {
           // Use mock if binary not available
-          console.log(`⚠️  ${program.name} binary not found, using mock`);
+          console.log(`[WARNING]  ${program.name} binary not found, using mock`);
           deployedPrograms[program.name] = await this.deployMockProgram(program.name);
         }
         
@@ -191,7 +191,7 @@ class ProductionLiteSVMTester {
     };
 
     await this.liteSvm.addAccount(mockProgramId, account);
-    console.log(`🎭 Deployed mock ${programName} at ${mockProgramId.toString()}`);
+    console.log(`[MOCK] Deployed mock ${programName} at ${mockProgramId.toString()}`);
     
     return mockProgramId;
   }
@@ -200,7 +200,7 @@ class ProductionLiteSVMTester {
    * Run Comprehensive Protocol Test Suite
    */
   async runProtocolTests(protocols = ['jupiter', 'raydium', 'kamino', 'drift', 'marinade']) {
-    console.log('🧪 Starting Comprehensive Protocol Testing...');
+    console.log('[TEST] Starting Comprehensive Protocol Testing...');
     
     await this.initialize();
     const startTime = Date.now();
@@ -230,7 +230,7 @@ class ProductionLiteSVMTester {
       
       // Run protocol tests
       for (const protocol of protocols) {
-        console.log(`\n🔬 Testing ${protocol.toUpperCase()} Protocol...`);
+        console.log(`\n[TEST] Testing ${protocol.toUpperCase()} Protocol...`);
         
         try {
           // Restore clean state
@@ -272,10 +272,10 @@ class ProductionLiteSVMTester {
       results.summary.duration = Date.now() - startTime;
       results.summary.testVelocity = this.calculateTestVelocity(results);
       
-      console.log(`\n🎯 Testing Complete:`);
-      console.log(`   ✅ Passed: ${results.summary.passed}/${results.summary.total}`);
-      console.log(`   ⏱️  Duration: ${results.summary.duration}ms`);
-      console.log(`   🚀 Velocity: ${results.summary.testVelocity.toFixed(2)} tests/sec`);
+      console.log(`\n[TARGET] Testing Complete:`);
+      console.log(`   [SUCCESS] Passed: ${results.summary.passed}/${results.summary.total}`);
+      console.log(`   [TIMING]  Duration: ${results.summary.duration}ms`);
+      console.log(`   [INIT] Velocity: ${results.summary.testVelocity.toFixed(2)} tests/sec`);
       
       return results;
       
@@ -343,7 +343,7 @@ class ProductionLiteSVMTester {
    * Test Jupiter Protocol - Real swap functionality
    */
   async testJupiterProtocol(deployedPrograms) {
-    console.log('🪐 Testing Jupiter V6 Swap Protocol...');
+    console.log('[SATURN] Testing Jupiter V6 Swap Protocol...');
     
     const tests = [];
     const transactions = [];
@@ -386,7 +386,7 @@ class ProductionLiteSVMTester {
    * Test Raydium Protocol - AMM functionality
    */
   async testRaydiumProtocol(deployedPrograms) {
-    console.log('🌊 Testing Raydium AMM Protocol...');
+    console.log('[WAVE] Testing Raydium AMM Protocol...');
     
     const tests = [];
     const transactions = [];
@@ -427,7 +427,7 @@ class ProductionLiteSVMTester {
    * Test Kamino Protocol - Lending functionality  
    */
   async testKaminoProtocol(deployedPrograms) {
-    console.log('💰 Testing Kamino Lending Protocol...');
+    console.log('[MONEY] Testing Kamino Lending Protocol...');
     
     const tests = [];
     
@@ -461,7 +461,7 @@ class ProductionLiteSVMTester {
    * Test Drift Protocol - Perpetuals
    */
   async testDriftProtocol(deployedPrograms) {
-    console.log('⚡ Testing Drift Perpetuals Protocol...');
+    console.log('[FAST] Testing Drift Perpetuals Protocol...');
     
     const tests = [];
     
@@ -487,7 +487,7 @@ class ProductionLiteSVMTester {
    * Test Marinade Protocol - Liquid Staking
    */
   async testMarinadeProtocol(deployedPrograms) {
-    console.log('🌊 Testing Marinade Liquid Staking...');
+    console.log('[WAVE] Testing Marinade Liquid Staking...');
     
     const tests = [];
     
@@ -838,7 +838,7 @@ class ProductionLiteSVMTester {
       state: 'snapshot_data'
     });
     
-    console.log(`📸 Created snapshot: ${snapshotId}`);
+    console.log(`[CAPTURE] Created snapshot: ${snapshotId}`);
     return snapshotId;
   }
 
@@ -852,7 +852,7 @@ class ProductionLiteSVMTester {
     }
     
     // In real implementation, restore LiteSVM state
-    console.log(`🔄 Restored snapshot: ${snapshotId}`);
+    console.log(`[SYNC] Restored snapshot: ${snapshotId}`);
   }
 
   /**
@@ -1025,7 +1025,7 @@ class ProductionLiteSVMTester {
       const report = this.generateTestReport(results);
       await fs.writeFile(filepath, JSON.stringify(report, null, 2));
       
-      console.log(`📊 Test results saved to: ${filepath}`);
+      console.log(`[INFO] Metrics Test results saved to: ${filepath}`);
       
       // Also save latest results
       const latestPath = path.join(outputDir, 'latest-results.json');
@@ -1100,7 +1100,7 @@ class ProductionLiteSVMTester {
     </style>
 </head>
 <body>
-    <h1>🧪 LiteSVM Protocol Test Results</h1>
+    <h1>[TEST] LiteSVM Protocol Test Results</h1>
     
     <div class="summary">
         <h2>📊 Summary</h2>
@@ -1176,7 +1176,7 @@ class ProductionLiteSVMTester {
     this.provider = null;
     this.isInitialized = false;
     
-    console.log('🧹 Cleanup completed');
+    console.log('[BROOM] Cleanup completed');
   }
 
   /**
@@ -1206,11 +1206,11 @@ if (require.main === module) {
 
   tester.runProtocolTests()
     .then(results => {
-      console.log('\n🎯 Final Results:', JSON.stringify(results.summary, null, 2));
+      console.log('\n[TARGET] Final Results:', JSON.stringify(results.summary, null, 2));
       return tester.saveResults(results);
     })
     .then(filepath => {
-      console.log(`\n📄 Results saved to: ${filepath}`);
+      console.log(`\n[FILE] Results saved to: ${filepath}`);
       process.exit(0);
     })
     .catch(error => {

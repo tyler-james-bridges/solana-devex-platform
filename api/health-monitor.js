@@ -63,7 +63,7 @@ class HealthMonitor extends EventEmitter {
     // Start monitoring
     this.startMonitoring();
     
-    console.log('🏥 Health monitor initialized');
+    console.log('[HEALTH] Health monitor initialized');
   }
   
   /**
@@ -108,7 +108,7 @@ class HealthMonitor extends EventEmitter {
    * Start health monitoring
    */
   startMonitoring() {
-    console.log('🔍 Starting health monitoring...');
+    console.log('[SEARCH] Starting health monitoring...');
     
     // Periodic health checks
     this.checkInterval = setInterval(async () => {
@@ -565,7 +565,7 @@ class HealthMonitor extends EventEmitter {
       
       this.healthState.alerts.delete(alertKey);
       
-      console.log(`✅ Health Alert Cleared: ${component} is now healthy`);
+      console.log(`[SUCCESS] Health Alert Cleared: ${component} is now healthy`);
       
       this.emit('alert_cleared', {
         component,
@@ -822,7 +822,7 @@ class HealthMonitor extends EventEmitter {
    * Graceful shutdown
    */
   close() {
-    console.log('🔌 Closing health monitor...');
+    console.log('[POWER] Closing health monitor...');
     
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
@@ -837,7 +837,7 @@ class HealthMonitor extends EventEmitter {
     }
     
     this.emit('monitoring_stopped');
-    console.log('✅ Health monitor closed');
+    console.log('[SUCCESS] Health monitor closed');
   }
 }
 

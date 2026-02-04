@@ -54,7 +54,7 @@ testCommand
       spinner.stop();
       
       // Display results
-      console.log(chalk.bold.blue('\n🧪 Protocol Test Results\n'));
+      console.log(chalk.bold.blue('\n[TEST] Protocol Test Results\n'));
       
       results.forEach((result, index) => {
         const status = result.success ? 
@@ -108,13 +108,13 @@ testCommand
       spinner.stop();
       
       if (result.success) {
-        console.log(chalk.green('✅ Jupiter swap test PASSED'));
+        console.log(chalk.green('[SUCCESS] Jupiter swap test PASSED'));
         console.log(`Input: ${options.amount} tokens`);
         console.log(`Output: ${result.data.outputAmount} tokens`);
         console.log(`Price Impact: ${result.data.priceImpact}%`);
         console.log(`Latency: ${result.latency}ms`);
       } else {
-        console.log(chalk.red('❌ Jupiter swap test FAILED'));
+        console.log(chalk.red('[ERROR] Jupiter swap test FAILED'));
         console.log(`Error: ${result.error || result.message}`);
       }
     } catch (error) {
@@ -139,7 +139,7 @@ liteTestCommand
   .option('-o, --output <path>', 'Save test report to file')
   .option('--timeout <ms>', 'Test timeout in milliseconds', '60000')
   .action(async (options) => {
-    console.log(chalk.bold.blue('🚀 LiteSVM Protocol Test Suite'));
+    console.log(chalk.bold.blue('[INIT] LiteSVM Protocol Test Suite'));
     console.log(chalk.gray('Ultra-fast on-chain program testing with Anchor integration\n'));
     
     const spinner = ora('Initializing LiteSVM test environment...').start();
@@ -158,7 +158,7 @@ liteTestCommand
       spinner.stop();
       
       // Display results
-      console.log(chalk.bold.blue('\n📊 Test Results Summary\n'));
+      console.log(chalk.bold.blue('\n[INFO] Metrics Test Results Summary\n'));
       
       // Protocol results
       Object.entries(results.protocols).forEach(([protocol, result]) => {
@@ -184,7 +184,7 @@ liteTestCommand
       
       // Performance metrics
       if (results.performance) {
-        console.log(chalk.bold.blue('⚡ Performance Metrics'));
+        console.log(chalk.bold.blue('[FAST] Performance Metrics'));
         console.log(`Total Duration: ${results.performance.totalDuration}ms`);
         console.log(`Average Duration: ${Math.round(results.performance.averageDuration)}ms`);
         console.log(`Test Velocity: ${results.performance.testVelocity.toFixed(2)} tests/sec`);
@@ -196,7 +196,7 @@ liteTestCommand
       
       // Coverage report
       if (results.coverage && results.coverage.overall) {
-        console.log(chalk.bold.blue('📈 Code Coverage'));
+        console.log(chalk.bold.blue('[INFO] Analytics Code Coverage'));
         console.log(`Overall: ${results.coverage.overall}%`);
         if (results.coverage.protocols) {
           Object.entries(results.coverage.protocols).forEach(([protocol, coverage]) => {
@@ -210,7 +210,7 @@ liteTestCommand
       const successRate = (results.summary.passed / results.summary.total * 100).toFixed(1);
       const summaryColor = results.summary.passed === results.summary.total ? chalk.green : chalk.yellow;
       
-      console.log(summaryColor.bold(`🎯 Final Result: ${results.summary.passed}/${results.summary.total} protocols passed (${successRate}%)`));
+      console.log(summaryColor.bold(`[TARGET] Final Result: ${results.summary.passed}/${results.summary.total} protocols passed (${successRate}%)`));
       
       // Save report if requested
       if (options.output) {
@@ -238,7 +238,7 @@ liteTestCommand
       process.exit(1);
     }
     
-    console.log(chalk.bold.blue(`🧪 Testing ${name.toUpperCase()} Protocol`));
+    console.log(chalk.bold.blue(`[TEST] Testing ${name.toUpperCase()} Protocol`));
     const spinner = ora(`Running ${name} tests...`).start();
     
     try {
@@ -252,7 +252,7 @@ liteTestCommand
       spinner.stop();
       
       if (result.success) {
-        console.log(chalk.green(`\n✅ ${name.toUpperCase()} tests PASSED`));
+        console.log(chalk.green(`\n[SUCCESS] ${name.toUpperCase()} tests PASSED`));
         console.log(`Duration: ${result.duration}ms`);
         
         if (result.tests && result.tests.length > 0) {
@@ -273,7 +273,7 @@ liteTestCommand
         }
         
       } else {
-        console.log(chalk.red(`\n❌ ${name.toUpperCase()} tests FAILED`));
+        console.log(chalk.red(`\n[ERROR] ${name.toUpperCase()} tests FAILED`));
         if (result.error) {
           console.log(chalk.red(`Error: ${result.error}`));
         }
@@ -291,7 +291,7 @@ liteTestCommand
   .description('Initialize LiteSVM testing environment')
   .option('--workspace <path>', 'Anchor workspace path', './anchor-workspace')
   .action(async (options) => {
-    console.log(chalk.bold.blue('🔧 Setting up LiteSVM Testing Environment'));
+    console.log(chalk.bold.blue('[CONFIG] Setting up LiteSVM Testing Environment'));
     const spinner = ora('Creating workspace structure...').start();
     
     try {
@@ -302,7 +302,7 @@ liteTestCommand
       await tester.validateWorkspace();
       
       spinner.stop();
-      console.log(chalk.green('✅ LiteSVM environment setup complete!'));
+      console.log(chalk.green('[SUCCESS] LiteSVM environment setup complete!'));
       console.log(chalk.bold('\nNext steps:'));
       console.log('1. Install Rust and Anchor CLI if not already installed');
       console.log('2. Run: solana-devex litetest all');
@@ -342,11 +342,11 @@ projectCommand
       
       if (result.success) {
         spinner.stop();
-        console.log(chalk.green('✅ Project created successfully!'));
+        console.log(chalk.green('[SUCCESS] Project created successfully!'));
         console.log(chalk.bold(`Project path: ${result.projectPath}`));
         console.log('\nGenerated files:');
         result.files.forEach(file => {
-          console.log(chalk.gray(`  📄 ${file}`));
+          console.log(chalk.gray(`  [FILE] ${file}`));
         });
         
         console.log(chalk.blue('\nNext steps:'));
@@ -380,7 +380,7 @@ deployCommand
   .option('--dry-run', 'Simulate deployment without executing')
   .action(async (options) => {
     if (options.dryRun) {
-      console.log(chalk.yellow('🔍 Dry run mode - no actual deployment will occur'));
+      console.log(chalk.yellow('[SEARCH] Dry run mode - no actual deployment will occur'));
     }
     
     const spinner = ora(`Deploying to ${options.environment}...`).start();
@@ -402,7 +402,7 @@ deployCommand
       
       if (options.dryRun) {
         spinner.stop();
-        console.log(chalk.blue('✅ Dry run completed. Project structure looks good!'));
+        console.log(chalk.blue('[SUCCESS] Dry run completed. Project structure looks good!'));
         return;
       }
       
@@ -412,12 +412,12 @@ deployCommand
       spinner.stop();
       
       if (deployment.status === 'success') {
-        console.log(chalk.green('✅ Deployment successful!'));
+        console.log(chalk.green('[SUCCESS] Deployment successful!'));
         console.log(`Program ID: ${deployment.programId}`);
         console.log(`Environment: ${deployment.environment}`);
         console.log(`Duration: ${((new Date(deployment.completedAt) - new Date(deployment.startedAt)) / 1000).toFixed(2)}s`);
       } else {
-        console.log(chalk.red('❌ Deployment failed'));
+        console.log(chalk.red('[ERROR] Deployment failed'));
         console.log('Recent logs:');
         deployment.logs.slice(-5).forEach(log => {
           const color = log.level === 'error' ? chalk.red : log.level === 'success' ? chalk.green : chalk.gray;
@@ -444,7 +444,7 @@ monitorCommand
   .option('-n, --network <network>', 'Solana network to monitor', 'devnet')
   .option('-i, --interval <seconds>', 'Health check interval in seconds', '30')
   .action(async (options) => {
-    console.log(chalk.blue('🔍 Starting live monitoring...'));
+    console.log(chalk.blue('[SEARCH] Starting live monitoring...'));
     
     const rpcEndpoint = getRpcEndpoint(options.network);
     const monitor = new LiveMonitor({
@@ -454,7 +454,7 @@ monitorCommand
     
     // Event handlers
     monitor.on('monitoring_started', () => {
-      console.log(chalk.green('✅ Monitoring started successfully'));
+      console.log(chalk.green('[SUCCESS] Monitoring started successfully'));
     });
     
     monitor.on('health_update', (data) => {
@@ -463,16 +463,16 @@ monitorCommand
     });
     
     monitor.on('slot_change', (data) => {
-      console.log(chalk.gray(`📦 New slot: ${data.slot}`));
+      console.log(chalk.gray(`[PACKAGE] New slot: ${data.slot}`));
     });
     
     monitor.on('health_check_error', (error) => {
-      console.log(chalk.red(`❌ Health check error: ${error.message}`));
+      console.log(chalk.red(`[ERROR] Health check error: ${error.message}`));
     });
     
     // Handle graceful shutdown
     process.on('SIGINT', () => {
-      console.log(chalk.yellow('\n🛑 Stopping monitoring...'));
+      console.log(chalk.yellow('\n[STOP] Stopping monitoring...'));
       monitor.stopMonitoring();
       process.exit(0);
     });
@@ -519,7 +519,7 @@ function getRpcEndpoint(network) {
 }
 
 function displayHealthDashboard(data) {
-  console.log(chalk.bold.blue('📊 Solana DevEx Health Dashboard\n'));
+  console.log(chalk.bold.blue('[INFO] Metrics Solana DevEx Health Dashboard\n'));
   console.log(chalk.gray(`Last updated: ${data.timestamp}\n`));
   
   // Network health
@@ -527,7 +527,7 @@ function displayHealthDashboard(data) {
     const statusColor = data.network.status === 'healthy' ? chalk.green : 
                        data.network.status === 'degraded' ? chalk.yellow : chalk.red;
     
-    console.log(chalk.bold('🌐 Network Status'));
+    console.log(chalk.bold('[WEB] Network Status'));
     console.log(`Status: ${statusColor(data.network.status.toUpperCase())}`);
     console.log(`Latency: ${data.network.latency}ms`);
     console.log(`Current Slot: ${data.network.slot}`);
@@ -540,7 +540,7 @@ function displayHealthDashboard(data) {
   
   // Protocol health
   if (data.protocols && Object.keys(data.protocols).length > 0) {
-    console.log(chalk.bold('⚡ Protocol Health'));
+    console.log(chalk.bold('[FAST] Protocol Health'));
     Object.entries(data.protocols).forEach(([protocol, health]) => {
       const statusColor = health.status === 'healthy' ? chalk.green : 
                          health.status === 'degraded' ? chalk.yellow : chalk.red;
@@ -554,21 +554,21 @@ function displayHealthDashboard(data) {
 }
 
 function displayHealthSummary(summary) {
-  console.log(chalk.bold.blue('📋 Health Summary\n'));
+  console.log(chalk.bold.blue('[CLIPBOARD] Health Summary\n'));
   
   if (summary.networks.solana) {
     const network = summary.networks.solana;
     const statusColor = network.status === 'healthy' ? chalk.green : 
                        network.status === 'degraded' ? chalk.yellow : chalk.red;
     
-    console.log(chalk.bold('🌐 Network'));
+    console.log(chalk.bold('[WEB] Network'));
     console.log(`  Status: ${statusColor(network.status.toUpperCase())}`);
     console.log(`  Latency: ${network.latency}ms`);
     console.log('');
   }
   
   if (Object.keys(summary.protocols).length > 0) {
-    console.log(chalk.bold('⚡ Protocols'));
+    console.log(chalk.bold('[FAST] Protocols'));
     Object.entries(summary.protocols).forEach(([protocol, health]) => {
       const statusColor = health.status === 'healthy' ? chalk.green : 
                          health.status === 'degraded' ? chalk.yellow : chalk.red;
@@ -579,7 +579,7 @@ function displayHealthSummary(summary) {
   }
   
   if (summary.metrics.avgNetworkLatency) {
-    console.log(chalk.bold('📈 Metrics'));
+    console.log(chalk.bold('[INFO] Analytics Metrics'));
     console.log(`  Avg Network Latency: ${summary.metrics.avgNetworkLatency}ms`);
   }
 }

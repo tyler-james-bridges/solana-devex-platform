@@ -86,16 +86,16 @@ class ProductionLoadTest {
     this.isRunning = false;
     this.startTime = null;
     
-    console.log('🧪 Production load test initialized');
+    console.log('[TEST] Production load test initialized');
   }
   
   /**
    * Start the load test
    */
   async start() {
-    console.log(`🚀 Starting production load test`);
-    console.log(`📊 Configuration: ${this.options.agents} agents, ${this.options.duration/1000}s duration`);
-    console.log(`🎯 Scenarios: ${this.options.scenarios.join(', ')}`);
+    console.log(`[INIT] Starting production load test`);
+    console.log(`[INFO] Metrics Configuration: ${this.options.agents} agents, ${this.options.duration/1000}s duration`);
+    console.log(`[TARGET] Scenarios: ${this.options.scenarios.join(', ')}`);
     
     this.isRunning = true;
     this.startTime = Date.now();
@@ -107,7 +107,7 @@ class ProductionLoadTest {
     await this.rampUpAgents();
     
     // Wait for test duration
-    console.log('⏱️ Test running, waiting for completion...');
+    console.log('[TIMING] Test running, waiting for completion...');
     await this.waitForDuration();
     
     // Stop all agents
@@ -127,7 +127,7 @@ class ProductionLoadTest {
   async rampUpAgents() {
     const interval = this.options.rampUpTime / this.options.agents;
     
-    console.log(`📈 Ramping up ${this.options.agents} agents over ${this.options.rampUpTime/1000}s`);
+    console.log(`[INFO] Analytics Ramping up ${this.options.agents} agents over ${this.options.rampUpTime/1000}s`);
     
     for (let i = 0; i < this.options.agents; i++) {
       if (!this.isRunning) break;
@@ -145,7 +145,7 @@ class ProductionLoadTest {
       }
     }
     
-    console.log(`✅ All ${this.agents.length} agents started`);
+    console.log(`[SUCCESS] All ${this.agents.length} agents started`);
   }
   
   /**
@@ -169,12 +169,12 @@ class ProductionLoadTest {
    * Stop all agents
    */
   async stopAllAgents() {
-    console.log('🛑 Stopping all agents...');
+    console.log('[STOP] Stopping all agents...');
     
     const stopPromises = this.agents.map(agent => agent.stop());
     await Promise.allSettled(stopPromises);
     
-    console.log('✅ All agents stopped');
+    console.log('[SUCCESS] All agents stopped');
   }
   
   /**
@@ -266,7 +266,7 @@ class ProductionLoadTest {
     
     const rps = Math.round(requests.total / (elapsed / 1000));
     
-    console.log(`📊 Progress: ${Math.round(progress)}% | ` +
+    console.log(`[INFO] Metrics Progress: ${Math.round(progress)}% | ` +
       `Requests: ${requests.total} (${rps}/s) | ` +
       `Errors: ${errorRate}% | ` +
       `Avg Response: ${avgResponseTime}ms | ` +
@@ -363,15 +363,15 @@ class ProductionLoadTest {
    */
   printFinalReport(report) {
     console.log('\n' + '='.repeat(80));
-    console.log('📋 PRODUCTION LOAD TEST REPORT');
+    console.log('[CLIPBOARD] PRODUCTION LOAD TEST REPORT');
     console.log('='.repeat(80));
     
-    console.log(`\n📊 SUMMARY:`);
+    console.log(`\n[INFO] Metrics SUMMARY:`);
     console.log(`   Test Duration: ${(report.summary.testDuration/1000).toFixed(1)}s`);
     console.log(`   Total Agents: ${report.summary.totalAgents}`);
-    console.log(`   Success: ${report.summary.success ? '✅ PASS' : '❌ FAIL'}`);
+    console.log(`   Success: ${report.summary.success ? '[SUCCESS] PASS' : '[ERROR] FAIL'}`);
     
-    console.log(`\n🌐 API REQUESTS:`);
+    console.log(`\n[WEB] API REQUESTS:`);
     console.log(`   Total Requests: ${report.requests.total.toLocaleString()}`);
     console.log(`   Success Rate: ${(100 - report.requests.errorRate).toFixed(2)}%`);
     console.log(`   Requests/Second: ${report.requests.requestsPerSecond}`);
@@ -379,13 +379,13 @@ class ProductionLoadTest {
     console.log(`   95th Percentile: ${report.requests.responseTime.percentile95}ms`);
     console.log(`   99th Percentile: ${report.requests.responseTime.percentile99}ms`);
     
-    console.log(`\n🔌 WEBSOCKETS:`);
+    console.log(`\n[POWER] WEBSOCKETS:`);
     console.log(`   Total Connections: ${report.websockets.totalConnections}`);
     console.log(`   Messages Sent: ${report.websockets.messagesSent.toLocaleString()}`);
     console.log(`   Messages Received: ${report.websockets.messagesReceived.toLocaleString()}`);
     console.log(`   Error Rate: ${report.websockets.errorRate.toFixed(2)}%`);
     
-    console.log(`\n🎯 THRESHOLDS:`);
+    console.log(`\n[TARGET] THRESHOLDS:`);
     const thresholdDetails = report.thresholds.details;
     Object.keys(thresholdDetails).forEach(key => {
       const detail = thresholdDetails[key];
@@ -394,7 +394,7 @@ class ProductionLoadTest {
     });
     
     if (!report.summary.success) {
-      console.log(`\n⚠️ ISSUES FOUND:`);
+      console.log(`\n[WARNING] ISSUES FOUND:`);
       if (report.requests.errorRate > this.options.thresholds.errorRate) {
         console.log(`   - High error rate: ${report.requests.errorRate}%`);
       }
@@ -497,7 +497,7 @@ class ProductionLoadTest {
    * Stop the test early
    */
   stop() {
-    console.log('🛑 Stopping load test early...');
+    console.log('[STOP] Stopping load test early...');
     this.isRunning = false;
     
     if (this.reportInterval) {
@@ -588,7 +588,7 @@ class SimulatedAgent {
       
       // Random chance of burst
       if (Math.random() < this.options.burstProbability) {
-        console.log(`🔥 Agent ${this.id} starting burst test`);
+        console.log(`[CRITICAL] Agent ${this.id} starting burst test`);
         
         // Send burst of requests
         const promises = [];
@@ -719,7 +719,7 @@ class SimulatedAgent {
         
         ws.on('open', () => {
           this.metrics.websockets.connections++;
-          console.log(`🔌 Agent ${this.id} WebSocket ${i} connected`);
+          console.log(`[POWER] Agent ${this.id} WebSocket ${i} connected`);
         });
         
         ws.on('message', (data) => {
@@ -859,7 +859,7 @@ if (require.main === module) {
   
   // Handle graceful shutdown
   process.on('SIGINT', () => {
-    console.log('\n🛑 Received SIGINT, stopping load test...');
+    console.log('\n[STOP] Received SIGINT, stopping load test...');
     loadTest.stop();
     process.exit(0);
   });
@@ -867,13 +867,13 @@ if (require.main === module) {
   // Start the test
   loadTest.start()
     .then(report => {
-      console.log('\n✅ Load test completed');
+      console.log('\n[SUCCESS] Load test completed');
       
       // Save report to file
       const fs = require('fs');
       const reportPath = `load-test-report-${Date.now()}.json`;
       fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-      console.log(`📄 Report saved to: ${reportPath}`);
+      console.log(`[FILE] Report saved to: ${reportPath}`);
       
       // Exit with appropriate code
       process.exit(report.summary.success ? 0 : 1);

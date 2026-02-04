@@ -17,7 +17,7 @@ class ProtocolHealthTester {
    * Run all tests and generate a comprehensive report
    */
   async runAllTests() {
-    console.log('🧪 Solana Protocol Health Monitor Test Suite');
+    console.log('[TEST] Solana Protocol Health Monitor Test Suite');
     console.log('='.repeat(50));
     console.log('Testing all endpoints and functionality...\n');
 
@@ -60,7 +60,7 @@ class ProtocolHealthTester {
         duration: Date.now() - startTime,
         details: 'Test completed successfully'
       };
-      console.log(`✅ ${name} - PASSED (${result.duration}ms)`);
+      console.log(`[SUCCESS] ${name} - PASSED (${result.duration}ms)`);
     } catch (error) {
       result = {
         name,
@@ -69,7 +69,7 @@ class ProtocolHealthTester {
         error: error.message,
         details: error.stack
       };
-      console.log(`❌ ${name} - FAILED (${result.duration}ms)`);
+      console.log(`[ERROR] ${name} - FAILED (${result.duration}ms)`);
       console.log(`   Error: ${error.message}`);
     }
 
@@ -416,7 +416,7 @@ class ProtocolHealthTester {
    */
   generateReport() {
     console.log('\n' + '='.repeat(60));
-    console.log('📊 TEST RESULTS SUMMARY');
+    console.log('[INFO] Metrics TEST RESULTS SUMMARY');
     console.log('='.repeat(60));
 
     const totalTests = this.testResults.length;
@@ -425,14 +425,14 @@ class ProtocolHealthTester {
     const totalDuration = this.testResults.reduce((sum, r) => sum + r.duration, 0);
 
     console.log(`Total Tests: ${totalTests}`);
-    console.log(`Passed: ${passedTests} ✅`);
-    console.log(`Failed: ${failedTests} ${failedTests > 0 ? '❌' : ''}`);
+    console.log(`Passed: ${passedTests} [SUCCESS]`);
+    console.log(`Failed: ${failedTests} ${failedTests > 0 ? '[ERROR]' : ''}`);
     console.log(`Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
     console.log(`Total Duration: ${totalDuration}ms`);
     console.log(`Average Test Duration: ${(totalDuration / totalTests).toFixed(2)}ms`);
 
     if (failedTests > 0) {
-      console.log('\n❌ FAILED TESTS:');
+      console.log('\n[ERROR] FAILED TESTS:');
       this.testResults
         .filter(r => r.status === 'FAIL')
         .forEach(test => {
@@ -440,20 +440,20 @@ class ProtocolHealthTester {
         });
     }
 
-    console.log('\n📋 DETAILED RESULTS:');
+    console.log('\n[CLIPBOARD] DETAILED RESULTS:');
     this.testResults.forEach(test => {
       const status = test.status === 'PASS' ? '✅' : '❌';
       console.log(`   ${status} ${test.name} (${test.duration}ms)`);
     });
 
     if (passedTests === totalTests) {
-      console.log('\n🎉 ALL TESTS PASSED! The monitoring system is working correctly.');
-      console.log('🚀 Ready for production use by hackathon projects!');
+      console.log('\n[SUCCESS] ALL TESTS PASSED! The monitoring system is working correctly.');
+      console.log('[INIT] Ready for production use by hackathon projects!');
     } else {
-      console.log('\n⚠️  Some tests failed. Please check the monitoring system configuration.');
+      console.log('\n[WARNING]  Some tests failed. Please check the monitoring system configuration.');
     }
 
-    console.log('\n💡 Next steps:');
+    console.log('\n[INFO] Next steps:');
     console.log('   - Open dashboard.html in your browser');
     console.log('   - Try the example integrations in simple-monitor.js');
     console.log('   - Use the API endpoints in your hackathon project');
@@ -474,7 +474,7 @@ if (require.main === module) {
   
   tester.runAllTests().catch(error => {
     console.error('❌ Test suite failed:', error.message);
-    console.log('💡 Make sure the health monitoring API is running on port 3002');
+    console.log('[INFO] Make sure the health monitoring API is running on port 3002');
     process.exit(1);
   });
 }

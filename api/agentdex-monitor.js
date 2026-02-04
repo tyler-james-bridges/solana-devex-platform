@@ -106,8 +106,8 @@ class AgentDEXMonitor extends EventEmitter {
     }
 
     this.isMonitoring = true;
-    console.log('🚀 Starting AgentDEX endpoint monitoring...');
-    console.log(`📊 Monitoring ${this.endpoints.length} endpoints every ${this.monitoringInterval}ms`);
+    console.log('[INIT] Starting AgentDEX endpoint monitoring...');
+    console.log(`[INFO] Metrics Monitoring ${this.endpoints.length} endpoints every ${this.monitoringInterval}ms`);
     
     // Start monitoring loop
     this.monitoringLoop();
@@ -127,7 +127,7 @@ class AgentDEXMonitor extends EventEmitter {
     if (this.monitoringTimer) {
       clearTimeout(this.monitoringTimer);
     }
-    console.log('⏹️ AgentDEX monitoring stopped');
+    console.log('[STOP] AgentDEX monitoring stopped');
     
     this.emit('monitoring-stopped', {
       timestamp: Date.now()
@@ -166,7 +166,7 @@ class AgentDEXMonitor extends EventEmitter {
     await Promise.allSettled(promises);
     
     const duration = Date.now() - startTime;
-    console.log(`✅ AgentDEX health check completed in ${duration}ms`);
+    console.log(`[SUCCESS] AgentDEX health check completed in ${duration}ms`);
     
     // Emit aggregated metrics
     this.emitAggregatedMetrics();

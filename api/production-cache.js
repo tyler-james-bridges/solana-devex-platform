@@ -74,7 +74,7 @@ class ProductionCache {
       });
       
       this.redisCache.on('connect', () => {
-        console.log('📦 Redis cache connected');
+        console.log('[PACKAGE] Redis cache connected');
       });
     }
     
@@ -114,7 +114,7 @@ class ProductionCache {
       this.warmupCache();
     }
     
-    console.log('🚀 Production cache system initialized');
+    console.log('[INIT] Production cache system initialized');
   }
   
   /**
@@ -661,7 +661,7 @@ class ProductionCache {
    * Cache warmup
    */
   async warmupCache() {
-    console.log('🔥 Starting cache warmup...');
+    console.log('[CRITICAL] Starting cache warmup...');
     
     for (const key of this.options.preloadKeys) {
       try {
@@ -673,7 +673,7 @@ class ProductionCache {
       }
     }
     
-    console.log(`✅ Cache warmup completed for ${this.options.preloadKeys.length} keys`);
+    console.log(`[SUCCESS] Cache warmup completed for ${this.options.preloadKeys.length} keys`);
   }
   
   /**
@@ -697,7 +697,7 @@ class ProductionCache {
       }
     }, 10 * 60 * 1000);
     
-    console.log('🔧 Cache maintenance tasks started');
+    console.log('[CONFIG] Cache maintenance tasks started');
   }
   
   cleanupAccessPatterns() {
@@ -714,7 +714,7 @@ class ProductionCache {
     });
     
     if (cleaned > 0) {
-      console.log(`🧹 Cleaned up ${cleaned} old access patterns`);
+      console.log(`[BROOM] Cleaned up ${cleaned} old access patterns`);
     }
     
     this.stats.lastCleanup = Date.now();
@@ -728,7 +728,7 @@ class ProductionCache {
   
   logCacheStats() {
     const stats = this.getStats();
-    console.log(`📊 Cache Stats: ${stats.hitRate}% hit rate, L1: ${stats.l1Size}/${stats.l1MaxSize}, Hot: ${stats.hotKeysCount}, Cold: ${stats.coldKeysCount}`);
+    console.log(`[INFO] Metrics Cache Stats: ${stats.hitRate}% hit rate, L1: ${stats.l1Size}/${stats.l1MaxSize}, Hot: ${stats.hotKeysCount}, Cold: ${stats.coldKeysCount}`);
   }
   
   async clearRedisPattern(pattern) {
@@ -752,7 +752,7 @@ class ProductionCache {
    * Graceful shutdown
    */
   async close() {
-    console.log('🔌 Closing cache system...');
+    console.log('[POWER] Closing cache system...');
     
     if (this.memoryCache) {
       this.memoryCache.clear();
@@ -762,7 +762,7 @@ class ProductionCache {
       this.redisCache.disconnect();
     }
     
-    console.log('✅ Cache system closed');
+    console.log('[SUCCESS] Cache system closed');
   }
 }
 

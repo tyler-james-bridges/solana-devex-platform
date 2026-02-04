@@ -586,7 +586,7 @@ wss.on('connection', (ws, req) => {
   const currentCount = ipConnections.get(ip) || 0;
   
   if (currentCount >= MAX_WS_CONNECTIONS_PER_IP) {
-    console.log(`🚨 WebSocket connection limit exceeded for IP: ${ip}`);
+    console.log(`[ALERT] WebSocket connection limit exceeded for IP: ${ip}`);
     ws.close(1008, 'Connection limit exceeded');
     return;
   }
@@ -608,7 +608,7 @@ wss.on('connection', (ws, req) => {
     return;
   }
   
-  console.log('📡 WebSocket client connected');
+  console.log('[NETWORK] WebSocket client connected');
   connectedClients.add(ws);
   
   // Send initial dashboard data
@@ -642,7 +642,7 @@ wss.on('connection', (ws, req) => {
   
   // Handle disconnection
   ws.on('close', () => {
-    console.log('📡 WebSocket client disconnected');
+    console.log('[NETWORK] WebSocket client disconnected');
     connectedClients.delete(ws);
   });
   
@@ -739,7 +739,7 @@ monitor.on('alert', (alert) => {
     data: alertData
   });
   
-  console.log(`🚨 Alert: ${alert.rule.name} - ${alert.value} ${alert.rule.condition}`);
+  console.log(`[ALERT] Alert: ${alert.rule.name} - ${alert.value} ${alert.rule.condition}`);
 });
 
 monitor.on('health_check', (data) => {
@@ -750,7 +750,7 @@ monitor.on('health_check', (data) => {
 });
 
 monitor.on('monitoring_started', (data) => {
-  console.log('🚀 Real-time monitoring started');
+  console.log('[INIT] Real-time monitoring started');
   broadcastToClients({
     type: 'monitoring_status',
     data: { status: 'started', ...data }
@@ -758,7 +758,7 @@ monitor.on('monitoring_started', (data) => {
 });
 
 monitor.on('monitoring_stopped', (data) => {
-  console.log('🛑 Real-time monitoring stopped');
+  console.log('[STOP] Real-time monitoring stopped');
   broadcastToClients({
     type: 'monitoring_status',
     data: { status: 'stopped', ...data }
@@ -781,7 +781,7 @@ agentdexMonitor.on('endpoint-checked', (data) => {
 });
 
 agentdexMonitor.on('monitoring-started', (data) => {
-  console.log('🚀 AgentDEX monitoring started - 13 endpoints');
+  console.log('[INIT] AgentDEX monitoring started - 13 endpoints');
   broadcastToClients({
     type: 'agentdex_monitoring_status',
     data: { status: 'started', ...data }
@@ -789,7 +789,7 @@ agentdexMonitor.on('monitoring-started', (data) => {
 });
 
 agentdexMonitor.on('monitoring-stopped', (data) => {
-  console.log('⏹️ AgentDEX monitoring stopped');
+  console.log('[STOP] AgentDEX monitoring stopped');
   broadcastToClients({
     type: 'agentdex_monitoring_status',
     data: { status: 'stopped', ...data }
@@ -857,7 +857,7 @@ setInterval(() => {
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  console.log('🔄 Shutting down gracefully...');
+  console.log('[SYNC] Shutting down gracefully...');
   
   await monitor.stopMonitoring();
   agentdexMonitor.stopMonitoring();
@@ -867,24 +867,24 @@ process.on('SIGTERM', async () => {
   });
   
   server.close(() => {
-    console.log('✅ Server shut down successfully');
+    console.log('[SUCCESS] Server shut down successfully');
     process.exit(0);
   });
 });
 
 // Start the enhanced monitoring system for HACKATHON
 // Enable real-time monitoring to collect REAL Solana data
-console.log('🔥 HACKATHON MODE: Starting real-time monitoring with LIVE Solana data...');
+console.log('[CRITICAL] HACKATHON MODE: Starting real-time monitoring with LIVE Solana data...');
 monitor.startMonitoring().catch(console.error);
 agentdexMonitor.startMonitoring().catch(console.error);
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Real-time Solana DevEx API server running on port ${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}/api/dashboard/data`);
-  console.log(`🔗 WebSocket: ws://localhost:${PORT}`);
-  console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
-  console.log(`🌐 Network: ${process.env.SOLANA_NETWORK || 'mainnet'}`);
+  console.log(`[INIT] Real-time Solana DevEx API server running on port ${PORT}`);
+  console.log(`[INFO] Metrics Dashboard: http://localhost:${PORT}/api/dashboard/data`);
+  console.log(`[LINK] WebSocket: ws://localhost:${PORT}`);
+  console.log(`[HEALTH] Health: http://localhost:${PORT}/api/health`);
+  console.log(`[WEB] Network: ${process.env.SOLANA_NETWORK || 'mainnet'}`);
 });
 
 module.exports = { app, server, wss, monitor };

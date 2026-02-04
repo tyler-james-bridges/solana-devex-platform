@@ -82,7 +82,7 @@ class ProductionWebSocketManager extends EventEmitter {
     this.server.on('connection', (ws, request) => this.handleConnection(ws, request));
     this.server.on('error', (error) => this.handleError(error));
     
-    console.log(`📡 WebSocket server initialized with clustering: ${this.options.clustering}`);
+    console.log(`[NETWORK] WebSocket server initialized with clustering: ${this.options.clustering}`);
   }
   
   /**
@@ -168,7 +168,7 @@ class ProductionWebSocketManager extends EventEmitter {
       }
     });
     
-    console.log(`📱 New WebSocket connection: ${connectionId} from ${ip} (${this.stats.activeConnections} active)`);
+    console.log(`[MOBILE] New WebSocket connection: ${connectionId} from ${ip} (${this.stats.activeConnections} active)`);
     
     this.emit('connection', { connectionId, ip, userAgent });
   }
@@ -455,7 +455,7 @@ class ProductionWebSocketManager extends EventEmitter {
     this.connections.delete(connectionId);
     this.stats.activeConnections--;
     
-    console.log(`📴 WebSocket disconnection: ${connectionId} (${this.stats.activeConnections} active)`);
+    console.log(`[OFFLINE] WebSocket disconnection: ${connectionId} (${this.stats.activeConnections} active)`);
     
     this.emit('disconnection', { connectionId, ip: connection.ip });
   }
@@ -583,12 +583,12 @@ class ProductionWebSocketManager extends EventEmitter {
     });
     
     if (staleConnections > 0) {
-      console.log(`🔍 Performance check: ${staleConnections} stale connections found`);
+      console.log(`[SEARCH] Performance check: ${staleConnections} stale connections found`);
     }
     
     // Log performance stats
     const memUsage = process.memoryUsage();
-    console.log(`📊 WebSocket stats: ${this.stats.activeConnections} active, ${this.stats.messagesReceived} msgs received, ${Math.round(memUsage.heapUsed / 1024 / 1024)}MB used`);
+    console.log(`[INFO] Metrics WebSocket stats: ${this.stats.activeConnections} active, ${this.stats.messagesReceived} msgs received, ${Math.round(memUsage.heapUsed / 1024 / 1024)}MB used`);
   }
   
   /**
@@ -613,7 +613,7 @@ class ProductionWebSocketManager extends EventEmitter {
     });
     
     if (cleaned > 0) {
-      console.log(`🧹 Cleaned up ${cleaned} stale WebSocket connections`);
+      console.log(`[BROOM] Cleaned up ${cleaned} stale WebSocket connections`);
     }
   }
   
@@ -629,7 +629,7 @@ class ProductionWebSocketManager extends EventEmitter {
         console.error('Redis subscription error:', err);
         return;
       }
-      console.log(`📡 Subscribed to WebSocket broadcasts (${count} subscriptions)`);
+      console.log(`[NETWORK] Subscribed to WebSocket broadcasts (${count} subscriptions)`);
     });
     
     this.redis.on('message', (channel, message) => {
@@ -699,7 +699,7 @@ class ProductionWebSocketManager extends EventEmitter {
    * Graceful shutdown
    */
   async close() {
-    console.log('🔌 Closing WebSocket manager...');
+    console.log('[POWER] Closing WebSocket manager...');
     
     // Close all connections gracefully
     this.connections.forEach((connection, connectionId) => {
@@ -725,7 +725,7 @@ class ProductionWebSocketManager extends EventEmitter {
       this.redisPub.disconnect();
     }
     
-    console.log('✅ WebSocket manager closed');
+    console.log('[SUCCESS] WebSocket manager closed');
   }
 }
 

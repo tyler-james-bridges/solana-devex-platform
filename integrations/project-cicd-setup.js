@@ -23,12 +23,12 @@ class ProjectCICDSetup {
    * Set up CI/CD for an existing project
    */
   async setupProject() {
-    console.log(`🔧 Setting up CI/CD for project at: ${this.projectPath}`);
+    console.log(`[CONFIG] Setting up CI/CD for project at: ${this.projectPath}`);
     
     try {
       // Detect project type
       const projectInfo = await this.detectProjectType();
-      console.log(`📦 Detected project type: ${projectInfo.type}`);
+      console.log(`[PACKAGE] Detected project type: ${projectInfo.type}`);
       
       // Create CI/CD configuration
       await this.createCICDConfig(projectInfo);
@@ -42,7 +42,7 @@ class ProjectCICDSetup {
       // Create webhook configuration guide
       await this.createWebhookGuide(projectInfo);
       
-      console.log('✅ CI/CD setup completed!');
+      console.log('[SUCCESS] CI/CD setup completed!');
       this.displayInstructions(projectInfo);
       
     } catch (error) {
@@ -164,7 +164,7 @@ class ProjectCICDSetup {
     const configPath = path.join(this.projectPath, '.cicd-config.json');
     await fs.writeFile(configPath, JSON.stringify(config, null, 2));
     
-    console.log(`✅ Created CI/CD config: ${configPath}`);
+    console.log(`[SUCCESS] Created CI/CD config: ${configPath}`);
     return config;
   }
 
@@ -230,7 +230,7 @@ class ProjectCICDSetup {
     const workflowPath = path.join(workflowDir, 'cicd.yml');
     await fs.writeFile(workflowPath, workflow);
     
-    console.log(`✅ Created GitHub workflow: ${workflowPath}`);
+    console.log(`[SUCCESS] Created GitHub workflow: ${workflowPath}`);
   }
 
   createWorkflowTemplate(projectInfo) {
@@ -371,7 +371,7 @@ ${projectInfo.hasAnchorToml ? '        # anchor deploy --network mainnet' : ''}
     });
     
     await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-    console.log('✅ Added CI/CD scripts to package.json');
+    console.log('[SUCCESS] Added CI/CD scripts to package.json');
   }
 
   async createWebhookGuide(projectInfo) {
@@ -462,12 +462,12 @@ For more help, check the CI/CD system logs or contact the development team.
     const guidePath = path.join(this.projectPath, 'CICD_SETUP.md');
     await fs.writeFile(guidePath, guide);
     
-    console.log(`✅ Created setup guide: ${guidePath}`);
+    console.log(`[SUCCESS] Created setup guide: ${guidePath}`);
   }
 
   displayInstructions(projectInfo) {
-    console.log('\n🎉 CI/CD Integration Setup Complete!');
-    console.log('\n📋 Next Steps:');
+    console.log('\n[SUCCESS] CI/CD Integration Setup Complete!');
+    console.log('\n[CLIPBOARD] Next Steps:');
     console.log('');
     console.log('1️⃣  Set up GitHub webhook:');
     console.log(`   - Go to your repository settings`);
@@ -484,12 +484,12 @@ For more help, check the CI/CD system logs or contact the development team.
     console.log('   - Make a commit to trigger the pipeline');
     console.log('   - Watch the build progress in the dashboard');
     console.log('');
-    console.log(`📚 Read the full guide: ${path.join(this.projectPath, 'CICD_SETUP.md')}`);
-    console.log(`⚙️  Configuration file: ${path.join(this.projectPath, '.cicd-config.json')}`);
+    console.log(`[DOCS] Read the full guide: ${path.join(this.projectPath, 'CICD_SETUP.md')}`);
+    console.log(`[SETTINGS]  Configuration file: ${path.join(this.projectPath, '.cicd-config.json')}`);
     console.log('');
     
     if (projectInfo.type.includes('monorepo')) {
-      console.log('🏗️  Monorepo detected:');
+      console.log('[BUILD]️  Monorepo detected:');
       console.log(`   - ${projectInfo.packages.length} packages will be built and tested`);
       console.log('   - Each package will be processed individually');
       console.log('');
@@ -508,7 +508,7 @@ For more help, check the CI/CD system logs or contact the development team.
       });
 
       if (response.data.success) {
-        console.log(`✅ Registered ${owner}/${repo} with CI/CD system`);
+        console.log(`[SUCCESS] Registered ${owner}/${repo} with CI/CD system`);
         return response.data;
       }
     } catch (error) {

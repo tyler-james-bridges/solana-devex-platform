@@ -525,7 +525,7 @@ class ProductionTestingAPI {
    */
   async runTestsAsync(testId, testConfig) {
     try {
-      console.log(`🚀 Starting async test ${testId}: ${testConfig.protocols.join(', ')}`);
+      console.log(`[INIT] Starting async test ${testId}: ${testConfig.protocols.join(', ')}`);
       
       const tester = new ProductionTester(testConfig.options);
       const results = await tester.runProtocolTests(testConfig.protocols);
@@ -538,7 +538,7 @@ class ProductionTestingAPI {
       this.testHistory.unshift(testConfig);
       this.activeTests.delete(testId);
       
-      console.log(`✅ Test ${testId} completed: ${results.summary.passed}/${results.summary.total} passed`);
+      console.log(`[SUCCESS] Test ${testId} completed: ${results.summary.passed}/${results.summary.total} passed`);
       
     } catch (error) {
       console.error(`❌ Test ${testId} failed:`, error.message);
@@ -557,7 +557,7 @@ class ProductionTestingAPI {
    */
   async runTestsSync(testId, testConfig) {
     try {
-      console.log(`🚀 Starting sync test ${testId}: ${testConfig.protocols.join(', ')}`);
+      console.log(`[INIT] Starting sync test ${testId}: ${testConfig.protocols.join(', ')}`);
       
       const tester = new ProductionTester(testConfig.options);
       const results = await tester.runProtocolTests(testConfig.protocols);
@@ -569,7 +569,7 @@ class ProductionTestingAPI {
       this.testHistory.unshift(testConfig);
       this.activeTests.delete(testId);
       
-      console.log(`✅ Test ${testId} completed synchronously`);
+      console.log(`[SUCCESS] Test ${testId} completed synchronously`);
       return results;
       
     } catch (error) {
@@ -635,7 +635,7 @@ class ProductionTestingAPI {
 </head>
 <body>
     <div class="container">
-        <h1>🧪 Solana Protocol Test Results</h1>
+        <h1>[TEST] Solana Protocol Test Results</h1>
         
         <div class="summary">
             <div class="metric">
@@ -708,14 +708,14 @@ class ProductionTestingAPI {
     return new Promise((resolve, reject) => {
       try {
         this.server = this.app.listen(this.port, () => {
-          console.log('\n🚀 PRODUCTION TESTING API SERVER STARTED');
+          console.log('\n[INIT] PRODUCTION TESTING API SERVER STARTED');
           console.log('='.repeat(50));
-          console.log(`🌐 Server: http://localhost:${this.port}`);
-          console.log(`📊 Dashboard: http://localhost:${this.port}/dashboard`);
-          console.log(`📖 API Docs: http://localhost:${this.port}/api/docs`);
-          console.log(`💚 Health: http://localhost:${this.port}/health`);
+          console.log(`[WEB] Server: http://localhost:${this.port}`);
+          console.log(`[INFO] Metrics Dashboard: http://localhost:${this.port}/dashboard`);
+          console.log(`[DOCS] API Docs: http://localhost:${this.port}/api/docs`);
+          console.log(`[HEALTH] Health: http://localhost:${this.port}/health`);
           console.log('='.repeat(50));
-          console.log('✅ READY FOR CLODDSBOT, MAKORA, SOLPRISM!\n');
+          console.log('[SUCCESS] READY FOR CLODDSBOT, MAKORA, SOLPRISM!\n');
           
           resolve(this.server);
         });
@@ -733,7 +733,7 @@ class ProductionTestingAPI {
     return new Promise((resolve) => {
       if (this.server) {
         this.server.close(() => {
-          console.log('🛑 Production Testing API Server stopped');
+          console.log('[STOP] Production Testing API Server stopped');
           resolve();
         });
       } else {
@@ -753,7 +753,7 @@ if (require.main === module) {
   
   server.start()
     .then(() => {
-      console.log('🎉 Production Testing Infrastructure READY!');
+      console.log('[SUCCESS] Production Testing Infrastructure READY!');
     })
     .catch(error => {
       console.error('❌ Failed to start server:', error);
@@ -762,7 +762,7 @@ if (require.main === module) {
   
   // Graceful shutdown
   process.on('SIGINT', async () => {
-    console.log('\n🛑 Shutting down Production Testing API...');
+    console.log('\n[STOP] Shutting down Production Testing API...');
     await server.stop();
     process.exit(0);
   });

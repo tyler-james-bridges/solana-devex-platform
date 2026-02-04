@@ -27,7 +27,7 @@ class SimpleRealDataCollector {
       try {
         const connection = new Connection(provider.url, 'confirmed');
         this.connections.set(provider.name, connection);
-        console.log(`✅ Connected to ${provider.name}: ${provider.url}`);
+        console.log(`[SUCCESS] Connected to ${provider.name}: ${provider.url}`);
       } catch (error) {
         console.error(`❌ Failed to connect to ${provider.name}: ${error.message}`);
       }
@@ -39,7 +39,7 @@ class SimpleRealDataCollector {
     
     for (const [providerName, connection] of this.connections) {
       try {
-        console.log(`🔍 Collecting real data from ${providerName}...`);
+        console.log(`[SEARCH] Collecting real data from ${providerName}...`);
         const startTime = Date.now();
         
         // Collect real Solana network metrics
@@ -70,7 +70,7 @@ class SimpleRealDataCollector {
           timestamp: new Date().toISOString()
         };
         
-        console.log(`✅ ${providerName}: Slot ${slot}, Latency ${latency}ms, TPS ${tps.toFixed(0)}`);
+        console.log(`[SUCCESS] ${providerName}: Slot ${slot}, Latency ${latency}ms, TPS ${tps.toFixed(0)}`);
         
       } catch (error) {
         console.error(`❌ Error collecting from ${providerName}: ${error.message}`);
@@ -141,7 +141,7 @@ class SimpleRealDataCollector {
     
     for (const protocol of protocols) {
       try {
-        console.log(`🔍 Checking ${protocol.name} protocol health...`);
+        console.log(`[SEARCH] Checking ${protocol.name} protocol health...`);
         const startTime = Date.now();
         
         let response;
@@ -166,7 +166,7 @@ class SimpleRealDataCollector {
           timestamp: new Date().toISOString()
         });
         
-        console.log(`✅ ${protocol.name}: ${status} (${latency}ms, ${availability.toFixed(1)}%)`);
+        console.log(`[SUCCESS] ${protocol.name}: ${status} (${latency}ms, ${availability.toFixed(1)}%)`);
         
       } catch (error) {
         console.error(`❌ ${protocol.name} error: ${error.message}`);
@@ -200,7 +200,7 @@ class SimpleRealDataCollector {
 
   async collectAllRealData() {
     try {
-      console.log('🚀 Collecting REAL Solana network data...');
+      console.log('[INIT] Collecting REAL Solana network data...');
       
       const [networkData, protocolData] = await Promise.all([
         this.collectRealNetworkData(),
@@ -221,7 +221,7 @@ class SimpleRealDataCollector {
       };
 
       this.latestData = dashboardData;
-      console.log('✅ Real data collection complete!');
+      console.log('[SUCCESS] Real data collection complete!');
       return dashboardData;
       
     } catch (error) {
@@ -291,7 +291,7 @@ class SimpleRealDataCollector {
     if (this.isCollecting) return;
     
     this.isCollecting = true;
-    console.log(`🔄 Starting real data collection every ${intervalMs}ms`);
+    console.log(`[SYNC] Starting real data collection every ${intervalMs}ms`);
     
     // Collect immediately
     this.collectAllRealData().catch(console.error);
@@ -312,7 +312,7 @@ class SimpleRealDataCollector {
       this.collectionInterval = null;
     }
     this.isCollecting = false;
-    console.log('⏹️  Real data collection stopped');
+    console.log('[STOP]  Real data collection stopped');
   }
 
   getLatestData() {

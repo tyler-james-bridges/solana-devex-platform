@@ -508,9 +508,9 @@ setInterval(() => {
 }, 30000);
 
 server.listen(PORT, () => {
-  console.log(`🚀 Production server running on port ${PORT} (Worker ${process.pid})`);
-  console.log(`📊 Performance monitoring enabled`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`[INIT] Production server running on port ${PORT} (Worker ${process.pid})`);
+  console.log(`[INFO] Metrics Performance monitoring enabled`);
+  console.log(`[CONFIG] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = { app, server, performanceMonitor };

@@ -1,9 +1,9 @@
 # Pull Request
 
-## 📝 Description
+## Description
 <!-- Brief description of what this PR does -->
 
-## 🎯 Type of Change
+## Type of Change
 <!-- Mark the type of change with an [x] -->
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
@@ -14,10 +14,10 @@
 - [ ] Security improvement
 - [ ] Dependency update
 
-## 🔗 Related Issues
+## Related Issues
 <!-- Link to related issues, e.g., "Fixes #123" or "Closes #456" -->
 
-## 🧪 Testing
+## Testing
 <!-- Describe how you tested your changes -->
 - [ ] Unit tests pass (`npm run test`)
 - [ ] Integration tests pass
@@ -28,7 +28,7 @@
 ### Test Coverage
 <!-- If applicable, mention test coverage changes -->
 
-## 🔒 Security Considerations
+## Security Considerations
 <!-- Check all that apply -->
 - [ ] This PR doesn't introduce security vulnerabilities
 - [ ] No sensitive data is exposed
@@ -36,7 +36,7 @@
 - [ ] Authentication/authorization is properly handled
 - [ ] No hardcoded secrets or credentials
 
-## 🚀 Performance Impact
+## Performance Impact
 <!-- Check if applicable -->
 - [ ] No performance impact
 - [ ] Performance improved
@@ -44,28 +44,28 @@
 
 <!-- If performance impact, describe the impact and mitigation -->
 
-## 📱 Frontend Changes (if applicable)
+## Frontend Changes (if applicable)
 - [ ] Responsive design tested
 - [ ] Cross-browser compatibility verified
 - [ ] Accessibility standards met
 - [ ] Loading states implemented
 - [ ] Error handling implemented
 
-## 🔗 API Changes (if applicable)
+## API Changes (if applicable)
 - [ ] Backward compatible
 - [ ] API documentation updated
 - [ ] Rate limiting considered
 - [ ] Error responses defined
 - [ ] Input validation implemented
 
-## 🦀 Solana/Rust Changes (if applicable)
+## Solana/Rust Changes (if applicable)
 - [ ] Program security reviewed
 - [ ] No integer overflow risks
 - [ ] Proper access controls implemented
 - [ ] Error handling follows best practices
 - [ ] Program size optimized
 
-## 📋 Checklist
+## Checklist
 <!-- Ensure all items are checked before requesting review -->
 - [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review of my code
@@ -76,7 +76,7 @@
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published
 
-## 🎨 UI/UX Changes (if applicable)
+## UI/UX Changes (if applicable)
 <!-- Include screenshots or GIFs of UI changes -->
 
 ### Before
@@ -85,32 +85,32 @@
 ### After
 <!-- Screenshot of new state -->
 
-## 📖 Documentation
+## Documentation
 <!-- Check all that apply -->
 - [ ] README updated (if needed)
 - [ ] API documentation updated (if needed)
 - [ ] Code comments added/updated
 - [ ] CHANGELOG.md updated (if applicable)
 
-## 🌍 Environment Variables
+## Environment Variables
 <!-- List any new environment variables or configuration changes -->
 - [ ] No new environment variables
 - [ ] New environment variables documented in .env.example
 
-## 🔄 Deployment Notes
+## Deployment Notes
 <!-- Any special deployment considerations -->
 - [ ] No deployment changes needed
 - [ ] Database migrations required
 - [ ] Configuration updates required
 - [ ] Dependencies require update
 
-## ⚠️ Breaking Changes
+## Breaking Changes
 <!-- If this includes breaking changes, describe them here -->
 
-## 🤖 Auto-merge Eligibility
+## Auto-merge Eligibility
 <!-- Check if this PR should be eligible for auto-merge -->
 - [ ] This PR is eligible for auto-merge (minor fixes, documentation updates, etc.)
 - [ ] This PR requires manual review and merge
 
-## 📝 Additional Notes
+## Additional Notes
 <!-- Any additional information reviewers should know -->

@@ -322,7 +322,7 @@ class TestingAPIServer {
    */
   async runTestsAsync(testId, testConfig) {
     try {
-      console.log(`🚀 Starting test ${testId} with protocols: ${testConfig.protocols.join(', ')}`);
+      console.log(`[INIT] Starting test ${testId} with protocols: ${testConfig.protocols.join(', ')}`);
       
       // Update status
       testConfig.status = 'running';
@@ -356,7 +356,7 @@ class TestingAPIServer {
       this.testHistory.unshift(testConfig);
       this.activeTests.delete(testId);
       
-      console.log(`✅ Test ${testId} completed successfully`);
+      console.log(`[SUCCESS] Test ${testId} completed successfully`);
       
       this.broadcastUpdate({
         type: 'test_completed',
@@ -416,9 +416,9 @@ class TestingAPIServer {
     return new Promise((resolve, reject) => {
       try {
         this.server = this.app.listen(this.port, () => {
-          console.log(`🚀 Testing API Server running on port ${this.port}`);
-          console.log(`📊 Dashboard: http://localhost:${this.port}/dashboard`);
-          console.log(`📖 API Docs: http://localhost:${this.port}/api/docs`);
+          console.log(`[INIT] Testing API Server running on port ${this.port}`);
+          console.log(`[INFO] Metrics Dashboard: http://localhost:${this.port}/dashboard`);
+          console.log(`[DOCS] API Docs: http://localhost:${this.port}/api/docs`);
           
           // Setup WebSocket server
           this.wss = new WebSocket.Server({ server: this.server, path: '/ws' });
@@ -486,7 +486,7 @@ if (require.main === module) {
   
   server.start()
     .then(() => {
-      console.log('✅ Testing API Server started successfully');
+      console.log('[SUCCESS] Testing API Server started successfully');
     })
     .catch(error => {
       console.error('❌ Failed to start Testing API Server:', error);

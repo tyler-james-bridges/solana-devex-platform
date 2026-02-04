@@ -88,7 +88,7 @@ const cacheMiddleware = (key, ttl = CACHE_TTL) => {
 
 // Health monitor event handlers
 healthMonitor.on('monitoring_started', () => {
-  console.log('✅ Protocol health monitoring started');
+  console.log('[SUCCESS] Protocol health monitoring started');
 });
 
 healthMonitor.on('protocol_health_update', (data) => {
@@ -100,7 +100,7 @@ healthMonitor.on('protocol_health_update', (data) => {
 });
 
 healthMonitor.on('protocol_alert', (data) => {
-  console.log(`🚨 Alert for ${data.protocol}:`, data.alerts.map(a => a.message));
+  console.log(`[ALERT] Alert for ${data.protocol}:`, data.alerts.map(a => a.message));
   
   // Broadcast alerts to WebSocket clients
   broadcastToClients({
@@ -437,7 +437,7 @@ let connectedClients = new Set();
 
 wss.on('connection', (ws, req) => {
   connectedClients.add(ws);
-  console.log(`📡 WebSocket client connected. Total: ${connectedClients.size}`);
+  console.log(`[NETWORK] WebSocket client connected. Total: ${connectedClients.size}`);
   
   // Send initial status
   try {
@@ -470,7 +470,7 @@ wss.on('connection', (ws, req) => {
   
   ws.on('close', () => {
     connectedClients.delete(ws);
-    console.log(`📡 WebSocket client disconnected. Total: ${connectedClients.size}`);
+    console.log(`[NETWORK] WebSocket client disconnected. Total: ${connectedClients.size}`);
   });
   
   ws.on('error', (error) => {
@@ -552,24 +552,24 @@ app.use((error, req, res, next) => {
 
 // Cleanup on exit
 process.on('SIGINT', () => {
-  console.log('\n🛑 Shutting down gracefully...');
+  console.log('\n[STOP] Shutting down gracefully...');
   healthMonitor.stopMonitoring();
   server.close(() => {
-    console.log('✅ Server shutdown complete');
+    console.log('[SUCCESS] Server shutdown complete');
     process.exit(0);
   });
 });
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Protocol Health API Server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📈 Status endpoint: http://localhost:${PORT}/api/status`);
-  console.log(`🔌 WebSocket: ws://localhost:${PORT}/ws`);
-  console.log(`\n🎯 Ready for hackathon projects!`);
+  console.log(`[INIT] Protocol Health API Server running on port ${PORT}`);
+  console.log(`[INFO] Metrics Health check: http://localhost:${PORT}/api/health`);
+  console.log(`[INFO] Analytics Status endpoint: http://localhost:${PORT}/api/status`);
+  console.log(`[POWER] WebSocket: ws://localhost:${PORT}/ws`);
+  console.log(`\n[TARGET] Ready for hackathon projects!`);
   
   // Auto-start monitoring
-  console.log('\n🔄 Starting protocol health monitoring...');
+  console.log('\n[SYNC] Starting protocol health monitoring...');
   healthMonitor.startMonitoring().catch(console.error);
 });
 
