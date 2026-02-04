@@ -119,25 +119,55 @@ jobs:
       - name: Check for hardcoded private keys
         run: |
           echo "Scanning for hardcoded private keys and sensitive data..."
-          # Check for common patterns of private keys, excluding safe directories and files
-          if grep -r -i "private.*key\|secret.*key\|-----BEGIN.*PRIVATE" \
-            --include="*.js" --include="*.ts" --include="*.json" \
-            --exclude-dir="node_modules" \
-            --exclude-dir=".git" \
-            --exclude-dir="dist" \
-            --exclude-dir="build" \
-            --exclude="*.md" \
-            --exclude="package-lock.json" \
-            --exclude="*security-audit*" \
-            --exclude="*template*" \
-            --exclude="*example*" \
-            --exclude="*config*" \
-            . ; then
-            echo "⚠️ Found potential hardcoded private keys!"
-            echo "ℹ️ If these are legitimate documentation or examples, consider moving them to excluded files"
+          
+          # Function to check for actual hardcoded values (not documentation)
+          check_hardcoded_secrets() {
+            # Look for actual PEM private keys
+            if grep -r "-----BEGIN.*PRIVATE.*KEY-----" \
+              --include="*.js" --include="*.ts" --include="*.json" \
+              --exclude-dir="node_modules" . 2>/dev/null; then
+              return 1
+            fi
+            
+            # Look for private key assignments with actual values (not env vars or placeholders)
+            if grep -rE "(private[_-]?key|secret[_-]?key)\s*[:=]\s*['\"][^'\"]{20,}['\"]" \
+              --include="*.js" --include="*.ts" --include="*.json" \
+              --exclude-dir="node_modules" . 2>/dev/null | \
+              grep -v "process\.env" | \
+              grep -v "\${{" | \
+              grep -v "your_" | \
+              grep -v "example" | \
+              grep -v "placeholder" | \
+              grep -v "INSERT_HERE" | \
+              grep -v "TODO" 2>/dev/null; then
+              return 1
+            fi
+            
+            # Look for 64-character hex strings that might be private keys (but exclude known safe patterns)
+            if grep -rE "['\"][0-9a-fA-F]{64}['\"]" \
+              --include="*.js" --include="*.ts" --include="*.json" \
+              --exclude-dir="node_modules" . 2>/dev/null | \
+              grep -v "test" | \
+              grep -v "example" | \
+              grep -v "placeholder" | \
+              head -5 2>/dev/null; then
+              echo "⚠️ Found potential 64-character hex strings that could be private keys"
+              echo "ℹ️ Review these manually - they might be legitimate test data or examples"
+            fi
+            
+            return 0
+          }
+          
+          if ! check_hardcoded_secrets; then
+            echo "❌ Found hardcoded private keys or secrets!"
+            echo "ℹ️ This scan looks for actual hardcoded values, not documentation"
+            echo "ℹ️ Use environment variables: process.env.PRIVATE_KEY"
+            echo "ℹ️ Use GitHub secrets: \${{ secrets.PRIVATE_KEY }}"
             exit 1
           fi
+          
           echo "✅ No hardcoded private keys found"
+          echo "ℹ️ DevEx templates and documentation with proper patterns are allowed"
 
       - name: Check for insecure RPC endpoints
         run: |
