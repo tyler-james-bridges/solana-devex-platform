@@ -13,9 +13,10 @@ const { body, param, validationResult } = require('express-validator');
 require('dotenv').config();
 
 // Import our enhanced monitoring system
-const RealTimeProtocolMonitor = require('../lib/real-time-monitor.js');
-const SolanaProtocolTester = require('../lib/solana-tester');
-const CICDManager = require('../lib/cicd-manager');
+const RealTimeProtocolMonitor = require('./real-time-monitor.js');
+const SolanaProtocolTester = require('./solana-tester');
+const CICDManager = require('./cicd-manager');
+const AgentDEXMonitor = require('./agentdex-monitor');
 
 const app = express();
 const server = createServer(app);
@@ -122,17 +123,33 @@ const rpcProviders = [
     },
     apiKey: process.env.ALCHEMY_API_KEY,
     rateLimit: 300
+  },
+  {
+    name: 'Solana Labs',
+    mainnet: process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
+    testnet: 'https://api.testnet.solana.com',
+    devnet: 'https://api.devnet.solana.com',
+    websocket: {
+      mainnet: process.env.SOLANA_WS_URL || 'wss://api.mainnet-beta.solana.com',
+      testnet: 'wss://api.testnet.solana.com',
+      devnet: 'wss://api.devnet.solana.com'
+    },
+    rateLimit: 50
   }
 ];
 
-// Initialize enhanced monitoring system
+// Initialize enhanced monitoring system - HACKATHON MODE: Use all providers
 const monitor = new RealTimeProtocolMonitor({
   network: process.env.SOLANA_NETWORK || 'mainnet',
-  rpcProviders: rpcProviders.filter(provider => 
-    provider.apiKey || provider.name === 'Solana Labs'
-  ),
+  rpcProviders: rpcProviders, // Use all providers for hackathon (public endpoints)
   enableAlerts: true,
   metricsRetention: 24
+});
+
+// Initialize AgentDEX monitoring system (@JacobsClawd request)
+const agentdexMonitor = new AgentDEXMonitor({
+  baseUrl: process.env.AGENTDEX_BASE_URL || 'https://api.agentdex.com',
+  monitoringInterval: parseInt(process.env.AGENTDEX_INTERVAL) || 30000, // 30 seconds
 });
 
 // Initialize other services
@@ -232,10 +249,16 @@ app.get('/api/health', (req, res) => {
 app.get('/api/dashboard/data', authMiddleware, (req, res) => {
   try {
     const dashboardData = monitor.getDashboardData();
+    const agentdexData = agentdexMonitor.getMetrics();
+    const agentdexSummary = agentdexMonitor.getPerformanceSummary();
     
     res.json({
       timestamp: new Date().toISOString(),
       ...dashboardData,
+      agentdex: {
+        ...agentdexData,
+        summary: agentdexSummary
+      },
       alerts: alertHistory.slice(-10),
       system: systemMetrics
     });
@@ -313,6 +336,94 @@ app.get('/api/metrics/protocols', authMiddleware, (req, res) => {
     });
   }
 });
+
+// AgentDEX metrics API - Endpoint monitoring for @JacobsClawd
+app.get('/api/agentdex/metrics', authMiddleware, (req, res) => {
+  try {
+    const metrics = agentdexMonitor.getMetrics();
+    const summary = agentdexMonitor.getPerformanceSummary();
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      isMonitoring: metrics.isMonitoring,
+      interval: metrics.monitoringInterval,
+      summary,
+      endpoints: metrics.endpoints,
+      lastUpdate: metrics.lastUpdate
+    });
+  } catch (error) {
+    console.error('AgentDEX metrics error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch AgentDEX metrics',
+      message: error.message
+    });
+  }
+});
+
+// AgentDEX endpoint-specific metrics
+app.get('/api/agentdex/endpoints/:endpointName', authMiddleware, 
+  [param('endpointName').isString().withMessage('Endpoint name is required')],
+  handleValidationErrors,
+  (req, res) => {
+    const { endpointName } = req.params;
+    
+    try {
+      const endpointMetrics = agentdexMonitor.getEndpointMetrics(endpointName);
+      
+      if (!endpointMetrics) {
+        return res.status(404).json({
+          error: 'Endpoint not found',
+          message: `AgentDEX endpoint "${endpointName}" not found`
+        });
+      }
+      
+      res.json({
+        timestamp: new Date().toISOString(),
+        endpoint: endpointMetrics
+      });
+    } catch (error) {
+      console.error('AgentDEX endpoint metrics error:', error);
+      res.status(500).json({
+        error: 'Failed to fetch endpoint metrics',
+        message: error.message
+      });
+    }
+  }
+);
+
+// Start/Stop AgentDEX monitoring
+app.post('/api/agentdex/monitoring/:action',
+  authMiddleware,
+  [param('action').isIn(['start', 'stop']).withMessage('Action must be start or stop')],
+  handleValidationErrors,
+  async (req, res) => {
+    const { action } = req.params;
+    
+    try {
+      if (action === 'start') {
+        await agentdexMonitor.startMonitoring();
+        res.json({
+          message: 'AgentDEX monitoring started',
+          status: 'monitoring',
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        agentdexMonitor.stopMonitoring();
+        res.json({
+          message: 'AgentDEX monitoring stopped',
+          status: 'stopped',
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      console.error('AgentDEX monitoring control error:', error);
+      res.status(500).json({
+        error: `Failed to ${action} AgentDEX monitoring`,
+        message: error.message
+      });
+    }
+  }
+);
 
 // Alert management API
 app.get('/api/alerts', authMiddleware, (req, res) => {
@@ -502,10 +613,17 @@ wss.on('connection', (ws, req) => {
   
   // Send initial dashboard data
   const initialData = monitor.getDashboardData();
+  const agentdexData = agentdexMonitor.getMetrics();
+  const agentdexSummary = agentdexMonitor.getPerformanceSummary();
+  
   ws.send(JSON.stringify({
     type: 'initial_data',
     data: {
       ...initialData,
+      agentdex: {
+        ...agentdexData,
+        summary: agentdexSummary
+      },
       alerts: alertHistory.slice(-10),
       system: systemMetrics,
       timestamp: new Date().toISOString()
@@ -647,16 +765,94 @@ monitor.on('monitoring_stopped', (data) => {
   });
 });
 
+// AgentDEX monitor event handlers for real-time updates
+agentdexMonitor.on('agentdex-metrics', (data) => {
+  broadcastToClients({
+    type: 'agentdex_metrics',
+    data
+  });
+});
+
+agentdexMonitor.on('endpoint-checked', (data) => {
+  broadcastToClients({
+    type: 'agentdex_endpoint_update',
+    data
+  });
+});
+
+agentdexMonitor.on('monitoring-started', (data) => {
+  console.log('🚀 AgentDEX monitoring started - 13 endpoints');
+  broadcastToClients({
+    type: 'agentdex_monitoring_status',
+    data: { status: 'started', ...data }
+  });
+});
+
+agentdexMonitor.on('monitoring-stopped', (data) => {
+  console.log('⏹️ AgentDEX monitoring stopped');
+  broadcastToClients({
+    type: 'agentdex_monitoring_status',
+    data: { status: 'stopped', ...data }
+  });
+});
+
+agentdexMonitor.on('monitoring-error', (data) => {
+  console.error('❌ AgentDEX monitoring error:', data.error);
+  // Add to alert history
+  const alertData = {
+    id: `agentdex-alert-${Date.now()}`,
+    type: 'agentdx_error',
+    severity: 'high',
+    rule: { name: 'AgentDEX Monitoring Error' },
+    value: data.error,
+    timestamp: new Date().toISOString(),
+    resolved: false
+  };
+  
+  alertHistory.push(alertData);
+  
+  broadcastToClients({
+    type: 'alert',
+    data: alertData
+  });
+});
+
+agentdexMonitor.on('swap-slippage', (data) => {
+  broadcastToClients({
+    type: 'agentdex_swap_slippage',
+    data
+  });
+});
+
+agentdexMonitor.on('swap-success', (data) => {
+  broadcastToClients({
+    type: 'agentdex_swap_success',
+    data
+  });
+});
+
 // Regular dashboard updates
 setInterval(() => {
-  broadcastToClients({
-    type: 'dashboard_update',
-    data: {
-      ...monitor.getDashboardData(),
-      system: systemMetrics,
-      timestamp: new Date().toISOString()
-    }
-  });
+  try {
+    const dashboardData = monitor.getDashboardData();
+    const agentdexData = agentdexMonitor.getMetrics();
+    const agentdexSummary = agentdexMonitor.getPerformanceSummary();
+    
+    broadcastToClients({
+      type: 'dashboard_update',
+      data: {
+        ...dashboardData,
+        agentdex: {
+          ...agentdexData,
+          summary: agentdexSummary
+        },
+        system: systemMetrics,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Dashboard update error:', error);
+  }
 }, 5000); // Every 5 seconds
 
 // Graceful shutdown
@@ -664,6 +860,7 @@ process.on('SIGTERM', async () => {
   console.log('🔄 Shutting down gracefully...');
   
   await monitor.stopMonitoring();
+  agentdexMonitor.stopMonitoring();
   
   wss.clients.forEach(client => {
     client.close(1001, 'Server shutting down');
@@ -675,10 +872,11 @@ process.on('SIGTERM', async () => {
   });
 });
 
-// Start the enhanced monitoring system
-// SECURITY PATCH: Automatic monitoring disabled
-// monitor.startMonitoring().catch(console.error);
-console.log('🛡️  Security: Real-time monitoring disabled by default. Use API to enable with limits.');
+// Start the enhanced monitoring system for HACKATHON
+// Enable real-time monitoring to collect REAL Solana data
+console.log('🔥 HACKATHON MODE: Starting real-time monitoring with LIVE Solana data...');
+monitor.startMonitoring().catch(console.error);
+agentdexMonitor.startMonitoring().catch(console.error);
 
 // Start server
 server.listen(PORT, () => {

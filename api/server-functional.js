@@ -9,9 +9,9 @@ const { body, param, validationResult } = require('express-validator');
 require('dotenv').config();
 
 // Import our functional modules
-const SolanaProtocolTester = require('../lib/solana-tester');
-const CICDManager = require('../lib/cicd-manager');
-const LiveMonitor = require('../lib/live-monitor');
+const SolanaProtocolTester = require('./solana-tester');
+const CICDManager = require('./cicd-manager');
+const LiveMonitor = require('./live-monitor');
 
 const app = express();
 const PORT = process.env.PORT || 3001;

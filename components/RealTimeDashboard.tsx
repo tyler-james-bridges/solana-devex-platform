@@ -75,9 +75,61 @@ interface Alert {
   resolved?: boolean;
 }
 
+interface AgentDEXEndpoint {
+  name: string;
+  path: string;
+  method: string;
+  category: string;
+  status: 'healthy' | 'degraded' | 'down' | 'unknown';
+  responseTime: number;
+  errorRate: number;
+  successRate: number;
+  totalRequests: number;
+  successfulRequests: number;
+  errorRequests: number;
+  lastCheck: number | null;
+  uptime: number;
+  p50: number;
+  p95: number;
+  p99: number;
+}
+
+interface AgentDEXSummary {
+  platformStatus: 'healthy' | 'degraded' | 'down';
+  totalEndpoints: number;
+  healthyEndpoints: number;
+  overallP50: number;
+  overallP95: number;
+  overallP99: number;
+  errorRate: number;
+  successRate: number;
+  jupiterRouting: {
+    responseTime: number;
+    successRate: number;
+    status: 'healthy' | 'degraded' | 'down';
+  };
+  categories: Record<string, {
+    total: number;
+    healthy: number;
+    degraded: number;
+    down: number;
+    averageResponseTime: number;
+  }>;
+  timestamp: number;
+}
+
+interface AgentDEXData {
+  endpoints: AgentDEXEndpoint[];
+  isMonitoring: boolean;
+  monitoringInterval: number;
+  lastUpdate: number;
+  summary: AgentDEXSummary;
+}
+
 interface DashboardData {
   network: Record<string, NetworkMetrics>;
   protocols: ProtocolMetrics[];
+  agentdex?: AgentDEXData;
   alerts: Alert[];
   uptime: any;
   system: {
@@ -88,97 +140,25 @@ interface DashboardData {
   };
 }
 
-// Mock data for demonstration
-const generateMockData = (): DashboardData => {
-  const now = new Date().toISOString();
-  
-  return {
-    network: {
-      'Helius': {
-        slot: 285947123 + Math.floor(Math.random() * 1000),
-        blockHeight: 285947123,
-        latency: 120 + Math.floor(Math.random() * 50),
-        tps: 2800 + Math.floor(Math.random() * 500),
-        status: Math.random() > 0.9 ? 'degraded' : 'healthy',
-        health: Math.random() > 0.1,
-        timestamp: now
-      },
-      'QuickNode': {
-        slot: 285947123 + Math.floor(Math.random() * 1000),
-        blockHeight: 285947123,
-        latency: 95 + Math.floor(Math.random() * 40),
-        tps: 2900 + Math.floor(Math.random() * 600),
-        status: Math.random() > 0.95 ? 'degraded' : 'healthy',
-        health: Math.random() > 0.05,
-        timestamp: now
-      },
-      'Alchemy': {
-        slot: 285947123 + Math.floor(Math.random() * 1000),
-        blockHeight: 285947123,
-        latency: 110 + Math.floor(Math.random() * 60),
-        tps: 2750 + Math.floor(Math.random() * 400),
-        status: 'healthy',
-        health: true,
-        timestamp: now
+// Fetch real data from API
+const fetchRealData = async (): Promise<DashboardData | null> => {
+  try {
+    const response = await fetch(`http://localhost:3001/api/dashboard/data`, {
+      headers: {
+        'x-api-key': 'devex-hackathon-2026'
       }
-    },
-    protocols: [
-      {
-        name: 'Jupiter',
-        status: Math.random() > 0.9 ? 'degraded' : 'healthy',
-        latency: 180 + Math.floor(Math.random() * 80),
-        availability: 98.5 + Math.random() * 1.4,
-        errorRate: Math.random() * 0.5,
-        timestamp: now
-      },
-      {
-        name: 'Kamino',
-        status: 'healthy',
-        latency: 220 + Math.floor(Math.random() * 100),
-        availability: 99.2 + Math.random() * 0.7,
-        errorRate: Math.random() * 0.3,
-        timestamp: now
-      },
-      {
-        name: 'Drift',
-        status: Math.random() > 0.95 ? 'degraded' : 'healthy',
-        latency: 160 + Math.floor(Math.random() * 70),
-        availability: 97.8 + Math.random() * 2.0,
-        errorRate: Math.random() * 0.8,
-        timestamp: now
-      },
-      {
-        name: 'Raydium',
-        status: 'healthy',
-        latency: 140 + Math.floor(Math.random() * 50),
-        availability: 99.1 + Math.random() * 0.8,
-        errorRate: Math.random() * 0.4,
-        timestamp: now
-      }
-    ],
-    alerts: Math.random() > 0.7 ? [
-      {
-        id: 'alert-' + Date.now(),
-        rule: {
-          name: 'High Latency Warning',
-          condition: 'latency > 500ms',
-          threshold: 500
-        },
-        value: 520 + Math.floor(Math.random() * 100),
-        severity: 'warning' as const,
-        protocol: 'Jupiter',
-        timestamp: now,
-        resolved: false
-      }
-    ] : [],
-    uptime: {},
-    system: {
-      uptime: Date.now() - (1000 * 60 * 60 * 24 * 30), // 30 days
-      totalRequests: 1250000 + Math.floor(Math.random() * 50000),
-      errorRate: Math.random() * 2,
-      avgResponseTime: 180 + Math.floor(Math.random() * 40)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
     }
-  };
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch real data from API:', error);
+    return null;
+  }
 };
 
 const StatusIcon = ({ status }: { status: string }) => {
@@ -379,36 +359,62 @@ const RealTimeDashboard: React.FC = () => {
     }
   }, [isLiveMode]);
 
-  // Fallback mode with mock data updates
-  const startFallbackMode = useCallback(() => {
-    console.log('Starting demo mode with simulated data');
+  // Fallback mode with real API data polling
+  const startFallbackMode = useCallback(async () => {
+    console.log('Starting API polling mode with REAL Solana data');
     setConnectionStatus('disconnected');
     
-    // Set initial data
-    setDashboardData(generateMockData());
-    
-    // Update data every 5 seconds with slight variations
-    updateIntervalRef.current = setInterval(() => {
-      const newData = generateMockData();
-      setDashboardData(newData);
-      
-      // Update historical data
-      setHistoricalData(prev => {
-        const newPoint = {
-          timestamp: Date.now(),
-          time: new Date().toLocaleTimeString(),
-          helius_latency: newData.network['Helius']?.latency || 120,
-          quicknode_latency: newData.network['QuickNode']?.latency || 95,
-          alchemy_latency: newData.network['Alchemy']?.latency || 110,
-          jupiter_availability: newData.protocols.find(p => p.name === 'Jupiter')?.availability || 98,
-          kamino_availability: newData.protocols.find(p => p.name === 'Kamino')?.availability || 99,
-          drift_availability: newData.protocols.find(p => p.name === 'Drift')?.availability || 97,
-          raydium_availability: newData.protocols.find(p => p.name === 'Raydium')?.availability || 99
-        };
-        
-        const updated = [...prev, newPoint];
-        return updated.slice(-50); // Keep last 50 points
+    // Try to fetch initial real data
+    const realData = await fetchRealData();
+    if (realData) {
+      setDashboardData(realData);
+      console.log('✅ Successfully loaded REAL Solana network data');
+    } else {
+      console.error('❌ Failed to load real data - check if API server is running');
+      setDashboardData({
+        network: {},
+        protocols: [],
+        alerts: [],
+        uptime: {},
+        system: {
+          uptime: 0,
+          totalRequests: 0,
+          errorRate: 0,
+          avgResponseTime: 0
+        }
       });
+    }
+    
+    // Poll real data every 5 seconds
+    updateIntervalRef.current = setInterval(async () => {
+      try {
+        const newData = await fetchRealData();
+        if (newData) {
+          setDashboardData(newData);
+          
+          // Update historical data with REAL metrics
+          setHistoricalData(prev => {
+            const newPoint = {
+              timestamp: Date.now(),
+              time: new Date().toLocaleTimeString(),
+              helius_latency: newData.network['Helius']?.latency || 0,
+              quicknode_latency: newData.network['QuickNode']?.latency || 0,
+              alchemy_latency: newData.network['Alchemy']?.latency || 0,
+              jupiter_availability: newData.protocols.find(p => p.name === 'Jupiter')?.availability || 0,
+              kamino_availability: newData.protocols.find(p => p.name === 'Kamino')?.availability || 0,
+              drift_availability: newData.protocols.find(p => p.name === 'Drift')?.availability || 0,
+              raydium_availability: newData.protocols.find(p => p.name === 'Raydium')?.availability || 0
+            };
+            
+            const updated = [...prev, newPoint];
+            return updated.slice(-50); // Keep last 50 points
+          });
+        } else {
+          console.error('Failed to fetch real data during polling');
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
     }, 5000);
   }, []);
 
@@ -465,8 +471,10 @@ const RealTimeDashboard: React.FC = () => {
   const systemHealth = dashboardData ? {
     networkHealth: Object.values(dashboardData.network).filter(n => n.status === 'healthy').length / Object.keys(dashboardData.network).length * 100,
     protocolHealth: dashboardData.protocols.filter(p => p.status === 'healthy').length / dashboardData.protocols.length * 100,
+    agentdexHealth: dashboardData.agentdex ? (dashboardData.agentdex.summary.healthyEndpoints / dashboardData.agentdex.summary.totalEndpoints) * 100 : 0,
     totalAlerts: dashboardData.alerts.filter(a => !a.resolved).length,
-    avgLatency: Object.values(dashboardData.network).reduce((acc, n) => acc + n.latency, 0) / Object.keys(dashboardData.network).length || 0
+    avgLatency: Object.values(dashboardData.network).reduce((acc, n) => acc + n.latency, 0) / Object.keys(dashboardData.network).length || 0,
+    agentdexLatency: dashboardData.agentdex ? dashboardData.agentdex.summary.overallP50 : 0
   } : null;
 
   if (!dashboardData) {
@@ -474,7 +482,7 @@ const RealTimeDashboard: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading real-time monitoring dashboard...</p>
+          <p className="text-gray-600">Loading REAL-TIME Solana network monitoring...</p>
           <p className="text-sm text-gray-500 mt-2">
             Initializing {connectionStatus === 'connecting' ? 'live monitoring...' : 'demo mode...'}
           </p>
@@ -492,10 +500,14 @@ const RealTimeDashboard: React.FC = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Real-Time Protocol Monitor</h1>
               <p className="text-gray-600">
-                Live Solana network and protocol health tracking
-                {!isLiveMode && (
+                REAL Solana mainnet monitoring with live RPC data
+                {isLiveMode ? (
+                  <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                    🔴 LIVE - Real Network Data
+                  </span>
+                ) : (
                   <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    Demo Mode - Simulated Data
+                    📊 API Mode - Real Network Data
                   </span>
                 )}
               </p>
@@ -507,12 +519,12 @@ const RealTimeDashboard: React.FC = () => {
                 {isLiveMode ? (
                   <>
                     <Wifi className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600">Live Data</span>
+                    <span className="text-sm text-green-600">WebSocket Live</span>
                   </>
                 ) : (
                   <>
-                    <Activity className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm text-blue-600">Demo Mode</span>
+                    <Activity className="w-4 h-4 text-green-600" />
+                    <span className="text-sm text-green-600">Real API Data</span>
                   </>
                 )}
               </div>
@@ -573,6 +585,162 @@ const RealTimeDashboard: React.FC = () => {
             change={`${dashboardData.alerts.filter(a => a.resolved).length} resolved`}
           />
         </div>
+
+        {/* AgentDEX Monitoring Section */}
+        {dashboardData.agentdex && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-6 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">AgentDEX Monitoring</h2>
+                  <p className="text-purple-100">Real-time endpoint monitoring for @JacobsClawd - 13 endpoints tracked</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold">{dashboardData.agentdex.summary.healthyEndpoints}/{dashboardData.agentdex.summary.totalEndpoints}</div>
+                  <div className="text-sm text-purple-100">Healthy Endpoints</div>
+                </div>
+              </div>
+            </div>
+
+            {/* AgentDEX Overview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <MetricCard
+                title="Platform Status"
+                value={dashboardData.agentdex.summary.platformStatus.charAt(0).toUpperCase() + dashboardData.agentdex.summary.platformStatus.slice(1)}
+                icon={Server}
+                status={dashboardData.agentdex.summary.platformStatus}
+                change={`${Math.round((dashboardData.agentdex.summary.healthyEndpoints / dashboardData.agentdex.summary.totalEndpoints) * 100)}% healthy`}
+              />
+              
+              <MetricCard
+                title="Response Time P95"
+                value={`${dashboardData.agentdex.summary.overallP95}ms`}
+                icon={Clock}
+                status={dashboardData.agentdex.summary.overallP95 < 500 ? 'healthy' : dashboardData.agentdex.summary.overallP95 < 1000 ? 'degraded' : 'down'}
+                change={`P50: ${dashboardData.agentdex.summary.overallP50}ms`}
+              />
+              
+              <MetricCard
+                title="Success Rate"
+                value={`${dashboardData.agentdex.summary.successRate.toFixed(1)}%`}
+                icon={CheckCircle2}
+                status={dashboardData.agentdex.summary.successRate > 98 ? 'healthy' : dashboardData.agentdex.summary.successRate > 95 ? 'degraded' : 'down'}
+                change={`Error: ${dashboardData.agentdex.summary.errorRate.toFixed(1)}%`}
+              />
+              
+              <MetricCard
+                title="Jupiter Routing"
+                value={`${dashboardData.agentdex.summary.jupiterRouting.responseTime}ms`}
+                icon={Zap}
+                status={dashboardData.agentdex.summary.jupiterRouting.status}
+                change={`${dashboardData.agentdex.summary.jupiterRouting.successRate.toFixed(1)}% success`}
+              />
+            </div>
+
+            {/* AgentDEX Endpoints Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Endpoint Categories */}
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <Network className="w-5 h-5 mr-2 text-purple-600" />
+                  Endpoint Categories
+                </h3>
+                <div className="space-y-4">
+                  {Object.entries(dashboardData.agentdex.summary.categories).map(([category, stats]) => (
+                    <div key={category} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          stats.healthy === stats.total ? 'bg-green-500' :
+                          stats.healthy > stats.total * 0.8 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}></div>
+                        <div>
+                          <p className="font-medium text-gray-900 capitalize">{category}</p>
+                          <p className="text-sm text-gray-500">{stats.healthy}/{stats.total} healthy</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{stats.averageResponseTime}ms avg</p>
+                        <p className="text-xs text-gray-500">{((stats.healthy / stats.total) * 100).toFixed(0)}% uptime</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top Endpoints Performance */}
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
+                  Top Performing Endpoints
+                </h3>
+                <div className="space-y-3">
+                  {dashboardData.agentdex.endpoints
+                    .sort((a, b) => b.successRate - a.successRate)
+                    .slice(0, 5)
+                    .map((endpoint) => (
+                      <div key={endpoint.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <StatusIcon status={endpoint.status} />
+                          <div>
+                            <p className="font-medium text-gray-900">{endpoint.name}</p>
+                            <p className="text-sm text-gray-500">{endpoint.method} {endpoint.path}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{endpoint.responseTime.toFixed(0)}ms</p>
+                          <p className="text-xs text-gray-500">{endpoint.successRate.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            {/* All AgentDEX Endpoints Detailed View */}
+            <div className="bg-white p-6 rounded-lg border">
+              <h3 className="text-lg font-semibold mb-4 flex items-center">
+                <Activity className="w-5 h-5 mr-2 text-green-600" />
+                All AgentDEX Endpoints ({dashboardData.agentdex.endpoints.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                {dashboardData.agentdex.endpoints.map((endpoint) => (
+                  <div key={endpoint.name} className="p-4 bg-gray-50 rounded-lg border">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <StatusIcon status={endpoint.status} />
+                        <span className="font-medium text-sm">{endpoint.name}</span>
+                      </div>
+                      <span className="text-xs bg-gray-200 px-2 py-1 rounded uppercase">{endpoint.method}</span>
+                    </div>
+                    <div className="text-xs text-gray-600 mb-2">{endpoint.path}</div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-gray-500">Response:</span>
+                        <div className="font-medium">{endpoint.responseTime.toFixed(0)}ms</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Success:</span>
+                        <div className="font-medium">{endpoint.successRate.toFixed(1)}%</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">P95:</span>
+                        <div className="font-medium">{endpoint.p95}ms</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Requests:</span>
+                        <div className="font-medium">{endpoint.totalRequests.toLocaleString()}</div>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <span className="text-xs text-gray-500">Category: </span>
+                      <span className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded capitalize">{endpoint.category}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
