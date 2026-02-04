@@ -243,6 +243,435 @@ class IntegrationHub {
     });
   }
 
+  // MISSING METHODS IMPLEMENTATION
+  async getProjectEndpoints(req, res) {
+    try {
+      const { projectId } = req.params;
+      const integration = this.integrations.get(projectId);
+      
+      if (!integration) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      res.json({
+        projectId,
+        endpoints: integration.endpoints,
+        totalEndpoints: integration.endpoints.length
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get endpoints', details: error.message });
+    }
+  }
+
+  async getAllStatuses(req, res) {
+    try {
+      const statuses = {};
+      
+      for (const [projectId, integration] of this.integrations) {
+        const status = this.statusMonitor.get(projectId) || {
+          status: 'unknown',
+          lastCheck: 0,
+          endpoints: 0,
+          errors: []
+        };
+        
+        statuses[projectId] = {
+          name: integration.name,
+          status: status.status,
+          lastCheck: status.lastCheck,
+          endpoints: integration.endpoints.length,
+          uptime: this.calculateUptime(integration.createdAt)
+        };
+      }
+      
+      res.json(statuses);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get statuses', details: error.message });
+    }
+  }
+
+  async downloadDocs(req, res) {
+    try {
+      const { projectId } = req.params;
+      const format = req.query.format || 'json';
+      
+      const integration = this.integrations.get(projectId);
+      if (!integration) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      const docs = await this.generateProjectDocs(integration);
+      
+      if (format === 'json') {
+        res.json(docs);
+      } else if (format === 'markdown') {
+        res.setHeader('Content-Type', 'text/markdown');
+        res.setHeader('Content-Disposition', `attachment; filename="${integration.name}-docs.md"`);
+        res.send(this.convertDocsToMarkdown(docs));
+      } else {
+        res.status(400).json({ error: 'Unsupported format. Use json or markdown.' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to download docs', details: error.message });
+    }
+  }
+
+  async getTemplate(req, res) {
+    try {
+      const { templateId } = req.params;
+      const { templates } = require('./templates');
+      
+      const template = templates[templateId];
+      if (!template) {
+        return res.status(404).json({ error: 'Template not found' });
+      }
+
+      res.json({
+        template,
+        implementationFiles: this.generateImplementationFiles(template),
+        deploymentGuide: this.generateDeploymentGuide(template)
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get template', details: error.message });
+    }
+  }
+
+  async getAllProjects(req, res) {
+    try {
+      const projects = Array.from(this.integrations.values()).map(integration => ({
+        id: integration.id,
+        name: integration.name,
+        template: integration.template,
+        createdAt: integration.createdAt,
+        status: integration.status,
+        endpointCount: integration.endpoints.length,
+        lastHeartbeat: integration.lastHeartbeat
+      }));
+
+      res.json({ projects });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get projects', details: error.message });
+    }
+  }
+
+  async deleteProject(req, res) {
+    try {
+      const { projectId } = req.params;
+      const integration = this.integrations.get(projectId);
+      
+      if (!integration) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Remove from memory
+      this.integrations.delete(projectId);
+      this.statusMonitor.delete(projectId);
+
+      // Remove from disk
+      const integrationsDir = path.join(__dirname, 'data', 'integrations');
+      await fs.unlink(path.join(integrationsDir, `${projectId}.json`)).catch(() => {});
+
+      // Broadcast deletion
+      this.broadcastStatusUpdate(projectId, 'deleted');
+
+      res.json({ success: true, message: 'Project deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete project', details: error.message });
+    }
+  }
+
+  // Helper Methods
+  generateEndpointPath(endpointType, config) {
+    const paths = {
+      balance: '/balance',
+      transaction: '/transaction',
+      status: '/status',
+      price: '/price',
+      trade: '/trade',
+      mint: '/mint',
+      collection: '/collection',
+      transfer: '/transfer',
+      stake: '/stake',
+      rewards: '/rewards'
+    };
+    
+    return paths[endpointType] || `/${endpointType}`;
+  }
+
+  generateCurlExample(endpoint, projectId) {
+    const baseUrl = 'https://api.solana-devex.com';
+    let curlCmd = `curl -X ${endpoint.method} "${baseUrl}/api/projects/${projectId}${endpoint.path}"`;
+    curlCmd += ` -H "Authorization: Bearer YOUR_API_KEY"`;
+    
+    if (endpoint.method !== 'GET' && endpoint.config) {
+      curlCmd += ` -H "Content-Type: application/json"`;
+      curlCmd += ` -d '${JSON.stringify(endpoint.config, null, 2)}'`;
+    }
+    
+    return curlCmd;
+  }
+
+  calculateUptime(createdAt) {
+    const now = new Date();
+    const created = new Date(createdAt);
+    const uptimeMs = now.getTime() - created.getTime();
+    
+    const days = Math.floor(uptimeMs / (24 * 60 * 60 * 1000));
+    const hours = Math.floor((uptimeMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    
+    if (days > 0) {
+      return `${days}d ${hours}h`;
+    } else {
+      return `${hours}h`;
+    }
+  }
+
+  async getProjectMetrics(projectId) {
+    // Mock metrics - in production, you'd query a metrics database
+    return {
+      totalRequests: Math.floor(Math.random() * 10000) + 1000,
+      avgResponseTime: Math.floor(Math.random() * 200) + 50,
+      errorRate: (Math.random() * 2).toFixed(2),
+      requestsToday: Math.floor(Math.random() * 1000) + 100
+    };
+  }
+
+  async loadTemplates() {
+    const { templates } = require('./templates');
+    return Object.entries(templates).map(([id, template]) => ({
+      id,
+      ...template
+    }));
+  }
+
+  generateEndpointExample(endpoint, projectId) {
+    const baseUrl = `https://api.solana-devex.com/api/projects/${projectId}`;
+    
+    if (endpoint.method === 'GET') {
+      return `curl "${baseUrl}${endpoint.path}" -H "Authorization: Bearer YOUR_API_KEY"`;
+    } else {
+      return `curl -X ${endpoint.method} "${baseUrl}${endpoint.path}" \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify(endpoint.body || {}, null, 2)}'`;
+    }
+  }
+
+  generateSDKGuide(integration) {
+    return `
+## SDK Integration Guide
+
+### Installation
+\`\`\`bash
+npm install @solana-devex/integration-sdk
+\`\`\`
+
+### Quick Setup
+\`\`\`javascript
+const { SolanaDevExClient } = require('@solana-devex/integration-sdk');
+
+const client = new SolanaDevExClient({
+  projectId: '${integration.id}',
+  apiKey: '${integration.apiKey}',
+  environment: 'production'
+});
+\`\`\`
+
+### Usage Examples
+${integration.endpoints.map(endpoint => `
+#### ${endpoint.description}
+\`\`\`javascript
+${this.generateSDKExample(endpoint)}
+\`\`\`
+`).join('')}
+    `.trim();
+  }
+
+  generateSDKExample(endpoint) {
+    if (endpoint.path === '/balance') {
+      return `const balance = await client.getBalance('wallet-address');`;
+    } else if (endpoint.path === '/transaction') {
+      return `const tx = await client.sendTransaction({
+  from: 'sender-address',
+  to: 'recipient-address',
+  amount: 1.5
+});`;
+    } else if (endpoint.path === '/status') {
+      return `const status = await client.getStatus();`;
+    } else {
+      return `const result = await client.callEndpoint('${endpoint.path}');`;
+    }
+  }
+
+  generateWebhookDocs(integration) {
+    return `
+## Webhook Integration
+
+If you provided a webhook URL, you'll receive real-time notifications:
+
+### Webhook URL
+\`${integration.webhookUrl || 'Not configured'}\`
+
+### Event Types
+- \`transaction.confirmed\` - Transaction confirmed on blockchain
+- \`balance.changed\` - Wallet balance updated
+- \`error.occurred\` - An error occurred
+
+### Example Payload
+\`\`\`json
+{
+  "event": "transaction.confirmed",
+  "projectId": "${integration.id}",
+  "timestamp": "2024-02-03T22:16:21.000Z",
+  "data": {
+    "signature": "tx_signature",
+    "amount": 1500000000,
+    "from": "sender_address",
+    "to": "recipient_address"
+  }
+}
+\`\`\`
+    `.trim();
+  }
+
+  generateErrorHandlingDocs() {
+    return `
+## Error Handling
+
+### HTTP Status Codes
+- \`200\` - Success
+- \`400\` - Bad Request (invalid parameters)
+- \`401\` - Unauthorized (invalid API key)
+- \`404\` - Not Found
+- \`429\` - Too Many Requests (rate limited)
+- \`500\` - Internal Server Error
+
+### Error Response Format
+\`\`\`json
+{
+  "error": "Error type",
+  "message": "Human-readable error message",
+  "details": "Additional error details",
+  "timestamp": "2024-02-03T22:16:21.000Z"
+}
+\`\`\`
+
+### Rate Limiting
+- 100 requests per 15 minutes per API key
+- Rate limit headers included in responses
+- Exponential backoff recommended for retries
+    `.trim();
+  }
+
+  generateCodeExamples(integration) {
+    return {
+      javascript: `
+// Complete integration example
+const { SolanaDevExClient } = require('@solana-devex/integration-sdk');
+
+const client = new SolanaDevExClient({
+  projectId: '${integration.id}',
+  apiKey: '${integration.apiKey}'
+});
+
+async function main() {
+  try {
+    // Check status
+    const status = await client.getStatus();
+    console.log('Connection status:', status);
+    
+    // Get balance
+    const balance = await client.getBalance('your-wallet-address');
+    console.log('Balance:', balance);
+    
+    // Real-time updates
+    const ws = client.connectWebSocket(
+      (data) => console.log('Update:', data),
+      (error) => console.error('Error:', error)
+    );
+  } catch (error) {
+    console.error('Integration error:', error);
+  }
+}
+
+main();
+      `,
+      
+      curl: integration.endpoints.map(endpoint => 
+        this.generateEndpointExample(endpoint, integration.id)
+      ).join('\n\n')
+    };
+  }
+
+  convertDocsToMarkdown(docs) {
+    return `# ${docs.projectId} Integration Documentation
+
+${docs.introduction}
+
+${docs.authentication}
+
+## Endpoints
+
+${docs.endpoints.map(endpoint => `
+### ${endpoint.method} ${endpoint.path}
+${endpoint.description}
+
+${endpoint.example}
+`).join('')}
+
+${docs.sdkGuide}
+
+${docs.webhooks}
+
+${docs.errorHandling}
+    `.trim();
+  }
+
+  generateImplementationFiles(template) {
+    return {
+      'package.json': JSON.stringify({
+        name: 'solana-integration',
+        version: '1.0.0',
+        dependencies: {
+          '@solana-devex/integration-sdk': '^1.0.0'
+        }
+      }, null, 2),
+      
+      'index.js': template.code?.javascript || '// Integration code here',
+      
+      'README.md': `# Integration using ${template.name}
+
+${template.description}
+
+## Setup Time
+${template.setupTime}
+
+## Quick Start
+1. npm install
+2. Add your API key to .env
+3. Run: node index.js
+      `
+    };
+  }
+
+  generateDeploymentGuide(template) {
+    return {
+      steps: [
+        'Copy the generated files to your project',
+        'Install dependencies: npm install',
+        'Configure your API key in .env',
+        'Test the integration: npm test',
+        'Deploy to your preferred platform'
+      ],
+      platforms: [
+        'Vercel: vercel deploy',
+        'Heroku: git push heroku main',
+        'AWS: Use AWS CLI or console',
+        'Docker: docker build && docker run'
+      ]
+    };
+  }
+
   // Helper Methods
   async generateTemplateEndpoints(template) {
     const templates = {
@@ -398,11 +827,19 @@ Authorization: Bearer ${integration.apiKey}
   }
 
   start(port = 3001) {
-    this.app.listen(port, () => {
+    // Only start if running standalone (not embedded in ProductionServer)
+    if (require.main === module) {
+      this.app.listen(port, () => {
+        console.log(`🚀 Enhanced Integration Hub running on port ${port}`);
+        console.log(`📊 WebSocket monitoring on port 8080`);
+        console.log(`📚 Documentation available at http://localhost:${port}/docs`);
+      });
+    } else {
+      // Just log that it's being embedded
       console.log(`🚀 Enhanced Integration Hub running on port ${port}`);
       console.log(`📊 WebSocket monitoring on port 8080`);
       console.log(`📚 Documentation available at http://localhost:${port}/docs`);
-    });
+    }
   }
 }
 

@@ -87,8 +87,12 @@ class ProductionServer {
     // Mount Integration Hub routes
     this.app.use(this.integrationHub.app);
 
-    // Dashboard route
-    this.app.get('/dashboard/:projectId?', (req, res) => {
+    // Dashboard routes
+    this.app.get('/dashboard', (req, res) => {
+      res.sendFile(path.join(__dirname, 'dashboard.html'));
+    });
+    
+    this.app.get('/dashboard/:projectId', (req, res) => {
       res.sendFile(path.join(__dirname, 'dashboard.html'));
     });
 
@@ -96,7 +100,8 @@ class ProductionServer {
     this.app.get('/api/docs', this.generateAPIDocs.bind(this));
 
     // SDK download
-    this.app.get('/sdk/download/:format?', this.handleSDKDownload.bind(this));
+    this.app.get('/sdk/download', this.handleSDKDownload.bind(this));
+    this.app.get('/sdk/download/:format', this.handleSDKDownload.bind(this));
 
     // Template preview
     this.app.get('/templates/:templateId/preview', this.handleTemplatePreview.bind(this));
@@ -414,17 +419,17 @@ integration_hub_memory_usage_bytes ${process.memoryUsage().rss}
   }
 
   start() {
-    // Start Integration Hub
-    this.integrationHub.start(this.port);
-    
-    console.log(`🚀 Enhanced Integration Hub is running!`);
-    console.log(`🌐 API Server: http://localhost:${this.port}`);
-    console.log(`📊 WebSocket: ws://localhost:${this.wsPort}`);
-    console.log(`📚 API Docs: http://localhost:${this.port}/api/docs`);
-    console.log(`🎛️  Dashboard: http://localhost:${this.port}/dashboard`);
-    console.log(`📈 Status: http://localhost:${this.port}/status`);
-    console.log(`📊 Metrics: http://localhost:${this.port}/metrics`);
-    console.log(`\n✨ Ready to accept integrations! Projects can connect in under 5 minutes.`);
+    // Start main server (IntegrationHub routes already mounted)
+    this.app.listen(this.port, () => {
+      console.log(`🚀 Enhanced Integration Hub is running!`);
+      console.log(`🌐 API Server: http://localhost:${this.port}`);
+      console.log(`📊 WebSocket: ws://localhost:${this.wsPort}`);
+      console.log(`📚 API Docs: http://localhost:${this.port}/api/docs`);
+      console.log(`🎛️  Dashboard: http://localhost:${this.port}/dashboard`);
+      console.log(`📈 Status: http://localhost:${this.port}/status`);
+      console.log(`📊 Metrics: http://localhost:${this.port}/metrics`);
+      console.log(`\n✨ Ready to accept integrations! Projects can connect in under 5 minutes.`);
+    });
   }
 
   shutdown() {
