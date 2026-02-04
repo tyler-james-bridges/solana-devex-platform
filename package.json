@@ -17,7 +17,7 @@
     "test": "npm run test:api",
     "test:api": "cd api && npm test",
     "test:protocols": "solana-devex test protocols",
-    "test:agentdex": "node test-agentdex-integration.js",
+    "test:agentdex": "node tests/test-agentdex-integration.js",
     "test:coverage": "cd api && npm test -- --coverage",
     "security:audit": "npm audit && cd api && npm audit && cd ../cli && npm audit",
     "security:fix": "npm audit fix && cd api && npm audit fix && cd ../cli && npm audit fix",
