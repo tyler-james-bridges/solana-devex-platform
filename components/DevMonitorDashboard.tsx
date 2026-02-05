@@ -259,16 +259,9 @@ const MetricCard = ({
   onClick?: () => void;
   subtitle?: string;
 }) => {
-  const statusColors = {
-    healthy: 'border-green-200 bg-green-50',
-    degraded: 'border-yellow-200 bg-yellow-50',
-    down: 'border-red-200 bg-red-50',
-    neutral: 'border-gray-200 bg-white'
-  };
-
   return (
     <div 
-      className={`p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${statusColors[status]} ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700 transition-all duration-200 hover:shadow-md ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between mb-2">
@@ -280,15 +273,15 @@ const MetricCard = ({
             ) : trend === 'down' ? (
               <ArrowDownRight className="w-4 h-4 text-red-600" />
             ) : null}
-            <span className={`text-sm font-medium ${trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
+            <span className={`text-sm font-medium ${trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500 dark:text-gray-400'}`}>
               {change}
             </span>
           </div>
         )}
       </div>
-      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
-      <div className="text-sm text-gray-600">{title}</div>
-      {subtitle && <div className="text-xs text-gray-500 mt-1">{subtitle}</div>}
+      <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{value}</div>
+      <div className="text-sm text-gray-600 dark:text-gray-400">{title}</div>
+      {subtitle && <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</div>}
     </div>
   );
 };
@@ -759,32 +752,32 @@ const DevMonitorDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Block Height</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.blockHeight.toLocaleString()}</div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Programs Loaded</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.programsLoaded}</div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Accounts</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.accountsLoaded.toLocaleString()}</div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">CPU Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.cpuUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.memoryUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Disk Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.diskUsage.toFixed(1)} GB</div>
             </div>
@@ -1032,24 +1025,24 @@ const DevMonitorDashboard: React.FC = () => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">CPU Usage</div>
-              <div className="text-2xl font-semibold">{devMetrics.systemMetrics.cpuUsage.toFixed(1)}%</div>
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+              <div className="text-sm text-gray-600 dark:text-gray-400">CPU Usage</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.cpuUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Memory Usage</div>
-              <div className="text-2xl font-semibold">{devMetrics.systemMetrics.memoryUsage.toFixed(1)}%</div>
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.memoryUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Network In</div>
-              <div className="text-2xl font-semibold">{devMetrics.systemMetrics.networkIO.in.toFixed(0)} MB/s</div>
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Network In</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.networkIO.in.toFixed(0)} MB/s</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Network Out</div>
-              <div className="text-2xl font-semibold">{devMetrics.systemMetrics.networkIO.out.toFixed(0)} MB/s</div>
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Network Out</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.networkIO.out.toFixed(0)} MB/s</div>
             </div>
           </div>
 

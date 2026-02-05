@@ -191,16 +191,9 @@ const MetricCard = ({
   status?: 'healthy' | 'degraded' | 'down' | 'neutral';
   onClick?: () => void;
 }) => {
-  const statusColors = {
-    healthy: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20',
-    degraded: 'border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20',
-    down: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20',
-    neutral: 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
-  };
-
   return (
     <div 
-      className={`p-4 sm:p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${statusColors[status]} ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700 transition-all duration-200 hover:shadow-md ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between mb-3">
