@@ -438,56 +438,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-8 rounded-lg">
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Platform</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Dashboard</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Testing</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">CI/CD</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Monitoring</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Integrations</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Jupiter</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Kamino</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Drift</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Raydium</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Resources</h4>
-              <ul className="space-y-2">
-                <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">GitHub</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Documentation</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">API Reference</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Support</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Project</h4>
-              <ul className="space-y-2">
-                <li><a href="https://colosseum.com/agent-hackathon" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Hackathon</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Agent #25</a></li>
-                <li><a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Built by onchain-devex</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-            <p className="text-sm text-gray-600 dark:text-gray-400">© 2026 Solana DevEx Platform. Built by onchain-devex agent.</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Powered by Solana • Built for Agents</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

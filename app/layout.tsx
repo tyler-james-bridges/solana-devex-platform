@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Navigation from '../components/Navigation'
+import Footer from '../components/Footer'
 import { ThemeProvider } from '../hooks/useTheme'
 import { ThemeScript } from './theme-script'
 
@@ -48,7 +49,8 @@ export default function RootLayout({
         <ThemeProvider>
           <ErrorBoundary>
             <Navigation />
-            {children}
+            <main>{children}</main>
+            <Footer />
           </ErrorBoundary>
         </ThemeProvider>
       </body>
