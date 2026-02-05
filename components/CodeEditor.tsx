@@ -492,7 +492,7 @@ export function CodeEditor({
                   <div key={index} className="snippet-item">
                     <div className="snippet-label">{tool.name}</div>
                     <div className="snippet-description">{tool.description}</div>
-                    <code style={{ fontSize: '0.75rem', color: '#6b7280', display: 'block', marginTop: '0.25rem' }}>
+                    <code className="text-xs text-gray-500 dark:text-gray-400 block mt-1">
                       {tool.command}
                     </code>
                   </div>

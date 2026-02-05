@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Navigation from '../components/Navigation'
 import { ThemeProvider } from '../hooks/useTheme'
+import { ThemeScript } from './theme-script'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -40,6 +41,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className={inter.className}>
         <ThemeProvider>
           <ErrorBoundary>

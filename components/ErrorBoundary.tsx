@@ -42,143 +42,56 @@ class ErrorBoundary extends React.Component<Props, State> {
       }
 
       return (
-        <div style={{ 
-          minHeight: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          padding: '1rem',
-          backgroundColor: '#f9fafb'
-        }}>
-          <div style={{ maxWidth: '400px', width: '100%' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                marginBottom: '1rem' 
-              }}>
-                <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  borderRadius: '50%', 
-                  backgroundColor: '#fee2e2', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  border: '1px solid #ef4444'
-                }}>
-                  <AlertTriangle style={{ width: '32px', height: '32px', color: '#dc2626' }} />
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
+          <div className="max-w-md w-full">
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center border border-red-300 dark:border-red-700">
+                  <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
                 </div>
               </div>
               
-              <h1 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: '600', 
-                color: '#111827', 
-                marginBottom: '0.5rem' 
-              }}>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 System Error
               </h1>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: '#6b7280', 
-                lineHeight: '1.5' 
-              }}>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 The DevEx Platform encountered an unexpected error. This might be a temporary issue.
               </p>
             </div>
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div style={{ 
-                marginBottom: '1.5rem',
-                background: 'white',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                padding: '1rem'
-              }}>
-                <h3 style={{ 
-                  fontSize: '0.875rem', 
-                  fontWeight: '600', 
-                  color: '#dc2626',
-                  marginBottom: '0.5rem'
-                }}>
+              <div className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">
                   Error Details
                 </h3>
-                <div style={{ 
-                  backgroundColor: '#f3f4f6', 
-                  borderRadius: '0.5rem', 
-                  padding: '0.75rem',
-                  maxHeight: '128px',
-                  overflow: 'auto'
-                }}>
-                  <pre style={{ 
-                    fontSize: '0.75rem', 
-                    fontFamily: 'monospace', 
-                    color: '#374151',
-                    margin: 0,
-                    whiteSpace: 'pre-wrap',
-                    wordWrap: 'break-word'
-                  }}>
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-h-32 overflow-auto">
+                  <pre className="text-xs font-mono text-gray-700 dark:text-gray-300 m-0 whitespace-pre-wrap break-words">
                     {this.state.error.message}
                   </pre>
                 </div>
               </div>
             )}
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div className="flex flex-col gap-3">
               <button
                 onClick={this.handleReset}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors"
               >
-                <RefreshCw style={{ width: '16px', height: '16px' }} />
+                <RefreshCw className="w-4 h-4" />
                 Try Again
               </button>
               
               <button
                 onClick={this.handleGoHome}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1rem',
-                  backgroundColor: 'white',
-                  color: '#374151',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium cursor-pointer transition-colors"
               >
-                <Home style={{ width: '16px', height: '16px' }} />
+                <Home className="w-4 h-4" />
                 Go Home
               </button>
             </div>
             
-            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-              <p style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+            <div className="text-center mt-6">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 If this problem persists, please refresh the page or check the console for more details.
               </p>
             </div>
