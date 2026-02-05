@@ -1,5 +1,5 @@
 /**
- * @solana/kit Command Handlers
+ * @solana/web3.js Command Handlers
  * Official Solana SDK operations
  */
 
@@ -9,10 +9,10 @@ const fs = require('fs-extra');
 const path = require('path');
 
 /**
- * RPC client management with @solana/kit
+ * RPC client management with @solana/web3.js
  */
 async function rpc(options) {
-  console.log(chalk.cyan('ó @solana/kit RPC Client Management'));
+  console.log(chalk.cyan('ÔøΩ @solana/web3.js RPC Client Management'));
   
   const endpoint = options.endpoint || 'http://localhost:8899';
   console.log(chalk.gray(`Using endpoint: ${endpoint}`));
@@ -26,7 +26,7 @@ async function rpc(options) {
     await fs.writeFile(outputFile, template);
     
     console.log(chalk.green(` Generated RPC client: ${outputFile}`));
-    console.log(chalk.gray('Features: @solana/kit patterns, error handling, connection management'));
+    console.log(chalk.gray('Features: @solana/web3.js patterns, error handling, connection management'));
     
   } catch (error) {
     console.error(chalk.red(` RPC setup failed: ${error.message}`));
@@ -35,10 +35,10 @@ async function rpc(options) {
 }
 
 /**
- * Transaction building with @solana/kit
+ * Transaction building with @solana/web3.js
  */
 async function transaction(options) {
-  console.log(chalk.cyan('≥ @solana/kit Transaction Builder'));
+  console.log(chalk.cyan('ÔøΩ @solana/web3.js Transaction Builder'));
   
   try {
     const template = generateTransactionTemplate(options.simulate);
@@ -50,7 +50,7 @@ async function transaction(options) {
     console.log(chalk.green(` Generated transaction builder: ${outputFile}`));
     
     if (options.simulate) {
-      console.log(chalk.yellow('ç Simulation mode enabled'));
+      console.log(chalk.yellow('ÔøΩ Simulation mode enabled'));
     }
     
     console.log(chalk.gray('Features: Kit message APIs, proper fee handling, recent blockhash'));
@@ -65,7 +65,7 @@ async function transaction(options) {
  * Generate typed clients with Codama
  */
 async function client(options) {
-  console.log(chalk.cyan('õ Codama Client Generation'));
+  console.log(chalk.cyan('ÔøΩ Codama Client Generation'));
   
   if (!options.idl) {
     console.error(chalk.red(' IDL file required: --idl <path>'));
@@ -90,7 +90,7 @@ async function client(options) {
     await fs.writeFile(outputFile, clientTemplate);
     
     console.log(chalk.green(` Generated typed client: ${outputFile}`));
-    console.log(chalk.gray('Features: Full type safety, @solana/kit integration, instruction builders'));
+    console.log(chalk.gray('Features: Full type safety, @solana/web3.js integration, instruction builders'));
     
   } catch (error) {
     console.error(chalk.red(` Client generation failed: ${error.message}`));
@@ -99,23 +99,18 @@ async function client(options) {
 }
 
 /**
- * Generate RPC client template with @solana/kit patterns
+ * Generate RPC client template with @solana/web3.js patterns
  */
 function generateRpcTemplate(endpoint) {
-  return `import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/client';
-import type { Rpc, GetAccountInfoApi, GetBalanceApi, GetSlotApi } from '@solana/client';
+  return `import { Connection, PublicKey } from '@solana/web3.js';
 
 /**
- * Official @solana/kit RPC Client
+ * Official @solana/web3.js RPC Client
  * Follows official Solana stack patterns
  */
 
-// Create transport for the endpoint
-const transport = createDefaultRpcTransport({ url: '${endpoint}' });
-
-// Create typed RPC API with specific methods
-export const rpc: Rpc<GetAccountInfoApi & GetBalanceApi & GetSlotApi> = 
-  createSolanaRpcApi({ transport });
+// Create connection for the endpoint
+const connection = new Connection('${endpoint}');
 
 /**
  * Example usage:
@@ -171,7 +166,7 @@ export async function createResilientConnection() {
 }
 
 /**
- * Generate transaction template with @solana/kit patterns  
+ * Generate transaction template with @solana/web3.js patterns  
  */
 function generateTransactionTemplate(simulate = false) {
   return `import { 
@@ -180,27 +175,27 @@ function generateTransactionTemplate(simulate = false) {
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetime,
   compileTransactionMessage 
-} from '@solana/client';
+} from '@solana/web3.js';
 import type { 
   TransactionMessage, 
   ITransactionMessageWithFeePayerSigner,
   Address,
   Signer 
-} from '@solana/client';
+} from '@solana/web3.js';
 
 /**
- * Official @solana/kit Transaction Builder
- * Follows official stack patterns for transaction construction
+ * Transaction Builder
+ * Uses standard Solana web3.js patterns
  */
 
 export interface TransactionConfig {
-  feePayer: Signer;
+  feePayer: any;
   recentBlockhash: string;
-  instructions: any; // Replace with proper instruction types
+  instructions: any;
 }
 
 /**
- * Build transaction with @solana/kit patterns
+ * Build transaction with @solana/web3.js patterns
  */
 export async function buildTransaction(config: TransactionConfig): Promise<TransactionMessage> {
   const { feePayer, recentBlockhash, instructions } = config;
@@ -229,7 +224,7 @@ export async function ${simulate ? 'simulate' : 'send'}Transaction(
     
     ${simulate ? `
     // Simulate transaction
-    console.log('ç Simulating transaction...');
+    console.log('ÔøΩ Simulating transaction...');
     // Add simulation logic here
     console.log(' Simulation successful');
     return { success: true, logs:  };
@@ -283,12 +278,12 @@ export function validateTransaction(message: TransactionMessage): boolean {
 async function generateCodamaClient(idlPath) {
   const idl = await fs.readJson(idlPath);
   
-  return `import type { Address, Account, Instruction } from '@solana/client';
+  return `import type { Address, Account, Instruction } from '@solana/web3.js';
 
 /**
  * Generated Client for ${idl.name || 'Program'}
  * Generated from IDL using Codama patterns
- * Fully typed with @solana/kit integration
+ * Fully typed with @solana/web3.js integration
  */
 
 export const PROGRAM_ID: Address = '${idl.metadata?.address || 'PROGRAM_ID_HERE'}' as Address;

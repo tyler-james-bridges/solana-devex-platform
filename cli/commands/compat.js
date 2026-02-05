@@ -13,7 +13,7 @@ const inquirer = require('inquirer');
  */
 async function main(options) {
   console.log(chalk.yellow('„ web3.js Compatibility Layer'));
-  console.log(chalk.gray('Use this sparingly - prefer @solana/kit for new code'));
+  console.log(chalk.gray('Use this sparingly - prefer @solana/web3.js for new code'));
   
   if (options.migrate) {
     await runMigrationHelper();
@@ -33,7 +33,7 @@ async function showCompatibilityOptions() {
       message: 'What would you like to do?',
       choices: [
         {
-          name: '„ Migrate from web3.js to @solana/kit (Recommended)',
+          name: '„ Migrate from web3.js to @solana/web3.js (Recommended)',
           value: 'migrate',
           short: 'Migrate'
         },
@@ -73,10 +73,10 @@ async function showCompatibilityOptions() {
 }
 
 /**
- * Migration helper from web3.js to @solana/kit
+ * Migration helper from web3.js to @solana/web3.js
  */
 async function runMigrationHelper() {
-  console.log(chalk.cyan('„ web3.js to @solana/kit Migration Helper'));
+  console.log(chalk.cyan('„ web3.js to @solana/web3.js Migration Helper'));
   
   try {
     // Analyze current web3.js usage
@@ -207,13 +207,13 @@ function analyzeFileForWeb3js(filePath, content) {
   
   // Add migration notes based on usage
   if (analysis.patterns.connection > 0) {
-    analysis.migrationNotes.push('Replace Connection with @solana/client RPC patterns');
+    analysis.migrationNotes.push('Replace Connection with @solana/web3.js RPC patterns');
   }
   if (analysis.patterns.publicKey > 0) {
-    analysis.migrationNotes.push('Replace PublicKey with @solana/kit Address type');
+    analysis.migrationNotes.push('Replace PublicKey with @solana/web3.js Address type');
   }
   if (analysis.patterns.transaction > 0) {
-    analysis.migrationNotes.push('Replace Transaction with @solana/kit message patterns');
+    analysis.migrationNotes.push('Replace Transaction with @solana/web3.js message patterns');
   }
   
   return analysis;
@@ -237,8 +237,8 @@ function showMigrationPlan(analysis) {
   
   console.log(chalk.cyan('\\n Migration Strategy:'));
   console.log(chalk.gray('  1. Install official stack dependencies'));
-  console.log(chalk.gray('  2. Create @solana/web3-compat adapters for boundaries'));
-  console.log(chalk.gray('  3. Migrate core logic to @solana/kit patterns'));
+  console.log(chalk.gray('  2. Create @solana/web3.js adapters for boundaries'));
+  console.log(chalk.gray('  3. Migrate core logic to @solana/web3.js patterns'));
   console.log(chalk.gray('  4. Remove web3.js dependencies when complete'));
   
   if (analysis.migrationComplexity === 'high') {
@@ -271,9 +271,9 @@ async function generateMigrationFiles(analysis) {
   console.log(chalk.green(` Migration files generated in: ${migrationDir}/`));
   console.log(chalk.cyan('\\n Next Steps:'));
   console.log(chalk.gray(`  1. Review: ${migrationDir}/MIGRATION_PLAN.md`));
-  console.log(chalk.gray(`  2. Install: npm install @solana/client @solana/kit @solana/web3-compat`));
+  console.log(chalk.gray(`  2. Install: npm install @solana/web3.js @solana/web3.js @solana/web3.js`));
   console.log(chalk.gray('  3. Start with compatibility adapters'));
-  console.log(chalk.gray('  4. Gradually migrate to @solana/kit patterns'));
+  console.log(chalk.gray('  4. Gradually migrate to @solana/web3.js patterns'));
 }
 
 /**
@@ -283,7 +283,7 @@ async function generateMigrationPlan(migrationDir, analysis) {
   const planContent = `# Migration from web3.js to Official Solana Stack
 
 ## Overview
-This migration plan helps you move from the legacy web3.js stack to the official Solana stack (@solana/kit + framework-kit).
+This migration plan helps you move from the legacy web3.js stack to the official Solana stack (@solana/web3.js + framework-kit).
 
 ## Current State Analysis
 - **Files to migrate**: ${analysis.files.length}
@@ -295,7 +295,7 @@ This migration plan helps you move from the legacy web3.js stack to the official
 ### Phase 1: Compatibility Setup
 1. Install official stack dependencies:
    \`\`\`bash
-   npm install @solana/client @solana/kit @solana/react-hooks @solana/web3-compat
+   npm install @solana/web3.js @solana/web3.js @solana/web3.js @solana/web3.js
    \`\`\`
 
 2. Create compatibility adapters (see \`adapters/\` directory)
@@ -309,8 +309,8 @@ ${file.migrationNotes.map(note => `- ${note}`).join('\\n')}
 `).join('\\n')}
 
 ### Phase 3: Official Stack Adoption
-1. Replace web3.js patterns with @solana/kit equivalents
-2. Update React components to use @solana/react-hooks
+1. Replace web3.js patterns with @solana/web3.js equivalents
+2. Update React components to use @solana/web3.js
 3. Migrate testing to LiteSVM/Mollusk
 4. Remove web3.js dependencies
 
@@ -321,8 +321,8 @@ ${file.migrationNotes.map(note => `- ${note}`).join('\\n')}
 // Before (web3.js)
 const connection = new Connection(endpoint);
 
-// After (@solana/kit)
-import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/client';
+// After (@solana/web3.js)
+import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/web3.js';
 const transport = createDefaultRpcTransport({ url: endpoint });
 const rpc = createSolanaRpcApi({ transport });
 \`\`\`
@@ -332,8 +332,8 @@ const rpc = createSolanaRpcApi({ transport });
 // Before (web3.js)
 const pubkey = new PublicKey('11111111111111111111111111111111');
 
-// After (@solana/kit)
-import type { Address } from '@solana/client';
+// After (@solana/web3.js)
+import type { Address } from '@solana/web3.js';
 const address: Address = '11111111111111111111111111111111' as Address;
 \`\`\`
 
@@ -343,8 +343,8 @@ const address: Address = '11111111111111111111111111111111' as Address;
 const transaction = new Transaction();
 transaction.add(instruction);
 
-// After (@solana/kit)
-import { pipe, createTransactionMessage, addInstructionsToTransactionMessage } from '@solana/client';
+// After (@solana/web3.js)
+import { pipe, createTransactionMessage, addInstructionsToTransactionMessage } from '@solana/web3.js';
 const message = pipe(
   createTransactionMessage({ version: 0 }),
   tx => addInstructionsToTransactionMessage([instruction], tx)
@@ -392,13 +392,13 @@ async function createCompatibilityAdapter() {
  */
 function generateCompatibilityAdapter() {
   return `import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { fromWeb3JsPublicKey, toWeb3JsPublicKey, fromWeb3JsTransaction, toWeb3JsTransaction } from '@solana/web3-compat';
-import type { Rpc, Address } from '@solana/client';
+import { fromWeb3JsPublicKey, toWeb3JsPublicKey, fromWeb3JsTransaction, toWeb3JsTransaction } from '@solana/web3.js';
+import type { Rpc, Address } from '@solana/web3.js';
 
 /**
  * Compatibility adapter for web3.js integration
  * Use this ONLY at boundaries where you must interact with web3.js code
- * Prefer @solana/kit patterns for all new code
+ * Prefer @solana/web3.js patterns for all new code
  */
 export class Web3jsAdapter {
   private rpc: Rpc<any>;
@@ -414,35 +414,35 @@ export class Web3jsAdapter {
   getWeb3jsConnection(): Connection {
     // This is a simplified example - you'll need to implement proper conversion
     // based on your specific RPC client setup
-    console.warn(' Using web3.js compatibility layer - consider migrating to @solana/kit');
+    console.warn(' Using web3.js compatibility layer - consider migrating to @solana/web3.js');
     
-    // Return a web3.js Connection that delegates to your @solana/kit RPC
+    // Return a web3.js Connection that delegates to your @solana/web3.js RPC
     return new Connection('http://localhost:8899'); // Placeholder
   }
 
   /**
-   * Convert @solana/kit Address to web3.js PublicKey
+   * Convert @solana/web3.js Address to web3.js PublicKey
    */
   addressToPublicKey(address: Address): PublicKey {
     return toWeb3JsPublicKey(address);
   }
 
   /**
-   * Convert web3.js PublicKey to @solana/kit Address  
+   * Convert web3.js PublicKey to @solana/web3.js Address  
    */
   publicKeyToAddress(publicKey: PublicKey): Address {
     return fromWeb3JsPublicKey(publicKey);
   }
 
   /**
-   * Convert web3.js Transaction to @solana/kit format
+   * Convert web3.js Transaction to @solana/web3.js format
    */
   transactionFromWeb3js(transaction: Transaction) {
     return fromWeb3JsTransaction(transaction);
   }
 
   /**
-   * Convert @solana/kit transaction to web3.js format
+   * Convert @solana/web3.js transaction to web3.js format
    */
   transactionToWeb3js(kitTransaction: any): Transaction {
     return toWeb3JsTransaction(kitTransaction);
@@ -457,7 +457,7 @@ export function withWeb3jsCompatibility<T>(
   adapter: Web3jsAdapter,
   web3jsCode: (connection: Connection) => Promise<T>
 ): Promise<T> {
-  console.warn(' Executing web3.js compatibility code - plan migration to @solana/kit');
+  console.warn(' Executing web3.js compatibility code - plan migration to @solana/web3.js');
   
   const connection = adapter.getWeb3jsConnection();
   return web3jsCode(connection);
@@ -512,7 +512,7 @@ async function analyzeLegacyUsage() {
     console.log(chalk.gray('  ¢ Migrate one component at a time'));
   } else {
     console.log(chalk.green('  ¢ Migration should be straightforward'));
-    console.log(chalk.gray('  ¢ Consider full migration to @solana/kit'));
+    console.log(chalk.gray('  ¢ Consider full migration to @solana/web3.js'));
   }
   
   console.log(chalk.gray('  ¢ Run: solana-devex compat --migrate for migration help'));
@@ -532,10 +532,10 @@ async function showOfficialStackInfo() {
   console.log(chalk.green('   Better Testing') + chalk.gray(' - LiteSVM/Mollusk support'));
   
   console.log(chalk.cyan('\\n› Official Stack Components:'));
-  console.log(chalk.gray('   @solana/client') + ' - Modern RPC client');
-  console.log(chalk.gray('   @solana/kit') + ' - Comprehensive SDK');
-  console.log(chalk.gray('   @solana/react-hooks') + ' - React integration');
-  console.log(chalk.gray('   @solana/web3-compat') + ' - Migration helpers');
+  console.log(chalk.gray('   @solana/web3.js') + ' - Modern RPC client');
+  console.log(chalk.gray('   @solana/web3.js') + ' - Comprehensive SDK');
+  console.log(chalk.gray('   @solana/web3.js') + ' - React integration');
+  console.log(chalk.gray('   @solana/web3.js') + ' - Migration helpers');
   
   console.log(chalk.cyan('\\n Getting Started:'));
   console.log(chalk.gray('  1. solana-devex init my-project --template react-kit'));
@@ -545,7 +545,7 @@ async function showOfficialStackInfo() {
   console.log(chalk.cyan('\\n Resources:'));
   console.log(chalk.gray('  ¢ Official Docs: https://docs.solana.com'));
   console.log(chalk.gray('  ¢ Framework Kit: https://solana.com/framework-kit'));
-  console.log(chalk.gray('  ¢ @solana/kit Guide: https://solana.com/kit'));
+  console.log(chalk.gray('  ¢ @solana/web3.js Guide: https://solana.com/kit'));
 }
 
 /**
@@ -593,9 +593,9 @@ async function generateCompatibilityAdapters(migrationDir) {
   const exampleContent = `// Example: Using compatibility adapter for gradual migration
 
 import { Web3jsAdapter } from './web3js-adapter';
-import { createSolanaRpcApi, createDefaultRpcTransport } from '@solana/client';
+import { createSolanaRpcApi, createDefaultRpcTransport } from '@solana/web3.js';
 
-// Your new @solana/kit RPC client
+// Your new @solana/web3.js RPC client
 const transport = createDefaultRpcTransport({ url: 'http://localhost:8899' });
 const rpc = createSolanaRpcApi({ transport });
 

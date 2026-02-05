@@ -127,7 +127,7 @@ async function detectProjectType() {
       return 'react';
     }
     
-    if (packageJson.dependencies?.['@solana/kit']) {
+    if (packageJson.dependencies?.['@solana/web3.js']) {
       return 'kit';
     }
     
@@ -150,7 +150,7 @@ async function installWalletDependencies(projectType) {
 
   const reactDependencies = [
     '@solana/wallet-standard-react',
-    '@solana/react-hooks'
+    '@solana/web3.js'
   ];
 
   let dependencies = baseDependencies;
@@ -548,7 +548,7 @@ export function useWallet(): WalletHookReturn {
       throw new Error('Wallet not connected')
     }
 
-    // Implementation would use your @solana/kit RPC client
+    // Implementation would use your @solana/web3.js RPC client
     return 0 // Mock return
   }
 

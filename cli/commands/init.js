@@ -1,6 +1,6 @@
 /**
  * Project Initialization with Official Solana Stack
- * Framework-kit + @solana/kit patterns
+ * Framework-kit + @solana/web3.js patterns
  */
 
 const chalk = require('chalk');
@@ -90,22 +90,22 @@ async function determineTemplate(options) {
       message: 'Choose a project template:',
       choices: [
         {
-          name: 'ê React + Next.js + @solana/kit (Recommended)',
+          name: 'ê React + Next.js + @solana/web3.js (Recommended)',
           value: 'react-kit',
           short: 'React Kit'
         },
         {
-          name: ' Pure @solana/kit (Scripts/Backend)',
+          name: ' Pure @solana/web3.js (Scripts/Backend)',
           value: 'kit-only',
           short: 'Kit Only'
         },
         {
-          name: ' Anchor + React + @solana/kit',
+          name: ' Anchor + React + @solana/web3.js',
           value: 'anchor-react-kit',
           short: 'Anchor React'
         },
         {
-          name: ' Pinocchio + React + @solana/kit (Performance)',
+          name: ' Pinocchio + React + @solana/web3.js (Performance)',
           value: 'pinocchio-react-kit',
           short: 'Pinocchio React'
         },
@@ -175,7 +175,7 @@ function createBasePackageJson(projectName, template) {
   const base = {
     name: projectName,
     version: '1.0.0',
-    description: 'Solana project with official stack (@solana/kit + framework-kit)',
+    description: 'Solana project with official stack (@solana/web3.js + framework-kit)',
     main: 'index.js',
     scripts: {},
     keywords: ['solana', 'official-stack', 'framework-kit', 'solana-kit'],
@@ -183,8 +183,8 @@ function createBasePackageJson(projectName, template) {
     license: 'MIT',
     dependencies: {
       // Official Solana stack (always included)
-      '@solana/client': '^2.0.0-alpha.4',
-      '@solana/kit': '^2.0.0-alpha.4'
+      '@solana/web3.js': '^2.0.0-alpha.4',
+      '@solana/web3.js': '^2.0.0-alpha.4'
     },
     devDependencies: {
       'typescript': '^5.3.3',
@@ -199,7 +199,7 @@ function createBasePackageJson(projectName, template) {
     case 'pinocchio-react-kit':
     case 'wallet-standard-demo':
       Object.assign(base.dependencies, {
-        '@solana/react-hooks': '^2.0.0-alpha.4',
+        '@solana/web3.js': '^2.0.0-alpha.4',
         'next': '^14.2.35',
         'react': '^18.2.0',
         'react-dom': '^18.2.0'
@@ -256,7 +256,7 @@ function createBasePackageJson(projectName, template) {
  * Generate React + Kit project
  */
 async function generateReactKitProject(projectPath, options) {
-  console.log(chalk.gray('ê Creating React + @solana/kit project...'));
+  console.log(chalk.gray('ê Creating React + @solana/web3.js project...'));
 
   // Next.js configuration
   await fs.writeFile(path.join(projectPath, 'next.config.js'), `/** @type {import('next').NextConfig} */
@@ -264,7 +264,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    // Enable for @solana/kit compatibility
+    // Enable for @solana/web3.js compatibility
     esmExternals: 'loose'
   }
 }
@@ -297,7 +297,7 @@ module.exports = nextConfig;
  * Generate Kit-only project (scripts/backend)
  */
 async function generateKitOnlyProject(projectPath, options) {
-  console.log(chalk.gray(' Creating pure @solana/kit project...'));
+  console.log(chalk.gray(' Creating pure @solana/web3.js project...'));
 
   const srcDir = path.join(projectPath, 'src');
   await fs.ensureDir(srcDir);
@@ -398,7 +398,7 @@ export default function Home() {
       
       <div className="max-w-2xl mx-auto text-center mb-8">
         <p className="text-lg text-gray-600 mb-4">
-          Built with @solana/kit + framework-kit patterns
+          Built with @solana/web3.js + framework-kit patterns
         </p>
         <p className="text-sm text-gray-500">
           The modern, official way to build on Solana
@@ -411,21 +411,21 @@ export default function Home() {
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="p-6 border rounded-lg">
-          <h3 className="font-semibold mb-2">@solana/client</h3>
+          <h3 className="font-semibold mb-2">@solana/web3.js</h3>
           <p className="text-sm text-gray-600">
             Modern RPC client with full type safety
           </p>
         </div>
         
         <div className="p-6 border rounded-lg">
-          <h3 className="font-semibold mb-2">@solana/react-hooks</h3>
+          <h3 className="font-semibold mb-2">@solana/web3.js</h3>
           <p className="text-sm text-gray-600">
             React integration for Solana apps
           </p>
         </div>
         
         <div className="p-6 border rounded-lg">
-          <h3 className="font-semibold mb-2">@solana/kit</h3>
+          <h3 className="font-semibold mb-2">@solana/web3.js</h3>
           <p className="text-sm text-gray-600">
             Comprehensive SDK for all operations
           </p>
@@ -445,7 +445,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Solana Official Stack App',
-  description: 'Built with @solana/kit + framework-kit',
+  description: 'Built with @solana/web3.js + framework-kit',
 }
 
 export default function RootLayout({
@@ -486,7 +486,7 @@ export function WalletConnection() {
     if (!publicKey || !connection) return
     
     try {
-      // Example with @solana/kit patterns
+      // Example with @solana/web3.js patterns
       const balanceResult = await connection.getBalance(publicKey).send()
       setBalance(balanceResult.value / 1e9) // Convert lamports to SOL
     } catch (error) {
@@ -563,11 +563,11 @@ export function WalletConnection() {
 
 function generateSolanaHook() {
   return `import { useState, useCallback } from 'react'
-import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/client'
-import type { Address, Rpc } from '@solana/client'
+import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/web3.js'
+import type { Address, Rpc } from '@solana/web3.js'
 
 /**
- * Custom hook for Solana operations with @solana/kit
+ * Custom hook for Solana operations with @solana/web3.js
  */
 export function useSolana() {
   const [publicKey, setPublicKey] = useState<Address | null>(null)
@@ -618,7 +618,7 @@ function generateKitMainFile() {
 import { buildExampleTransaction } from './transaction-example'
 
 /**
- * Main entry point for @solana/kit application
+ * Main entry point for @solana/web3.js application
  * Demonstrates official Solana stack patterns
  */
 
@@ -657,11 +657,11 @@ export { main }`;
 }
 
 function generateKitClient() {
-  return `import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/client'
-import type { Rpc, GetSlotApi, GetAccountInfoApi } from '@solana/client'
+  return `import { createDefaultRpcTransport, createSolanaRpcApi } from '@solana/web3.js'
+import type { Rpc, GetSlotApi, GetAccountInfoApi } from '@solana/web3.js'
 
 /**
- * Solana client using official @solana/kit patterns
+ * Solana client using official @solana/web3.js patterns
  */
 export class SolanaClient {
   private rpc: Rpc<GetSlotApi & GetAccountInfoApi>
@@ -705,15 +705,15 @@ function generateKitTransaction() {
   createTransactionMessage,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetime
-} from '@solana/client'
-import type { TransactionMessage, Signer } from '@solana/client'
+} from '@solana/web3.js'
+import type { TransactionMessage, Signer } from '@solana/web3.js'
 
 /**
- * Example transaction building with @solana/kit
+ * Example transaction building with @solana/web3.js
  */
 
 export async function buildExampleTransaction(): Promise<TransactionMessage> {
-  console.log(' Building example transaction with @solana/kit patterns...')
+  console.log(' Building example transaction with @solana/web3.js patterns...')
 
   // Note: This is a template - you'll need to implement:
   // 1. Actual fee payer signer
@@ -748,7 +748,7 @@ function generateSolanaDevExConfig(template) {
   
   // Official stack settings
   solana: {
-    // Use official @solana/kit for all operations
+    // Use official @solana/web3.js for all operations
     useOfficialStack: true,
     
     // Default to framework-kit for React apps
@@ -871,9 +871,9 @@ Built with the **Official Solana Stack** - the modern way to build on Solana.
 
 ##  Stack
 
-- **@solana/client** - Modern RPC client with full type safety
-- **@solana/kit** - Comprehensive SDK for all Solana operations  
-${template.includes('react') ? '- **@solana/react-hooks** - React integration for Solana apps' : ''}
+- **@solana/web3.js** - Modern RPC client with full type safety
+- **@solana/web3.js** - Comprehensive SDK for all Solana operations  
+${template.includes('react') ? '- **@solana/web3.js** - React integration for Solana apps' : ''}
 ${template.includes('anchor') ? '- **Anchor** - Smart contract framework' : ''}
 ${template.includes('pinocchio') ? '- **Pinocchio** - High-performance programs' : ''}
 
@@ -923,7 +923,7 @@ Built with [Solana DevEx Platform](https://github.com/your-repo) - the official 
 
 - [Official Solana Docs](https://docs.solana.com)
 - [Framework Kit Guide](https://solana.com/framework-kit)
-- [@solana/kit Documentation](https://solana.com/kit)
+- [@solana/web3.js Documentation](https://solana.com/kit)
 `;
 }
 
