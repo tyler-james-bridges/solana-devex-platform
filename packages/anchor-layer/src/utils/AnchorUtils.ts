@@ -1,5 +1,5 @@
 import { PublicKey, Connection } from '@solana/web3.js';
-import { Program, Workspace } from '@coral-xyz/anchor';
+import { Program, workspace } from '@coral-xyz/anchor';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as toml from 'toml';

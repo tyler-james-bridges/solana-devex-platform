@@ -417,7 +417,7 @@ export class FileSystemUtils {
    */
   public static isWithinPath(childPath: string, parentPath: string): boolean {
     const relative = path.relative(parentPath, childPath);
-    return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+    return Boolean(relative && !relative.startsWith('..') && !path.isAbsolute(relative));
   }
 
   /**

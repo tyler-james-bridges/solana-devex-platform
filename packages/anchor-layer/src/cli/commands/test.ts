@@ -38,9 +38,9 @@ export function createTestCommand(): Command {
           console.log(chalk.green('\n✅ Test run completed successfully'));
           
           if (results.length > 0) {
-            const totalTests = results.reduce((sum, suite) => sum + suite.totalTests, 0);
-            const passedTests = results.reduce((sum, suite) => sum + suite.passed, 0);
-            const failedTests = results.reduce((sum, suite) => sum + suite.failed, 0);
+            const totalTests = results.reduce((sum: number, suite: any) => sum + suite.totalTests, 0);
+            const passedTests = results.reduce((sum: number, suite: any) => sum + suite.passed, 0);
+            const failedTests = results.reduce((sum: number, suite: any) => sum + suite.failed, 0);
             
             console.log(chalk.blue('\n📊 Test Summary:'));
             console.log(`   Tests: ${chalk.green(passedTests)} passed, ${failedTests > 0 ? chalk.red(failedTests) : 0} failed, ${totalTests} total`);
@@ -52,7 +52,7 @@ export function createTestCommand(): Command {
         });
 
         enhancement.on('test:error', (error) => {
-          console.error(chalk.red('\n❌ Test run failed:'), error.message);
+          console.error(chalk.red('\nTest run failed:'), error instanceof Error ? error.message : String(error));
         });
 
         enhancement.on('test:individual:complete', (test) => {
@@ -100,13 +100,13 @@ export function createTestCommand(): Command {
           await enhancement.stopRealTimeUpdates();
           
           // Exit with appropriate code
-          const hasFailures = results.some(suite => suite.failed > 0);
+          const hasFailures = results.some((suite: any) => suite.failed > 0);
           process.exit(hasFailures ? 1 : 0);
         }
 
       } catch (error) {
         logger.error('Test command failed', 'CLI', error);
-        console.error(chalk.red('❌ Test execution failed:'), error.message);
+        console.error(chalk.red('Test execution failed:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });
@@ -152,7 +152,7 @@ export function createTestCommand(): Command {
         FileSystemUtils.writeJsonFile(configPath, config);
 
       } catch (error) {
-        console.error(chalk.red('❌ Error managing test config:'), error.message);
+        console.error(chalk.red('Error managing test config:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });
@@ -207,7 +207,7 @@ export function createTestCommand(): Command {
         }
 
       } catch (error) {
-        console.error(chalk.red('❌ Error generating analytics:'), error.message);
+        console.error(chalk.red('Error generating analytics:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

@@ -1,14 +1,14 @@
-import { Program, Workspace } from '@coral-xyz/anchor';
+import { Program, workspace } from '@coral-xyz/anchor';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { EnhancedTestRunner } from '../testing/EnhancedTestRunner';
-import { DeploymentMonitor } from '../monitoring/DeploymentMonitor';
-import { PerformanceCollector } from '../monitoring/PerformanceCollector';
-import { VSCodeIntegration } from '../vscode/VSCodeIntegration';
+// import { EnhancedTestRunner } from '../testing/EnhancedTestRunner';
+// import { DeploymentMonitor } from '../monitoring/DeploymentMonitor';
+// import { PerformanceCollector } from '../monitoring/PerformanceCollector';
+// import { VSCodeIntegration } from '../vscode/VSCodeIntegration';
 import { EventEmitter } from 'events';
 
 export interface AnchorEnhancementConfig {
   connection?: Connection;
-  workspace?: Workspace;
+  workspace?: any; // Workspace type from @coral-xyz/anchor
   monitoring?: {
     enabled: boolean;
     realTimeUpdates: boolean;
@@ -27,10 +27,10 @@ export interface AnchorEnhancementConfig {
 }
 
 export class AnchorEnhancementLayer extends EventEmitter {
-  private testRunner: EnhancedTestRunner;
-  private deploymentMonitor: DeploymentMonitor;
-  private performanceCollector: PerformanceCollector;
-  private vscodeIntegration: VSCodeIntegration;
+  // private testRunner: EnhancedTestRunner;
+  // private deploymentMonitor: DeploymentMonitor;
+  // private performanceCollector: PerformanceCollector;
+  // private vscodeIntegration: VSCodeIntegration;
   private config: AnchorEnhancementConfig;
 
   constructor(config: AnchorEnhancementConfig = {}) {
@@ -62,45 +62,47 @@ export class AnchorEnhancementLayer extends EventEmitter {
   }
 
   private initializeComponents(): void {
-    this.testRunner = new EnhancedTestRunner(this.config.testing);
-    this.deploymentMonitor = new DeploymentMonitor(this.config.monitoring);
-    this.performanceCollector = new PerformanceCollector(this.config.monitoring);
-    this.vscodeIntegration = new VSCodeIntegration(this.config.vscode);
+    // this.testRunner = new EnhancedTestRunner(this.config.testing);
+    // this.deploymentMonitor = new DeploymentMonitor(this.config.monitoring);
+    // this.performanceCollector = new PerformanceCollector(this.config.monitoring);
+    // this.vscodeIntegration = new VSCodeIntegration(this.config.vscode);
   }
 
   private setupEventHandlers(): void {
     // Forward events from components
-    this.testRunner.on('test:start', (data) => this.emit('test:start', data));
-    this.testRunner.on('test:complete', (data) => this.emit('test:complete', data));
-    this.testRunner.on('test:error', (data) => this.emit('test:error', data));
+    // this.testRunner.on('test:start', (data) => this.emit('test:start', data));
+    // this.testRunner.on('test:complete', (data) => this.emit('test:complete', data));
+    // this.testRunner.on('test:error', (data) => this.emit('test:error', data));
 
-    this.deploymentMonitor.on('deployment:start', (data) => this.emit('deployment:start', data));
-    this.deploymentMonitor.on('deployment:complete', (data) => this.emit('deployment:complete', data));
-    this.deploymentMonitor.on('deployment:error', (data) => this.emit('deployment:error', data));
+    // this.deploymentMonitor.on('deployment:start', (data) => this.emit('deployment:start', data));
+    // this.deploymentMonitor.on('deployment:complete', (data) => this.emit('deployment:complete', data));
+    // this.deploymentMonitor.on('deployment:error', (data) => this.emit('deployment:error', data));
 
-    this.performanceCollector.on('metrics:collected', (data) => this.emit('metrics:collected', data));
+    // this.performanceCollector.on('metrics:collected', (data) => this.emit('metrics:collected', data));
   }
 
   public async runTests(testPattern?: string): Promise<any> {
     this.emit('enhancement:test:start', { pattern: testPattern });
     
     try {
-      const results = await this.testRunner.runTests(testPattern);
-      this.emit('enhancement:test:complete', results);
-      return results;
+      // const results = await this.testRunner.runTests(testPattern);
+      // this.emit('enhancement:test:complete', results);
+      // return results;
+      throw new Error('Test runner not implemented yet');
     } catch (error) {
       this.emit('enhancement:test:error', error);
       throw error;
     }
   }
 
-  public async deployProgram(program: Program, options: any = {}): Promise<any> {
+  public async deployProgram(program: Program<any>, options: any = {}): Promise<any> {
     this.emit('enhancement:deployment:start', { program: program.programId });
     
     try {
-      const result = await this.deploymentMonitor.monitorDeployment(program, options);
-      this.emit('enhancement:deployment:complete', result);
-      return result;
+      // const result = await this.deploymentMonitor.monitorDeployment(program, options);
+      // this.emit('enhancement:deployment:complete', result);
+      // return result;
+      throw new Error('Deployment monitor not implemented yet');
     } catch (error) {
       this.emit('enhancement:deployment:error', error);
       throw error;
@@ -108,44 +110,49 @@ export class AnchorEnhancementLayer extends EventEmitter {
   }
 
   public async collectMetrics(): Promise<any> {
-    return this.performanceCollector.collectCurrentMetrics();
+    // return this.performanceCollector.collectCurrentMetrics();
+    throw new Error('Performance collector not implemented yet');
   }
 
-  public getTestRunner(): EnhancedTestRunner {
-    return this.testRunner;
+  public getTestRunner(): any {
+    // return this.testRunner;
+    throw new Error('Test runner not implemented yet');
   }
 
-  public getDeploymentMonitor(): DeploymentMonitor {
-    return this.deploymentMonitor;
+  public getDeploymentMonitor(): any {
+    // return this.deploymentMonitor;
+    throw new Error('Deployment monitor not implemented yet');
   }
 
-  public getPerformanceCollector(): PerformanceCollector {
-    return this.performanceCollector;
+  public getPerformanceCollector(): any {
+    // return this.performanceCollector;
+    throw new Error('Performance collector not implemented yet');
   }
 
-  public getVSCodeIntegration(): VSCodeIntegration {
-    return this.vscodeIntegration;
+  public getVSCodeIntegration(): any {
+    // return this.vscodeIntegration;
+    throw new Error('VS Code integration not implemented yet');
   }
 
   public async startRealTimeUpdates(): Promise<void> {
-    if (this.config.monitoring?.realTimeUpdates) {
-      await this.deploymentMonitor.startRealTimeMonitoring();
-      await this.performanceCollector.startRealTimeCollection();
-    }
+    // if (this.config.monitoring?.realTimeUpdates) {
+    //   await this.deploymentMonitor.startRealTimeMonitoring();
+    //   await this.performanceCollector.startRealTimeCollection();
+    // }
 
-    if (this.config.testing?.realTimeResults) {
-      await this.testRunner.enableRealTimeReporting();
-    }
+    // if (this.config.testing?.realTimeResults) {
+    //   await this.testRunner.enableRealTimeReporting();
+    // }
 
-    if (this.config.vscode?.enabled) {
-      await this.vscodeIntegration.initialize();
-    }
+    // if (this.config.vscode?.enabled) {
+    //   await this.vscodeIntegration.initialize();
+    // }
   }
 
   public async stopRealTimeUpdates(): Promise<void> {
-    await this.deploymentMonitor.stopRealTimeMonitoring();
-    await this.performanceCollector.stopRealTimeCollection();
-    await this.testRunner.disableRealTimeReporting();
-    await this.vscodeIntegration.cleanup();
+    // await this.deploymentMonitor.stopRealTimeMonitoring();
+    // await this.performanceCollector.stopRealTimeCollection();
+    // await this.testRunner.disableRealTimeReporting();
+    // await this.vscodeIntegration.cleanup();
   }
 }

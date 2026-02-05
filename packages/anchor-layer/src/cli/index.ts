@@ -8,9 +8,9 @@ import { AnchorUtils } from '../utils/AnchorUtils';
 import { logger, LogLevel } from '../utils/Logger';
 import { createTestCommand } from './commands/test';
 import { createDeployCommand } from './commands/deploy';
-import { createMonitorCommand } from './commands/monitor';
-import { createInitCommand } from './commands/init';
-import { createDashboardCommand } from './commands/dashboard';
+// import { createMonitorCommand } from './commands/monitor';
+// import { createInitCommand } from './commands/init';
+// import { createDashboardCommand } from './commands/dashboard';
 
 const program = new Command();
 
@@ -61,9 +61,9 @@ program
 // Add commands
 program.addCommand(createTestCommand());
 program.addCommand(createDeployCommand());
-program.addCommand(createMonitorCommand());
-program.addCommand(createInitCommand());
-program.addCommand(createDashboardCommand());
+// program.addCommand(createMonitorCommand());
+// program.addCommand(createInitCommand());
+// program.addCommand(createDashboardCommand());
 
 // Status command
 program
@@ -112,7 +112,7 @@ program
         console.log(chalk.yellow('   No test files found'));
       } else {
         testFiles.slice(0, 5).forEach(file => {
-          const relativePath = AnchorUtils.getRelativePath(process.cwd(), file);
+          const relativePath = require('path').relative(process.cwd(), file);
           console.log(`   ${chalk.gray(relativePath)}`);
         });
         if (testFiles.length > 5) {

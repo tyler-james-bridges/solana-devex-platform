@@ -53,7 +53,7 @@ export function createDeployCommand(): Command {
         });
 
         enhancement.on('deployment:error', (error) => {
-          console.error(chalk.red('\n❌ Deployment failed:'), error.message);
+          console.error(chalk.red('\nDeployment failed:'), error instanceof Error ? error.message : String(error));
         });
 
         // Start real-time monitoring
@@ -175,7 +175,7 @@ export function createDeployCommand(): Command {
 
       } catch (error) {
         logger.error('Deploy command failed', 'CLI', error);
-        console.error(chalk.red('❌ Deployment failed:'), error.message);
+        console.error(chalk.red('Deployment failed:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });
@@ -265,7 +265,7 @@ export function createDeployCommand(): Command {
         console.log(`   Average duration: ${chalk.magenta(avgDuration.toFixed(1))}s`);
 
       } catch (error) {
-        console.error(chalk.red('❌ Error retrieving deployment history:'), error.message);
+        console.error(chalk.red('Error retrieving deployment history:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });
@@ -316,7 +316,7 @@ export function createDeployCommand(): Command {
         console.log(chalk.blue('💡 Remember to update your local code to match the rolled-back version'));
 
       } catch (error) {
-        console.error(chalk.red('❌ Rollback failed:'), error.message);
+        console.error(chalk.red('Rollback failed:'), error instanceof Error ? error.message : String(error));
         process.exit(1);
       }
     });

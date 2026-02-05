@@ -205,22 +205,22 @@ export class CommandRunner extends EventEmitter {
       ...options
     };
 
-    const process = spawn(command, args, defaultOptions);
-    this.activeCommands.set(commandId, process);
+    const childProcess = spawn(command, args, defaultOptions);
+    this.activeCommands.set(commandId, childProcess);
 
     this.emit('command:start', { command, args, commandId, streaming: true });
 
-    process.on('close', (exitCode) => {
+    childProcess.on('close', (exitCode) => {
       this.activeCommands.delete(commandId);
       this.emit('command:complete', { commandId, exitCode, streaming: true });
     });
 
-    process.on('error', (error) => {
+    childProcess.on('error', (error) => {
       this.activeCommands.delete(commandId);
       this.emit('command:error', { commandId, error, streaming: true });
     });
 
-    return process;
+    return childProcess;
   }
 
   // Execute multiple commands in parallel

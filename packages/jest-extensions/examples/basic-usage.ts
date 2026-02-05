@@ -41,7 +41,7 @@ describe('Basic Usage Examples', () => {
     recipient = Keypair.generate();
     
     // Fund the payer account
-    await airdrop(connection, payer.publicKey, 2 * LAMPORTS_PER_SOL);
+    await airdrop(connection, payer.publicKey.toString(), 2 * LAMPORTS_PER_SOL);
     
     // Wait for airdrop to confirm
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -184,4 +184,4 @@ describe('Basic Usage Examples', () => {
 });
 
 // Export for use in other examples
-export { payer, recipient };
+// export { payer, recipient };
