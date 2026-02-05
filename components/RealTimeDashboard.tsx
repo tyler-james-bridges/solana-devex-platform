@@ -492,7 +492,7 @@ const RealTimeDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe-bottom transition-colors duration-200 p-4 sm:p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
       {/* Status Bar */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
         <div className="flex items-center space-x-2">
@@ -848,21 +848,21 @@ const RealTimeDashboard: React.FC = () => {
         {/* Network Status & Protocol Health */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Network Providers */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg border">
-            <h3 className="text-lg font-semibold mb-4">Network Providers</h3>
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Network Providers</h3>
             <div className="space-y-3">
               {Object.entries(dashboardData.network).map(([provider, metrics]) => (
-                <div key={provider} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
+                <div key={provider} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-3">
                     <StatusIcon status={metrics.status} />
                     <div>
-                      <p className="font-medium text-gray-900">{provider}</p>
-                      <p className="text-sm text-gray-500">Slot: {metrics.slot.toLocaleString()}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{provider}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Slot: {metrics.slot.toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="text-left sm:text-right pl-8 sm:pl-0">
-                    <p className="text-sm font-medium">{metrics.latency}ms</p>
-                    <p className="text-xs text-gray-500">{metrics.tps.toFixed(0)} TPS</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{metrics.latency}ms</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{metrics.tps.toFixed(0)} TPS</p>
                   </div>
                 </div>
               ))}
@@ -870,21 +870,21 @@ const RealTimeDashboard: React.FC = () => {
           </div>
 
           {/* Protocol Status */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg border">
-            <h3 className="text-lg font-semibold mb-4">Protocol Health</h3>
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Protocol Health</h3>
             <div className="space-y-3">
               {dashboardData.protocols.map((protocol) => (
-                <div key={protocol.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
+                <div key={protocol.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-3">
                     <StatusIcon status={protocol.status} />
                     <div>
-                      <p className="font-medium text-gray-900">{protocol.name}</p>
-                      <p className="text-sm text-gray-500">{protocol.availability.toFixed(1)}% availability</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{protocol.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{protocol.availability.toFixed(1)}% availability</p>
                     </div>
                   </div>
                   <div className="text-left sm:text-right pl-8 sm:pl-0">
-                    <p className="text-sm font-medium">{protocol.latency}ms</p>
-                    <p className="text-xs text-gray-500">{protocol.errorRate.toFixed(1)}% errors</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{protocol.latency}ms</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{protocol.errorRate.toFixed(1)}% errors</p>
                   </div>
                 </div>
               ))}
@@ -893,8 +893,8 @@ const RealTimeDashboard: React.FC = () => {
         </div>
 
         {/* Recent Alerts */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
+        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
             <AlertTriangle className="w-5 h-5 mr-2 text-yellow-600" />
             Recent Alerts
           </h3>
@@ -902,8 +902,8 @@ const RealTimeDashboard: React.FC = () => {
           {dashboardData.alerts.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
               <CheckCircle2 className="w-8 h-8 sm:w-12 sm:h-12 text-green-600 mx-auto mb-2" />
-              <p className="text-gray-600">No recent alerts</p>
-              <p className="text-sm text-gray-500">All systems operating normally</p>
+              <p className="text-gray-600 dark:text-gray-300">No recent alerts</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">All systems operating normally</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-64 overflow-y-auto">

@@ -639,17 +639,17 @@ const DevMonitorDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg mb-6">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
                 <Terminal className="w-8 h-8 mr-3 text-blue-600" />
                 Solana Development Monitor
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 dark:text-gray-300 mt-1">
                 Real-time monitoring for Solana development workflows
                 <span className={`ml-3 text-sm px-2 py-1 rounded ${
                   connectionStatus === 'connected' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
@@ -680,7 +680,7 @@ const DevMonitorDashboard: React.FC = () => {
                 </button>
               </div>
               
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 Last update: {new Date().toLocaleTimeString()}
               </div>
             </div>
@@ -689,7 +689,7 @@ const DevMonitorDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         {/* System Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
@@ -730,9 +730,9 @@ const DevMonitorDashboard: React.FC = () => {
         </div>
 
         {/* Test Validator Status */}
-        <div className="bg-white p-6 rounded-lg border">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold flex items-center">
+            <h2 className="text-xl font-semibold flex items-center text-gray-900 dark:text-white">
               <Monitor className="w-6 h-6 mr-2 text-blue-600" />
               Test Validator Status
             </h2>
@@ -759,40 +759,40 @@ const DevMonitorDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Block Height</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.blockHeight.toLocaleString()}</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Block Height</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.blockHeight.toLocaleString()}</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Programs Loaded</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.programsLoaded}</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Programs Loaded</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.programsLoaded}</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Accounts</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.accountsLoaded.toLocaleString()}</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Accounts</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.accountsLoaded.toLocaleString()}</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">CPU Usage</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.cpuUsage.toFixed(1)}%</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">CPU Usage</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.cpuUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Memory Usage</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.memoryUsage.toFixed(1)}%</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.memoryUsage.toFixed(1)}%</div>
             </div>
             
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="text-sm text-gray-600">Disk Usage</div>
-              <div className="text-lg font-semibold">{devMetrics.testValidator.diskUsage.toFixed(1)} GB</div>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">Disk Usage</div>
+              <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.diskUsage.toFixed(1)} GB</div>
             </div>
           </div>
 
           {/* Performance Chart */}
           <div className="h-64">
-            <h3 className="text-lg font-medium mb-4">Performance Metrics</h3>
+            <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-white">Performance Metrics</h3>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={historicalData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -825,8 +825,8 @@ const DevMonitorDashboard: React.FC = () => {
         </div>
 
         {/* Anchor Projects */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h2 className="text-xl font-semibold mb-6 flex items-center">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
+          <h2 className="text-xl font-semibold mb-6 flex items-center text-gray-900 dark:text-white">
             <Anchor className="w-6 h-6 mr-2 text-orange-600" />
             Anchor Projects
           </h2>
@@ -940,8 +940,8 @@ const DevMonitorDashboard: React.FC = () => {
         {/* Watched Accounts & Recent Transactions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Watched Accounts */}
-          <div className="bg-white p-6 rounded-lg border">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
+            <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Wallet className="w-6 h-6 mr-2 text-purple-600" />
               Watched Accounts
             </h2>
@@ -984,8 +984,8 @@ const DevMonitorDashboard: React.FC = () => {
           </div>
 
           {/* Recent Transactions */}
-          <div className="bg-white p-6 rounded-lg border">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
+            <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Hash className="w-6 h-6 mr-2 text-indigo-600" />
               Recent Transactions
             </h2>
@@ -1025,8 +1025,8 @@ const DevMonitorDashboard: React.FC = () => {
         </div>
 
         {/* System Metrics Chart */}
-        <div className="bg-white p-6 rounded-lg border">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
+          <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
             <Cpu className="w-6 h-6 mr-2 text-green-600" />
             System Performance
           </h2>
@@ -1085,8 +1085,8 @@ const DevMonitorDashboard: React.FC = () => {
 
         {/* Alerts */}
         {devMetrics.alerts.length > 0 && (
-          <div className="bg-white p-6 rounded-lg border">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
+            <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Bug className="w-6 h-6 mr-2 text-red-600" />
               Development Alerts
             </h2>
