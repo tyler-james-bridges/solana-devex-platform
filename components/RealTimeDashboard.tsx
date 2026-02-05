@@ -23,11 +23,8 @@ import {
   BarChart3,
   Gauge,
   Network,
-  Server,
-  Moon,
-  Sun
+  Server
 } from 'lucide-react';
-import { useDarkMode } from '../hooks/useDarkMode';
 import { 
   LineChart, 
   Line, 
@@ -266,7 +263,6 @@ const AlertBadge = ({ alert, onResolve }: { alert: Alert; onResolve?: (id: strin
 };
 
 const RealTimeDashboard: React.FC = () => {
-  const { isDark, toggleDarkMode } = useDarkMode();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
@@ -496,78 +492,37 @@ const RealTimeDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe-bottom transition-colors duration-200">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="px-4 sm:px-6 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Real-Time Protocol Monitor</h1>
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
-                  REAL Solana mainnet monitoring with live RPC data
-                </p>
-                {isLiveMode ? (
-                  <span className="inline-flex items-center text-sm bg-green-100 text-green-800 px-2 py-1 rounded sm:ml-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                    LIVE - Real Network Data
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded sm:ml-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
-                    API Mode - Real Network Data
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between sm:space-x-4">
-              {/* Connection Status */}
-              <div className="flex items-center space-x-2">
-                {isLiveMode ? (
-                  <>
-                    <Wifi className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600 hidden sm:inline">WebSocket Live</span>
-                  </>
-                ) : (
-                  <>
-                    <Activity className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600 hidden sm:inline">Real API Data</span>
-                  </>
-                )}
-              </div>
-              
-              {/* Dark Mode Toggle */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-
-              {/* Notifications */}
-              <div className="relative">
-                <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-                {notifications.filter(n => !n.resolved).length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {notifications.filter(n => !n.resolved).length}
-                  </span>
-                )}
-              </div>
-              
-              {/* Last Update */}
-              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                <span className="hidden sm:inline">Last update: </span>
-                {new Date().toLocaleTimeString()}
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe-bottom transition-colors duration-200 p-4 sm:p-6">
+      {/* Status Bar */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+        <div className="flex items-center space-x-2">
+          {isLiveMode ? (
+            <>
+              <Wifi className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">WebSocket Live</span>
+            </>
+          ) : (
+            <>
+              <Activity className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">Real API Data</span>
+            </>
+          )}
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Last update: {new Date().toLocaleTimeString()}
+          </span>
         </div>
+        
+        {/* Notifications */}
+        {notifications.filter(n => !n.resolved).length > 0 && (
+          <div className="flex items-center space-x-2 text-sm text-amber-600">
+            <AlertTriangle className="w-4 h-4" />
+            <span>{notifications.filter(n => !n.resolved).length} alert(s)</span>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
-      <div className="p-4 sm:p-6 space-y-6">
+      <div className="space-y-6">
         {/* System Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <MetricCard
