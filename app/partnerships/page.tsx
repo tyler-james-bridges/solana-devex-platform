@@ -5,6 +5,6 @@ export default function Partnerships() {
 }
 
 export const metadata = {
-  title: 'Partnerships - Solana DevEx Platform',
-  description: 'Integration partnerships with leading Solana projects including Pyxis Oracle Safety and Sipher Privacy Layer',
+  title: 'Community Collaborations - Solana DevEx Platform',
+  description: 'Hackathon collaborations and community integrations including Pyxis Oracle Safety and Sipher Privacy Layer',
 };

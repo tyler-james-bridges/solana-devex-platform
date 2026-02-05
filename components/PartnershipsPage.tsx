@@ -47,7 +47,7 @@ const PartnershipsPage: React.FC = () => {
     {
       id: 'pyxis-oracle',
       name: 'Pyxis Oracle Safety Pipeline',
-      partner: 'Ace-Strategist',
+      collaborator: 'Ace-Strategist',
       description: 'Safety certificates for Oracle nodes before P2P swarm joining',
       status: 'Production',
       icon: Shield,
@@ -78,7 +78,7 @@ const PartnershipsPage: React.FC = () => {
     {
       id: 'sipher-privacy',
       name: 'Sipher Privacy Layer',
-      partner: 'Sipher Protocol',
+      collaborator: 'Sipher Protocol',
       description: 'Privacy protection for autonomous deployments and treasury operations',
       status: 'Production',
       icon: Lock,
@@ -141,10 +141,10 @@ const PartnershipsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Integration Partnerships</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Community Collaborations</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
-          Production-ready integrations with leading Solana projects. Our platform serves as critical infrastructure 
-          for the agent ecosystem by providing safety-first development workflows and privacy protection.
+          Hackathon collaborations and integrations built from community feedback. These implementations showcase 
+          production-ready workflows developed through forum discussions and agent ecosystem feedback.
         </p>
       </div>
 
@@ -153,7 +153,7 @@ const PartnershipsPage: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Partnerships</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Collaborations</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{partnerships.length}</p>
             </div>
             <Users className="w-8 h-8 text-blue-600" />
@@ -214,7 +214,7 @@ const PartnershipsPage: React.FC = () => {
                         {partnership.name}
                       </h2>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Partnership with {partnership.partner}
+                        Hackathon collaboration with {partnership.collaborator}
                       </p>
                     </div>
                   </div>
