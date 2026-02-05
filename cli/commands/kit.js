@@ -12,7 +12,7 @@ const path = require('path');
  * RPC client management with @solana/kit
  */
 async function rpc(options) {
-  console.log(chalk.cyan('🔗 @solana/kit RPC Client Management'));
+  console.log(chalk.cyan('� @solana/kit RPC Client Management'));
   
   const endpoint = options.endpoint || 'http://localhost:8899';
   console.log(chalk.gray(`Using endpoint: ${endpoint}`));
@@ -25,11 +25,11 @@ async function rpc(options) {
     await fs.ensureDir(path.dirname(outputFile));
     await fs.writeFile(outputFile, template);
     
-    console.log(chalk.green(`✅ Generated RPC client: ${outputFile}`));
+    console.log(chalk.green(` Generated RPC client: ${outputFile}`));
     console.log(chalk.gray('Features: @solana/kit patterns, error handling, connection management'));
     
   } catch (error) {
-    console.error(chalk.red(`❌ RPC setup failed: ${error.message}`));
+    console.error(chalk.red(` RPC setup failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -38,7 +38,7 @@ async function rpc(options) {
  * Transaction building with @solana/kit
  */
 async function transaction(options) {
-  console.log(chalk.cyan('💳 @solana/kit Transaction Builder'));
+  console.log(chalk.cyan('� @solana/kit Transaction Builder'));
   
   try {
     const template = generateTransactionTemplate(options.simulate);
@@ -47,16 +47,16 @@ async function transaction(options) {
     await fs.ensureDir(path.dirname(outputFile));
     await fs.writeFile(outputFile, template);
     
-    console.log(chalk.green(`✅ Generated transaction builder: ${outputFile}`));
+    console.log(chalk.green(` Generated transaction builder: ${outputFile}`));
     
     if (options.simulate) {
-      console.log(chalk.yellow('🔍 Simulation mode enabled'));
+      console.log(chalk.yellow('� Simulation mode enabled'));
     }
     
     console.log(chalk.gray('Features: Kit message APIs, proper fee handling, recent blockhash'));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Transaction setup failed: ${error.message}`));
+    console.error(chalk.red(` Transaction setup failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -65,10 +65,10 @@ async function transaction(options) {
  * Generate typed clients with Codama
  */
 async function client(options) {
-  console.log(chalk.cyan('🛠️ Codama Client Generation'));
+  console.log(chalk.cyan('� Codama Client Generation'));
   
   if (!options.idl) {
-    console.error(chalk.red('❌ IDL file required: --idl <path>'));
+    console.error(chalk.red(' IDL file required: --idl <path>'));
     process.exit(1);
   }
 
@@ -89,11 +89,11 @@ async function client(options) {
     await fs.ensureDir(path.dirname(outputFile));
     await fs.writeFile(outputFile, clientTemplate);
     
-    console.log(chalk.green(`✅ Generated typed client: ${outputFile}`));
+    console.log(chalk.green(` Generated typed client: ${outputFile}`));
     console.log(chalk.gray('Features: Full type safety, @solana/kit integration, instruction builders'));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Client generation failed: ${error.message}`));
+    console.error(chalk.red(` Client generation failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -196,7 +196,7 @@ import type {
 export interface TransactionConfig {
   feePayer: Signer;
   recentBlockhash: string;
-  instructions: any[]; // Replace with proper instruction types
+  instructions: any; // Replace with proper instruction types
 }
 
 /**
@@ -229,20 +229,20 @@ export async function ${simulate ? 'simulate' : 'send'}Transaction(
     
     ${simulate ? `
     // Simulate transaction
-    console.log('🔍 Simulating transaction...');
+    console.log('� Simulating transaction...');
     // Add simulation logic here
-    console.log('✅ Simulation successful');
-    return { success: true, logs: [] };
+    console.log(' Simulation successful');
+    return { success: true, logs:  };
     ` : `
     // Send transaction
-    console.log('📡 Sending transaction...');
+    console.log(' Sending transaction...');
     // Add sending logic here  
-    console.log('✅ Transaction sent successfully');
+    console.log(' Transaction sent successfully');
     return { signature: 'transaction-signature' };
     `}
     
   } catch (error) {
-    console.error(\`❌ Transaction ${simulate ? 'simulation' : 'sending'} failed:\`, error);
+    console.error(\` Transaction ${simulate ? 'simulation' : 'sending'} failed:\`, error);
     throw error;
   }
 }

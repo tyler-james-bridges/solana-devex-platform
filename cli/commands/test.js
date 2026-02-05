@@ -12,7 +12,7 @@ const path = require('path');
  * Unit tests with LiteSVM/Mollusk (fast, in-process)
  */
 async function unit(options) {
-  console.log(chalk.cyan('🧪 Official Stack Unit Testing'));
+  console.log(chalk.cyan(' Official Stack Unit Testing'));
   
   const testRunner = options.mollusk ? 'mollusk' : 'litesvm';
   console.log(chalk.gray(`Using ${testRunner} for fast unit tests`));
@@ -30,10 +30,10 @@ async function unit(options) {
       cwd: process.cwd()
     });
     
-    console.log(chalk.green(`✅ Unit tests completed with ${testRunner}`));
+    console.log(chalk.green(` Unit tests completed with ${testRunner}`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Unit tests failed: ${error.message}`));
+    console.error(chalk.red(` Unit tests failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -42,7 +42,7 @@ async function unit(options) {
  * Integration tests with Surfpool (realistic state)
  */
 async function integration(options) {
-  console.log(chalk.cyan('🌐 Surfpool Integration Testing'));
+  console.log(chalk.cyan('� Surfpool Integration Testing'));
   
   const network = options.mainnet ? 'mainnet' : 'devnet';
   console.log(chalk.gray(`Testing against ${network} state locally`));
@@ -64,10 +64,10 @@ async function integration(options) {
       }
     });
     
-    console.log(chalk.green(`✅ Integration tests completed against ${network}`));
+    console.log(chalk.green(` Integration tests completed against ${network}`));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Integration tests failed: ${error.message}`));
+    console.error(chalk.red(` Integration tests failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -76,7 +76,7 @@ async function integration(options) {
  * Legacy solana-test-validator fallback
  */
 async function legacy(options) {
-  console.log(chalk.yellow('⚠️  Legacy Testing Mode'));
+  console.log(chalk.yellow('  Legacy Testing Mode'));
   console.log(chalk.gray('Using solana-test-validator (slower, but full RPC compatibility)'));
 
   try {
@@ -92,11 +92,11 @@ async function legacy(options) {
       cwd: process.cwd()
     });
     
-    console.log(chalk.green('✅ Legacy tests completed'));
-    console.log(chalk.cyan('💡 Consider migrating to LiteSVM/Mollusk for faster feedback'));
+    console.log(chalk.green(' Legacy tests completed'));
+    console.log(chalk.cyan(' Consider migrating to LiteSVM/Mollusk for faster feedback'));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Legacy tests failed: ${error.message}`));
+    console.error(chalk.red(` Legacy tests failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -108,13 +108,13 @@ async function ensureTestSetup(testRunner) {
   const setupFile = `tests/${testRunner}-setup.ts`;
   
   if (!await fs.pathExists(setupFile)) {
-    console.log(chalk.yellow(`📝 Generating ${testRunner} setup...`));
+    console.log(chalk.yellow(` Generating ${testRunner} setup...`));
     
     await fs.ensureDir('tests');
     const setupContent = generateTestSetup(testRunner);
     await fs.writeFile(setupFile, setupContent);
     
-    console.log(chalk.green(`✅ Created ${setupFile}`));
+    console.log(chalk.green(` Created ${setupFile}`));
   }
 
   // Ensure Jest configuration supports the test runner
@@ -159,14 +159,14 @@ export class LiteSvmTestEnvironment {
    */
   async setup(): Promise<void> {
     // Setup accounts, programs, etc.
-    console.log('🚀 Setting up LiteSVM environment...');
+    console.log(' Setting up LiteSVM environment...');
   }
 
   /**
    * Clean up after tests
    */
   async teardown(): Promise<void> {
-    console.log('🧹 Cleaning up LiteSVM environment...');
+    console.log('� Cleaning up LiteSVM environment...');
   }
 
   /**
@@ -225,7 +225,7 @@ export class MolluskTestEnvironment {
    * Initialize Mollusk environment
    */
   async setup(): Promise<void> {
-    console.log('🦀 Setting up Mollusk environment...');
+    console.log(' Setting up Mollusk environment...');
     // Program-specific setup
   }
 
@@ -234,8 +234,8 @@ export class MolluskTestEnvironment {
    */
   async testInstruction(
     instruction: any,
-    accounts: any[],
-    signers: Keypair[] = []
+    accounts: any,
+    signers: Keypair = []
   ): Promise<any> {
     return await this.mollusk.processInstruction(
       instruction,
@@ -294,12 +294,12 @@ async function ensureSurfpoolSetup(network) {
   const configFile = `surfpool.${network}.config.json`;
   
   if (!await fs.pathExists(configFile)) {
-    console.log(chalk.yellow(`📝 Generating Surfpool config for ${network}...`));
+    console.log(chalk.yellow(` Generating Surfpool config for ${network}...`));
     
     const config = generateSurfpoolConfig(network);
     await fs.writeFile(configFile, JSON.stringify(config, null, 2));
     
-    console.log(chalk.green(`✅ Created ${configFile}`));
+    console.log(chalk.green(` Created ${configFile}`));
   }
 
   // Ensure integration test setup
@@ -309,7 +309,7 @@ async function ensureSurfpoolSetup(network) {
     const setupContent = generateSurfpoolSetup(network);
     await fs.writeFile(setupFile, setupContent);
     
-    console.log(chalk.green(`✅ Created ${setupFile}`));
+    console.log(chalk.green(` Created ${setupFile}`));
   }
 }
 
@@ -328,11 +328,11 @@ function generateSurfpoolConfig(network) {
     },
     accounts: {
       // Pre-fetch important accounts for testing
-      whitelist: []
+      whitelist: 
     },
     programs: {
       // Programs to include in local state
-      whitelist: []
+      whitelist: 
     }
   };
 }
@@ -361,7 +361,7 @@ export class SurfpoolTestEnvironment {
    * Initialize Surfpool environment
    */
   async setup(): Promise<void> {
-    console.log('🏄 Setting up Surfpool for ${network} integration tests...');
+    console.log('� Setting up Surfpool for ${network} integration tests...');
     await this.surfpool.initialize();
   }
 
@@ -414,7 +414,7 @@ async function ensureJestConfig(testRunner) {
     const jestConfig = generateJestConfig(testRunner);
     await fs.writeFile(jestConfigFile, jestConfig);
     
-    console.log(chalk.green(`✅ Created ${jestConfigFile} with ${testRunner} support`));
+    console.log(chalk.green(` Created ${jestConfigFile} with ${testRunner} support`));
   }
 }
 

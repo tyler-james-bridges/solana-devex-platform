@@ -12,7 +12,7 @@ const inquirer = require('inquirer');
  * Main wallet command handler
  */
 async function main(options) {
-  console.log(chalk.cyan('👛 Wallet-Standard Connection Patterns'));
+  console.log(chalk.cyan('�� Wallet-Standard Connection Patterns'));
   console.log(chalk.gray('Official wallet connection following wallet-standard'));
   
   if (options.setup) {
@@ -33,27 +33,27 @@ async function showWalletOptions() {
       message: 'What would you like to do?',
       choices: [
         {
-          name: '🔧 Setup wallet connection',
+          name: ' Setup wallet connection',
           value: 'setup',
           short: 'Setup'
         },
         {
-          name: '🌐 Generate React wallet component',
+          name: '� Generate React wallet component',
           value: 'react-component',
           short: 'React Component'
         },
         {
-          name: '📱 Generate wallet adapter utilities',
+          name: '� Generate wallet adapter utilities',
           value: 'utilities',
           short: 'Utilities'
         },
         {
-          name: '🧪 Generate wallet testing helpers',
+          name: ' Generate wallet testing helpers',
           value: 'testing',
           short: 'Testing'
         },
         {
-          name: '📚 Show wallet-standard examples',
+          name: ' Show wallet-standard examples',
           value: 'examples',
           short: 'Examples'
         }
@@ -84,7 +84,7 @@ async function showWalletOptions() {
  * Setup wallet connection infrastructure
  */
 async function setupWalletConnection() {
-  console.log(chalk.yellow('🔧 Setting up Wallet-Standard Connection...'));
+  console.log(chalk.yellow(' Setting up Wallet-Standard Connection...'));
 
   // Check project type
   const projectType = await detectProjectType();
@@ -98,8 +98,8 @@ async function setupWalletConnection() {
     // Generate wallet infrastructure
     await generateWalletInfrastructure(projectType);
     
-    console.log(chalk.green('✅ Wallet connection setup completed!'));
-    console.log(chalk.cyan('\\n🎯 Next Steps:'));
+    console.log(chalk.green(' Wallet connection setup completed!'));
+    console.log(chalk.cyan('\\n Next Steps:'));
     
     if (projectType === 'react') {
       console.log(chalk.gray('  1. Import WalletProvider in your app layout'));
@@ -112,7 +112,7 @@ async function setupWalletConnection() {
     }
     
   } catch (error) {
-    console.error(chalk.red(`❌ Wallet setup failed: ${error.message}`));
+    console.error(chalk.red(` Wallet setup failed: ${error.message}`));
   }
 }
 
@@ -141,7 +141,7 @@ async function detectProjectType() {
  * Install wallet-related dependencies
  */
 async function installWalletDependencies(projectType) {
-  console.log(chalk.gray('📦 Installing wallet dependencies...'));
+  console.log(chalk.gray(' Installing wallet dependencies...'));
 
   const baseDependencies = [
     '@solana/wallet-standard',
@@ -161,14 +161,14 @@ async function installWalletDependencies(projectType) {
 
   // Note: In a real implementation, you'd run npm install
   console.log(chalk.gray(`Would install: ${dependencies.join(', ')}`));
-  console.log(chalk.yellow('💡 Run manually: npm install ' + dependencies.join(' ')));
+  console.log(chalk.yellow(' Run manually: npm install ' + dependencies.join(' ')));
 }
 
 /**
  * Generate wallet infrastructure based on project type
  */
 async function generateWalletInfrastructure(projectType) {
-  console.log(chalk.gray('🛠️ Generating wallet infrastructure...'));
+  console.log(chalk.gray('� Generating wallet infrastructure...'));
 
   switch (projectType) {
     case 'react':
@@ -206,7 +206,7 @@ async function generateReactWalletInfrastructure() {
   const listContent = generateWalletListComponent();
   await fs.writeFile(path.join(providerDir, 'wallet-list.tsx'), listContent);
 
-  console.log(chalk.green(`✅ React wallet components generated in: ${providerDir}/`));
+  console.log(chalk.green(` React wallet components generated in: ${providerDir}/`));
 }
 
 /**
@@ -224,14 +224,14 @@ async function generateNodeWalletInfrastructure() {
   const utilsContent = generateWalletConnectionUtils();
   await fs.writeFile(path.join(walletDir, 'connection-utils.ts'), utilsContent);
 
-  console.log(chalk.green(`✅ Node.js wallet utilities generated in: ${walletDir}/`));
+  console.log(chalk.green(` Node.js wallet utilities generated in: ${walletDir}/`));
 }
 
 /**
  * Generate React wallet component
  */
 async function generateReactWalletComponent() {
-  console.log(chalk.yellow('🌐 Generating React Wallet Component...'));
+  console.log(chalk.yellow('� Generating React Wallet Component...'));
 
   const componentDir = 'components/wallet';
   await fs.ensureDir(componentDir);
@@ -248,7 +248,7 @@ async function generateReactWalletComponent() {
   const signingComponentContent = generateTransactionSigningComponent();
   await fs.writeFile(path.join(componentDir, 'transaction-signer.tsx'), signingComponentContent);
 
-  console.log(chalk.green(`✅ Advanced React wallet components generated in: ${componentDir}/`));
+  console.log(chalk.green(` Advanced React wallet components generated in: ${componentDir}/`));
 }
 
 /**
@@ -266,7 +266,7 @@ import { WalletStandardProvider } from '@solana/wallet-standard-react'
  */
 
 interface WalletContextType {
-  wallets: any[]
+  wallets: any
   selectedWallet: any | null
   connecting: boolean
   connected: boolean
@@ -290,7 +290,7 @@ export function WalletProvider({
   autoConnect = true,
   localStorageKey = 'solana-wallet-preference' 
 }: WalletProviderProps) {
-  const [wallets, setWallets] = useState<any[]>([])
+  const [wallets, setWallets] = useState<any>([])
   const [selectedWallet, setSelectedWallet] = useState<any | null>(null)
   const [connecting, setConnecting] = useState(false)
   const [connected, setConnected] = useState(false)
@@ -299,7 +299,7 @@ export function WalletProvider({
   // Discover wallets on mount
   useEffect(() => {
     discoverWallets()
-  }, [])
+  }, )
 
   // Auto-connect if enabled
   useEffect(() => {
@@ -319,13 +319,13 @@ export function WalletProvider({
       // Wallet Standard discovery
       // Note: This is a simplified implementation
       // Real implementation would use @solana/wallet-standard
-      console.log('🔍 Discovering wallets...')
+      console.log('� Discovering wallets...')
       
       // Mock wallet discovery for demo
       const mockWallets = [
-        { name: 'Phantom', icon: '👻', installed: true },
-        { name: 'Solflare', icon: '🌞', installed: true },
-        { name: 'Backpack', icon: '🎒', installed: false }
+        { name: 'Phantom', icon: '��', installed: true },
+        { name: 'Solflare', icon: '�', installed: true },
+        { name: 'Backpack', icon: '', installed: false }
       ]
       
       setWallets(mockWallets)
@@ -362,7 +362,7 @@ export function WalletProvider({
       // Save preference
       localStorage.setItem(localStorageKey, targetWallet.name)
 
-      console.log(\`✅ Connected to \${targetWallet.name}\`)
+      console.log(\` Connected to \${targetWallet.name}\`)
 
     } catch (error) {
       console.error('Failed to connect wallet:', error)
@@ -386,7 +386,7 @@ export function WalletProvider({
         // Clear preference
         localStorage.removeItem(localStorageKey)
         
-        console.log('✅ Wallet disconnected')
+        console.log(' Wallet disconnected')
       }
     } catch (error) {
       console.error('Failed to disconnect wallet:', error)
@@ -400,7 +400,7 @@ export function WalletProvider({
     }
 
     try {
-      console.log('✍️ Signing transaction...')
+      console.log('� Signing transaction...')
       
       // Wallet Standard transaction signing would go here
       // Return signed transaction
@@ -418,7 +418,7 @@ export function WalletProvider({
     }
 
     try {
-      console.log('✍️ Signing message...')
+      console.log('� Signing message...')
       
       // Wallet Standard message signing would go here
       
@@ -470,7 +470,7 @@ import { WalletContext } from './wallet-provider'
 
 export interface WalletHookReturn {
   // Connection state
-  wallets: any[]
+  wallets: any
   wallet: any | null
   publicKey: string | null
   connected: boolean
@@ -483,7 +483,7 @@ export interface WalletHookReturn {
   
   // Signing
   signTransaction: (transaction: any) => Promise<any>
-  signAllTransactions: (transactions: any[]) => Promise<any[]>
+  signAllTransactions: (transactions: any) => Promise<any[]>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
   
   // Utilities
@@ -522,8 +522,8 @@ export function useWallet(): WalletHookReturn {
     await disconnectWallet()
   }
 
-  const signAllTransactions = async (transactions: any[]) => {
-    const signedTransactions = []
+  const signAllTransactions = async (transactions: any) => {
+    const signedTransactions = 
     
     for (const transaction of transactions) {
       const signed = await signTransaction(transaction)
@@ -711,7 +711,7 @@ export function WalletList({ onClose, className = '' }: WalletListProps) {
       {wallets.filter(w => !w.installed).length > 0 && (
         <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
           <p className="text-sm text-yellow-800">
-            💡 Install missing wallets to connect
+             Install missing wallets to connect
           </p>
         </div>
       )}
@@ -898,7 +898,7 @@ export function AdvancedWalletConnection() {
 }
 
 async function generateWalletUtilities() {
-  console.log(chalk.yellow('📱 Generating Wallet Adapter Utilities...'));
+  console.log(chalk.yellow('� Generating Wallet Adapter Utilities...'));
   
   const utilsDir = 'lib/wallet';
   await fs.ensureDir(utilsDir);
@@ -911,7 +911,7 @@ async function generateWalletUtilities() {
   const stateUtils = generateWalletStateUtils();
   await fs.writeFile(path.join(utilsDir, 'state-utils.ts'), stateUtils);
 
-  console.log(chalk.green(`✅ Wallet utilities generated in: ${utilsDir}/`));
+  console.log(chalk.green(` Wallet utilities generated in: ${utilsDir}/`));
 }
 
 function generateWalletDetectionUtils() {
@@ -933,14 +933,14 @@ export interface DetectedWallet {
 /**
  * Detect all available Solana wallets
  */
-export async function detectWallets(): Promise<DetectedWallet[]> {
-  const wallets: DetectedWallet[] = []
+export async function detectWallets(): Promise<DetectedWallet> {
+  const wallets: DetectedWallet = []
 
   // Check for Phantom
   if (typeof window !== 'undefined' && window.phantom?.solana) {
     wallets.push({
       name: 'Phantom',
-      icon: '👻',
+      icon: '��',
       url: 'https://phantom.app',
       installed: true,
       mobile: true,
@@ -953,7 +953,7 @@ export async function detectWallets(): Promise<DetectedWallet[]> {
   if (typeof window !== 'undefined' && window.solflare) {
     wallets.push({
       name: 'Solflare',
-      icon: '🌞',
+      icon: '�',
       url: 'https://solflare.com',
       installed: true,
       mobile: true,
@@ -966,7 +966,7 @@ export async function detectWallets(): Promise<DetectedWallet[]> {
   if (typeof window !== 'undefined' && window.backpack) {
     wallets.push({
       name: 'Backpack',
-      icon: '🎒',
+      icon: '',
       url: 'https://backpack.app',
       installed: true,
       mobile: false,
@@ -977,11 +977,11 @@ export async function detectWallets(): Promise<DetectedWallet[]> {
 
   // Add known wallets that aren't installed
   const knownWallets = [
-    { name: 'Phantom', icon: '👻', url: 'https://phantom.app', mobile: true, desktop: true },
-    { name: 'Solflare', icon: '🌞', url: 'https://solflare.com', mobile: true, desktop: true },
-    { name: 'Backpack', icon: '🎒', url: 'https://backpack.app', mobile: false, desktop: true },
-    { name: 'Glow', icon: '✨', url: 'https://glow.app', mobile: true, desktop: false },
-    { name: 'Slope', icon: '📐', url: 'https://slope.finance', mobile: true, desktop: false }
+    { name: 'Phantom', icon: '��', url: 'https://phantom.app', mobile: true, desktop: true },
+    { name: 'Solflare', icon: '�', url: 'https://solflare.com', mobile: true, desktop: true },
+    { name: 'Backpack', icon: '', url: 'https://backpack.app', mobile: false, desktop: true },
+    { name: 'Glow', icon: '', url: 'https://glow.app', mobile: true, desktop: false },
+    { name: 'Slope', icon: '�', url: 'https://slope.finance', mobile: true, desktop: false }
   ]
 
   knownWallets.forEach(known => {
@@ -1086,7 +1086,7 @@ export class WalletStateManager {
     error: null
   }
 
-  private listeners: Array<(state: WalletState) => void> = []
+  private listeners: Array<(state: WalletState) => void> = 
   private storageKey = 'solana-wallet-state'
 
   constructor() {
@@ -1246,7 +1246,7 @@ function generateGenericWalletInfrastructure() {
 }
 
 async function generateWalletTestingHelpers() {
-  console.log(chalk.yellow('🧪 Generating Wallet Testing Helpers...'));
+  console.log(chalk.yellow(' Generating Wallet Testing Helpers...'));
   // Implementation for wallet testing helpers...
 }
 
@@ -1259,7 +1259,7 @@ function generateTransactionSigningComponent() {
 }
 
 async function showWalletExamples() {
-  console.log(chalk.cyan('📚 Wallet-Standard Examples'));
+  console.log(chalk.cyan(' Wallet-Standard Examples'));
   // Show examples of wallet usage patterns...
 }
 

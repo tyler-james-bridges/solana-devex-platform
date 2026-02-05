@@ -12,7 +12,7 @@ const inquirer = require('inquirer');
  * Main compatibility command handler
  */
 async function main(options) {
-  console.log(chalk.yellow('🔄 web3.js Compatibility Layer'));
+  console.log(chalk.yellow('� web3.js Compatibility Layer'));
   console.log(chalk.gray('Use this sparingly - prefer @solana/kit for new code'));
   
   if (options.migrate) {
@@ -33,22 +33,22 @@ async function showCompatibilityOptions() {
       message: 'What would you like to do?',
       choices: [
         {
-          name: '🔄 Migrate from web3.js to @solana/kit (Recommended)',
+          name: '� Migrate from web3.js to @solana/kit (Recommended)',
           value: 'migrate',
           short: 'Migrate'
         },
         {
-          name: '🛠️ Create compatibility adapter',
+          name: '� Create compatibility adapter',
           value: 'adapter',
           short: 'Create Adapter'
         },
         {
-          name: '📊 Analyze web3.js usage',
+          name: ' Analyze web3.js usage',
           value: 'analyze',
           short: 'Analyze'
         },
         {
-          name: '📚 Learn about official stack',
+          name: ' Learn about official stack',
           value: 'learn',
           short: 'Learn'
         }
@@ -76,15 +76,15 @@ async function showCompatibilityOptions() {
  * Migration helper from web3.js to @solana/kit
  */
 async function runMigrationHelper() {
-  console.log(chalk.cyan('🔄 web3.js to @solana/kit Migration Helper'));
+  console.log(chalk.cyan('� web3.js to @solana/kit Migration Helper'));
   
   try {
     // Analyze current web3.js usage
-    console.log(chalk.gray('🔍 Analyzing current web3.js usage...'));
+    console.log(chalk.gray('� Analyzing current web3.js usage...'));
     const analysis = await analyzeWeb3jsUsage();
     
     if (analysis.totalUsage === 0) {
-      console.log(chalk.green('✅ No web3.js usage detected - you\'re already using modern patterns!'));
+      console.log(chalk.green(' No web3.js usage detected - you\'re already using modern patterns!'));
       return;
     }
     
@@ -106,7 +106,7 @@ async function runMigrationHelper() {
     }
     
   } catch (error) {
-    console.error(chalk.red(`❌ Migration analysis failed: ${error.message}`));
+    console.error(chalk.red(` Migration analysis failed: ${error.message}`));
   }
 }
 
@@ -115,7 +115,7 @@ async function runMigrationHelper() {
  */
 async function analyzeWeb3jsUsage() {
   const analysis = {
-    files: [],
+    files: ,
     totalUsage: 0,
     patterns: {
       connection: 0,
@@ -152,7 +152,7 @@ async function analyzeWeb3jsUsage() {
     analysis.migrationComplexity = calculateMigrationComplexity(analysis);
     
   } catch (error) {
-    console.warn(chalk.yellow(`⚠️ Could not analyze web3.js usage: ${error.message}`));
+    console.warn(chalk.yellow(` Could not analyze web3.js usage: ${error.message}`));
   }
   
   return analysis;
@@ -175,8 +175,8 @@ function analyzeFileForWeb3js(filePath, content) {
       systemProgram: 0,
       other: 0
     },
-    imports: [],
-    migrationNotes: []
+    imports: ,
+    migrationNotes: 
   };
   
   // Check for web3.js imports
@@ -223,26 +223,26 @@ function analyzeFileForWeb3js(filePath, content) {
  * Show migration plan to user
  */
 function showMigrationPlan(analysis) {
-  console.log(chalk.cyan('\\n📋 Migration Plan'));
+  console.log(chalk.cyan('\\n� Migration Plan'));
   console.log(chalk.gray(`Files to migrate: ${analysis.files.length}`));
   console.log(chalk.gray(`Total web3.js usage: ${analysis.totalUsage}`));
   console.log(chalk.gray(`Complexity: ${analysis.migrationComplexity}`));
   
-  console.log(chalk.cyan('\\n🔍 Usage Breakdown:'));
+  console.log(chalk.cyan('\\n� Usage Breakdown:'));
   Object.entries(analysis.patterns).forEach(([pattern, count]) => {
     if (count > 0) {
       console.log(chalk.gray(`  ${pattern}: ${count} occurrences`));
     }
   });
   
-  console.log(chalk.cyan('\\n📝 Migration Strategy:'));
+  console.log(chalk.cyan('\\n Migration Strategy:'));
   console.log(chalk.gray('  1. Install official stack dependencies'));
   console.log(chalk.gray('  2. Create @solana/web3-compat adapters for boundaries'));
   console.log(chalk.gray('  3. Migrate core logic to @solana/kit patterns'));
   console.log(chalk.gray('  4. Remove web3.js dependencies when complete'));
   
   if (analysis.migrationComplexity === 'high') {
-    console.log(chalk.yellow('\\n⚠️ High complexity migration detected'));
+    console.log(chalk.yellow('\\n High complexity migration detected'));
     console.log(chalk.gray('Consider gradual migration using compatibility adapters'));
   }
 }
@@ -251,7 +251,7 @@ function showMigrationPlan(analysis) {
  * Generate migration files
  */
 async function generateMigrationFiles(analysis) {
-  console.log(chalk.yellow('📝 Generating migration files...'));
+  console.log(chalk.yellow(' Generating migration files...'));
   
   // Create migration directory
   const migrationDir = 'migration-to-official-stack';
@@ -268,8 +268,8 @@ async function generateMigrationFiles(analysis) {
     await generateFileMigrationExample(migrationDir, fileAnalysis);
   }
   
-  console.log(chalk.green(`✅ Migration files generated in: ${migrationDir}/`));
-  console.log(chalk.cyan('\\n🎯 Next Steps:'));
+  console.log(chalk.green(` Migration files generated in: ${migrationDir}/`));
+  console.log(chalk.cyan('\\n Next Steps:'));
   console.log(chalk.gray(`  1. Review: ${migrationDir}/MIGRATION_PLAN.md`));
   console.log(chalk.gray(`  2. Install: npm install @solana/client @solana/kit @solana/web3-compat`));
   console.log(chalk.gray('  3. Start with compatibility adapters'));
@@ -316,7 +316,7 @@ ${file.migrationNotes.map(note => `- ${note}`).join('\\n')}
 
 ## Pattern Migrations
 
-### Connection → RPC Client
+### Connection �[] RPC Client
 \`\`\`javascript
 // Before (web3.js)
 const connection = new Connection(endpoint);
@@ -327,7 +327,7 @@ const transport = createDefaultRpcTransport({ url: endpoint });
 const rpc = createSolanaRpcApi({ transport });
 \`\`\`
 
-### PublicKey → Address
+### PublicKey �[] Address
 \`\`\`javascript
 // Before (web3.js)
 const pubkey = new PublicKey('11111111111111111111111111111111');
@@ -337,7 +337,7 @@ import type { Address } from '@solana/client';
 const address: Address = '11111111111111111111111111111111' as Address;
 \`\`\`
 
-### Transaction → Message
+### Transaction �[] Message
 \`\`\`javascript
 // Before (web3.js)
 const transaction = new Transaction();
@@ -352,11 +352,11 @@ const message = pipe(
 \`\`\`
 
 ## Benefits of Migration
-✅ **Type Safety** - Full TypeScript support  
-✅ **Modern APIs** - Latest Solana patterns  
-✅ **Better Performance** - Optimized implementations  
-✅ **Future Proof** - Official Solana direction  
-✅ **Better Testing** - LiteSVM/Mollusk support  
+ **Type Safety** - Full TypeScript support  
+ **Modern APIs** - Latest Solana patterns  
+ **Better Performance** - Optimized implementations  
+ **Future Proof** - Official Solana direction  
+ **Better Testing** - LiteSVM/Mollusk support  
 
 ## Support
 - Official Docs: https://docs.solana.com
@@ -371,7 +371,7 @@ const message = pipe(
  * Create compatibility adapter
  */
 async function createCompatibilityAdapter() {
-  console.log(chalk.yellow('🛠️ Creating web3.js Compatibility Adapter'));
+  console.log(chalk.yellow('� Creating web3.js Compatibility Adapter'));
   
   const adapterDir = 'lib/compatibility';
   await fs.ensureDir(adapterDir);
@@ -380,8 +380,8 @@ async function createCompatibilityAdapter() {
   const adapterContent = generateCompatibilityAdapter();
   await fs.writeFile(path.join(adapterDir, 'web3js-adapter.ts'), adapterContent);
   
-  console.log(chalk.green(`✅ Compatibility adapter created: ${adapterDir}/web3js-adapter.ts`));
-  console.log(chalk.cyan('\\n💡 Usage:'));
+  console.log(chalk.green(` Compatibility adapter created: ${adapterDir}/web3js-adapter.ts`));
+  console.log(chalk.cyan('\\n Usage:'));
   console.log(chalk.gray('  import { Web3jsAdapter } from \'./lib/compatibility/web3js-adapter\''));
   console.log(chalk.gray('  const adapter = new Web3jsAdapter(kitRpcClient)'));
   console.log(chalk.gray('  const web3jsConnection = adapter.getWeb3jsConnection()'));
@@ -414,7 +414,7 @@ export class Web3jsAdapter {
   getWeb3jsConnection(): Connection {
     // This is a simplified example - you'll need to implement proper conversion
     // based on your specific RPC client setup
-    console.warn('⚠️ Using web3.js compatibility layer - consider migrating to @solana/kit');
+    console.warn(' Using web3.js compatibility layer - consider migrating to @solana/kit');
     
     // Return a web3.js Connection that delegates to your @solana/kit RPC
     return new Connection('http://localhost:8899'); // Placeholder
@@ -457,7 +457,7 @@ export function withWeb3jsCompatibility<T>(
   adapter: Web3jsAdapter,
   web3jsCode: (connection: Connection) => Promise<T>
 ): Promise<T> {
-  console.warn('⚠️ Executing web3.js compatibility code - plan migration to @solana/kit');
+  console.warn(' Executing web3.js compatibility code - plan migration to @solana/kit');
   
   const connection = adapter.getWeb3jsConnection();
   return web3jsCode(connection);
@@ -467,7 +467,7 @@ export function withWeb3jsCompatibility<T>(
  * Migration helper - logs web3.js usage for tracking
  */
 export function trackWeb3jsUsage(location: string, pattern: string) {
-  console.log(\`📊 web3.js usage tracked: \${pattern} at \${location}\`);
+  console.log(\` web3.js usage tracked: \${pattern} at \${location}\`);
   // You could send this to analytics/logging service
 }
 `;
@@ -477,22 +477,22 @@ export function trackWeb3jsUsage(location: string, pattern: string) {
  * Analyze legacy usage in project
  */
 async function analyzeLegacyUsage() {
-  console.log(chalk.yellow('🔍 Analyzing Legacy Usage...'));
+  console.log(chalk.yellow('� Analyzing Legacy Usage...'));
   
   const analysis = await analyzeWeb3jsUsage();
   
   if (analysis.totalUsage === 0) {
-    console.log(chalk.green('✅ No web3.js usage detected!'));
-    console.log(chalk.cyan('🎉 Your project is already using modern Solana patterns'));
+    console.log(chalk.green(' No web3.js usage detected!'));
+    console.log(chalk.cyan('� Your project is already using modern Solana patterns'));
     return;
   }
   
   // Show detailed analysis
-  console.log(chalk.cyan('\\n📊 Legacy Usage Analysis:'));
+  console.log(chalk.cyan('\\n Legacy Usage Analysis:'));
   console.log(chalk.gray(`Total files: ${analysis.files.length}`));
   console.log(chalk.gray(`Total usage: ${analysis.totalUsage}`));
   
-  console.log(chalk.cyan('\\n🔍 Pattern Breakdown:'));
+  console.log(chalk.cyan('\\n� Pattern Breakdown:'));
   Object.entries(analysis.patterns).forEach(([pattern, count]) => {
     if (count > 0) {
       const severity = count > 10 ? chalk.red : count > 5 ? chalk.yellow : chalk.gray;
@@ -500,52 +500,52 @@ async function analyzeLegacyUsage() {
     }
   });
   
-  console.log(chalk.cyan('\\n📝 Files with Legacy Code:'));
+  console.log(chalk.cyan('\\n Files with Legacy Code:'));
   analysis.files.forEach(file => {
-    console.log(chalk.gray(`  📄 ${file.file} (${file.usageCount} occurrences)`));
+    console.log(chalk.gray(`  � ${file.file} (${file.usageCount} occurrences)`));
   });
   
-  console.log(chalk.cyan('\\n💡 Recommendations:'));
+  console.log(chalk.cyan('\\n Recommendations:'));
   if (analysis.migrationComplexity === 'high') {
-    console.log(chalk.yellow('  • High complexity - consider gradual migration'));
-    console.log(chalk.gray('  • Use compatibility adapters at boundaries'));
-    console.log(chalk.gray('  • Migrate one component at a time'));
+    console.log(chalk.yellow('  � High complexity - consider gradual migration'));
+    console.log(chalk.gray('  � Use compatibility adapters at boundaries'));
+    console.log(chalk.gray('  � Migrate one component at a time'));
   } else {
-    console.log(chalk.green('  • Migration should be straightforward'));
-    console.log(chalk.gray('  • Consider full migration to @solana/kit'));
+    console.log(chalk.green('  � Migration should be straightforward'));
+    console.log(chalk.gray('  � Consider full migration to @solana/kit'));
   }
   
-  console.log(chalk.gray('  • Run: solana-devex compat --migrate for migration help'));
+  console.log(chalk.gray('  � Run: solana-devex compat --migrate for migration help'));
 }
 
 /**
  * Show information about the official stack
  */
 async function showOfficialStackInfo() {
-  console.log(chalk.cyan('📚 Official Solana Stack Information'));
+  console.log(chalk.cyan(' Official Solana Stack Information'));
   
-  console.log(chalk.cyan('\\n🎯 Why Migrate?'));
-  console.log(chalk.green('  ✅ Type Safety') + chalk.gray(' - Full TypeScript support'));
-  console.log(chalk.green('  ✅ Modern APIs') + chalk.gray(' - Latest Solana patterns'));
-  console.log(chalk.green('  ✅ Performance') + chalk.gray(' - Optimized implementations'));
-  console.log(chalk.green('  ✅ Future Proof') + chalk.gray(' - Official Solana direction'));
-  console.log(chalk.green('  ✅ Better Testing') + chalk.gray(' - LiteSVM/Mollusk support'));
+  console.log(chalk.cyan('\\n Why Migrate?'));
+  console.log(chalk.green('   Type Safety') + chalk.gray(' - Full TypeScript support'));
+  console.log(chalk.green('   Modern APIs') + chalk.gray(' - Latest Solana patterns'));
+  console.log(chalk.green('   Performance') + chalk.gray(' - Optimized implementations'));
+  console.log(chalk.green('   Future Proof') + chalk.gray(' - Official Solana direction'));
+  console.log(chalk.green('   Better Testing') + chalk.gray(' - LiteSVM/Mollusk support'));
   
-  console.log(chalk.cyan('\\n🛠️ Official Stack Components:'));
-  console.log(chalk.gray('  📦 @solana/client') + ' - Modern RPC client');
-  console.log(chalk.gray('  📦 @solana/kit') + ' - Comprehensive SDK');
-  console.log(chalk.gray('  📦 @solana/react-hooks') + ' - React integration');
-  console.log(chalk.gray('  📦 @solana/web3-compat') + ' - Migration helpers');
+  console.log(chalk.cyan('\\n� Official Stack Components:'));
+  console.log(chalk.gray('   @solana/client') + ' - Modern RPC client');
+  console.log(chalk.gray('   @solana/kit') + ' - Comprehensive SDK');
+  console.log(chalk.gray('   @solana/react-hooks') + ' - React integration');
+  console.log(chalk.gray('   @solana/web3-compat') + ' - Migration helpers');
   
-  console.log(chalk.cyan('\\n🚀 Getting Started:'));
+  console.log(chalk.cyan('\\n Getting Started:'));
   console.log(chalk.gray('  1. solana-devex init my-project --template react-kit'));
   console.log(chalk.gray('  2. solana-devex compat --migrate (for existing projects)'));
   console.log(chalk.gray('  3. solana-devex test unit (fast testing with LiteSVM)'));
   
-  console.log(chalk.cyan('\\n📚 Resources:'));
-  console.log(chalk.gray('  • Official Docs: https://docs.solana.com'));
-  console.log(chalk.gray('  • Framework Kit: https://solana.com/framework-kit'));
-  console.log(chalk.gray('  • @solana/kit Guide: https://solana.com/kit'));
+  console.log(chalk.cyan('\\n Resources:'));
+  console.log(chalk.gray('  � Official Docs: https://docs.solana.com'));
+  console.log(chalk.gray('  � Framework Kit: https://solana.com/framework-kit'));
+  console.log(chalk.gray('  � @solana/kit Guide: https://solana.com/kit'));
 }
 
 /**
@@ -553,7 +553,7 @@ async function showOfficialStackInfo() {
  */
 async function findSourceFiles() {
   const patterns = ['src/**/*.{js,ts,jsx,tsx}', 'lib/**/*.{js,ts}', 'app/**/*.{js,ts,jsx,tsx}'];
-  const files = [];
+  const files = ;
   
   for (const pattern of patterns) {
     try {

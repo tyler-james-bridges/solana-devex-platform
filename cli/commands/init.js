@@ -12,7 +12,7 @@ const inquirer = require('inquirer');
  * Initialize new project with official Solana stack
  */
 async function init(projectName, options = {}) {
-  console.log(chalk.cyan('🚀 Initializing Official Solana Stack Project'));
+  console.log(chalk.cyan(' Initializing Official Solana Stack Project'));
   
   if (!projectName) {
     const answers = await inquirer.prompt([
@@ -34,19 +34,19 @@ async function init(projectName, options = {}) {
     const projectPath = path.resolve(projectName);
     await fs.ensureDir(projectPath);
     
-    console.log(chalk.gray(`📁 Creating project at: ${projectPath}`));
+    console.log(chalk.gray(` Creating project at: ${projectPath}`));
     
     // Generate project based on template
     await generateProject(projectPath, template, options);
     
-    console.log(chalk.green(`✅ Project '${projectName}' created successfully!`));
-    console.log(chalk.cyan('\\n🎯 Next steps:'));
+    console.log(chalk.green(` Project '${projectName}' created successfully!`));
+    console.log(chalk.cyan('\\n Next steps:'));
     console.log(chalk.gray(`  cd ${projectName}`));
     console.log(chalk.gray('  npm install'));
     console.log(chalk.gray('  npm run dev'));
     
   } catch (error) {
-    console.error(chalk.red(`❌ Project initialization failed: ${error.message}`));
+    console.error(chalk.red(` Project initialization failed: ${error.message}`));
     process.exit(1);
   }
 }
@@ -64,7 +64,7 @@ async function determineTemplate(options) {
   }
 
   if (options.legacy) {
-    console.log(chalk.yellow('⚠️ Legacy web3.js stack is not recommended'));
+    console.log(chalk.yellow(' Legacy web3.js stack is not recommended'));
     const confirm = await inquirer.prompt([
       {
         type: 'confirm',
@@ -75,7 +75,7 @@ async function determineTemplate(options) {
     ]);
     
     if (!confirm.useLegacy) {
-      console.log(chalk.green('👍 Using official stack instead'));
+      console.log(chalk.green('�� Using official stack instead'));
       return 'react-kit';
     }
     
@@ -90,32 +90,32 @@ async function determineTemplate(options) {
       message: 'Choose a project template:',
       choices: [
         {
-          name: '🌐 React + Next.js + @solana/kit (Recommended)',
+          name: '� React + Next.js + @solana/kit (Recommended)',
           value: 'react-kit',
           short: 'React Kit'
         },
         {
-          name: '⚡ Pure @solana/kit (Scripts/Backend)',
+          name: ' Pure @solana/kit (Scripts/Backend)',
           value: 'kit-only',
           short: 'Kit Only'
         },
         {
-          name: '⚓ Anchor + React + @solana/kit',
+          name: ' Anchor + React + @solana/kit',
           value: 'anchor-react-kit',
           short: 'Anchor React'
         },
         {
-          name: '🏎️ Pinocchio + React + @solana/kit (Performance)',
+          name: ' Pinocchio + React + @solana/kit (Performance)',
           value: 'pinocchio-react-kit',
           short: 'Pinocchio React'
         },
         {
-          name: '👛 Wallet-Standard Demo',
+          name: '�� Wallet-Standard Demo',
           value: 'wallet-standard-demo',
           short: 'Wallet Demo'
         },
         {
-          name: '🧪 Testing-First Project (LiteSVM/Mollusk)',
+          name: ' Testing-First Project (LiteSVM/Mollusk)',
           value: 'testing-first',
           short: 'Testing First'
         }
@@ -130,7 +130,7 @@ async function determineTemplate(options) {
  * Generate project based on template
  */
 async function generateProject(projectPath, template, options) {
-  console.log(chalk.gray(`📋 Using template: ${template}`));
+  console.log(chalk.gray(`� Using template: ${template}`));
 
   // Base package.json with official stack
   const basePackageJson = createBasePackageJson(path.basename(projectPath), template);
@@ -256,7 +256,7 @@ function createBasePackageJson(projectName, template) {
  * Generate React + Kit project
  */
 async function generateReactKitProject(projectPath, options) {
-  console.log(chalk.gray('🌐 Creating React + @solana/kit project...'));
+  console.log(chalk.gray('� Creating React + @solana/kit project...'));
 
   // Next.js configuration
   await fs.writeFile(path.join(projectPath, 'next.config.js'), `/** @type {import('next').NextConfig} */
@@ -297,7 +297,7 @@ module.exports = nextConfig;
  * Generate Kit-only project (scripts/backend)
  */
 async function generateKitOnlyProject(projectPath, options) {
-  console.log(chalk.gray('⚡ Creating pure @solana/kit project...'));
+  console.log(chalk.gray(' Creating pure @solana/kit project...'));
 
   const srcDir = path.join(projectPath, 'src');
   await fs.ensureDir(srcDir);
@@ -393,7 +393,7 @@ export default function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold text-center mb-8">
-        🚀 Official Solana Stack
+         Official Solana Stack
       </h1>
       
       <div className="max-w-2xl mx-auto text-center mb-8">
@@ -597,11 +597,11 @@ export function useSolana() {
     } finally {
       setConnecting(false)
     }
-  }, [])
+  }, )
 
   const disconnect = useCallback(() => {
     setPublicKey(null)
-  }, [])
+  }, )
 
   return {
     connection,
@@ -623,27 +623,27 @@ import { buildExampleTransaction } from './transaction-example'
  */
 
 async function main() {
-  console.log('🚀 Starting Solana Kit Application')
+  console.log(' Starting Solana Kit Application')
 
   try {
     // Initialize Solana client
     const client = new SolanaClient()
     await client.initialize()
 
-    console.log('✅ Solana client initialized')
+    console.log(' Solana client initialized')
 
     // Example operations
     const slot = await client.getCurrentSlot()
-    console.log(\`📊 Current slot: \${slot}\`)
+    console.log(\` Current slot: \${slot}\`)
 
     // Example transaction (commented out to avoid sending)
     // const transaction = await buildExampleTransaction()
-    // console.log('📝 Transaction built:', transaction)
+    // console.log(' Transaction built:', transaction)
 
-    console.log('🎉 Application completed successfully')
+    console.log('� Application completed successfully')
 
   } catch (error) {
-    console.error('❌ Application failed:', error)
+    console.error(' Application failed:', error)
     process.exit(1)
   }
 }
@@ -679,7 +679,7 @@ export class SolanaClient {
     try {
       // Test connection
       await this.getCurrentSlot()
-      console.log(\`✅ Connected to Solana RPC: \${this.endpoint}\`)
+      console.log(\` Connected to Solana RPC: \${this.endpoint}\`)
     } catch (error) {
       throw new Error(\`Failed to connect to Solana RPC: \${error.message}\`)
     }
@@ -713,7 +713,7 @@ import type { TransactionMessage, Signer } from '@solana/client'
  */
 
 export async function buildExampleTransaction(): Promise<TransactionMessage> {
-  console.log('📝 Building example transaction with @solana/kit patterns...')
+  console.log(' Building example transaction with @solana/kit patterns...')
 
   // Note: This is a template - you'll need to implement:
   // 1. Actual fee payer signer
@@ -733,7 +733,7 @@ export async function buildExampleTransaction(): Promise<TransactionMessage> {
 
 export function validateTransaction(message: TransactionMessage): boolean {
   // Add transaction validation logic
-  console.log('🔍 Validating transaction...')
+  console.log('� Validating transaction...')
   
   // Check fee payer, signers, instructions, etc.
   
@@ -813,7 +813,7 @@ wallet = "~/.config/solana/id.json"
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"`);
   
-  console.log(chalk.gray('⚓ Added Anchor workspace'));
+  console.log(chalk.gray(' Added Anchor workspace'));
 }
 
 async function generatePinocchioReactProject(projectPath, options) {
@@ -832,7 +832,7 @@ async function generatePinocchioReactProject(projectPath, options) {
   }
 }`);
   
-  console.log(chalk.gray('🏎️ Added Pinocchio performance configuration'));
+  console.log(chalk.gray(' Added Pinocchio performance configuration'));
 }
 
 async function generateWalletStandardDemo(projectPath, options) {
@@ -842,7 +842,7 @@ async function generateWalletStandardDemo(projectPath, options) {
   const walletDir = path.join(projectPath, 'components', 'wallet');
   await fs.ensureDir(walletDir);
   
-  console.log(chalk.gray('👛 Added wallet-standard demo components'));
+  console.log(chalk.gray('�� Added wallet-standard demo components'));
 }
 
 async function generateTestingFirstProject(projectPath, options) {
@@ -852,16 +852,16 @@ async function generateTestingFirstProject(projectPath, options) {
   const testsDir = path.join(projectPath, 'tests');
   await fs.ensureDir(testsDir);
   
-  console.log(chalk.gray('🧪 Added comprehensive testing setup'));
+  console.log(chalk.gray(' Added comprehensive testing setup'));
 }
 
 async function generateLegacyProject(projectPath, options) {
-  console.log(chalk.yellow('⚠️ Creating legacy web3.js project (not recommended)'));
+  console.log(chalk.yellow(' Creating legacy web3.js project (not recommended)'));
   
   // Minimal legacy setup - discourage use
   await generateKitOnlyProject(projectPath, options);
   
-  console.log(chalk.red('❗ Consider migrating to official stack with: solana-devex compat --migrate'));
+  console.log(chalk.red('� Consider migrating to official stack with: solana-devex compat --migrate'));
 }
 
 function generateReadme(projectName, template) {
@@ -869,7 +869,7 @@ function generateReadme(projectName, template) {
 
 Built with the **Official Solana Stack** - the modern way to build on Solana.
 
-## 🚀 Stack
+##  Stack
 
 - **@solana/client** - Modern RPC client with full type safety
 - **@solana/kit** - Comprehensive SDK for all Solana operations  
@@ -877,14 +877,14 @@ ${template.includes('react') ? '- **@solana/react-hooks** - React integration fo
 ${template.includes('anchor') ? '- **Anchor** - Smart contract framework' : ''}
 ${template.includes('pinocchio') ? '- **Pinocchio** - High-performance programs' : ''}
 
-## 🏃 Quick Start
+## � Quick Start
 
 \`\`\`bash
 npm install
 npm run dev
 \`\`\`
 
-## 🧪 Testing
+##  Testing
 
 This project uses the official Solana testing stack:
 
@@ -899,7 +899,7 @@ npm run test:integration
 npm run security
 \`\`\`
 
-## 🔧 Development
+##  Development
 
 Built with [Solana DevEx Platform](https://github.com/your-repo) - the official stack made easy.
 
@@ -913,13 +913,13 @@ Built with [Solana DevEx Platform](https://github.com/your-repo) - the official 
 
 ### Official Stack Benefits
 
-✅ **Type Safety** - Full TypeScript support  
-✅ **Modern APIs** - Latest Solana patterns  
-✅ **Fast Testing** - LiteSVM/Mollusk unit tests  
-✅ **Security First** - Automated security checks  
-✅ **Performance** - Optimized for production  
+ **Type Safety** - Full TypeScript support  
+ **Modern APIs** - Latest Solana patterns  
+ **Fast Testing** - LiteSVM/Mollusk unit tests  
+ **Security First** - Automated security checks  
+ **Performance** - Optimized for production  
 
-## 📚 Learn More
+##  Learn More
 
 - [Official Solana Docs](https://docs.solana.com)
 - [Framework Kit Guide](https://solana.com/framework-kit)
