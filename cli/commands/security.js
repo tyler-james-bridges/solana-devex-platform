@@ -26,7 +26,7 @@ async function main(options) {
  * Run comprehensive security audit
  */
 async function runFullSecurityAudit() {
-  console.log(chalk.yellow('ç Running Full Security Audit...'));
+  console.log(chalk.yellow('ç  Running Full Security Audit...'));
   
   const results = {
     signingRisks: await analyzeSigningRisks(false),
