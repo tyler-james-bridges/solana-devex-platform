@@ -229,55 +229,32 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors">
-      {/* Header */}
-      <header className="header">
-        <div className="dashboard-container">
-          <div className="header-content">
-            <div className="logo">
-              <div className="logo-icon">
-                <div className="w-4 h-4 bg-white dark:bg-gray-200 rounded-sm"></div>
-              </div>
-              <div>
-                <div className="logo-text">Solana DevEx</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 leading-none">Platform</div>
-              </div>
-            </div>
-            
-            <div className="status-badges">
-              <a 
-                href="/dashboard" 
-                className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition-colors"
-              >
-                Real-Time Dashboard
-              </a>
-              <span className="status-success">Live</span>
-              <span className="status-info">#25</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="flex-1 bg-gray-50 dark:bg-gray-800 transition-colors">
-        <div className="dashboard-container" style={{ 
-          paddingTop: '1.5rem', 
-          paddingBottom: '1.5rem' 
-        }}>
+        <div className="dashboard-container pt-6 pb-6">
           <div className="space-y-6">
             {/* Header Section */}
-            <div className="space-y-2" style={{ 
-              textAlign: 'center',
-              marginBottom: '2rem'
-            }}>
-              <h1 className="typography-h1">Development Environment</h1>
-              <p className="typography-body" style={{ 
-                maxWidth: '100%',
-                margin: '0 auto',
-                textAlign: 'center'
-              }}>
-                Complete testing, deployment, and monitoring platform for Solana applications. 
-                Built for autonomous agents and professional development teams.
-              </p>
+            <div className="text-center mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div>
+                  <h1 className="typography-h1 text-left sm:text-center">Development Environment</h1>
+                  <p className="typography-body text-left sm:text-center max-w-none sm:max-w-3xl">
+                    Complete testing, deployment, and monitoring platform for Solana applications. 
+                    Built for autonomous agents and professional development teams.
+                  </p>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-2 mt-4 sm:mt-0 justify-start sm:justify-end">
+                  <a 
+                    href="/dashboard" 
+                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition-colors"
+                  >
+                    Real-Time Dashboard
+                  </a>
+                  <span className="status-success">Live</span>
+                  <span className="status-info">#25</span>
+                </div>
+              </div>
             </div>
 
             {/* Metrics Grid */}
