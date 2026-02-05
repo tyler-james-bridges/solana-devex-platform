@@ -6,17 +6,17 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  Terminal, 
-  GitCommit, 
-  Zap, 
-  Database, 
-  Code, 
-  Activity, 
-  Clock, 
-  AlertCircle, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  Terminal,
+  GitCommit,
+  Zap,
+  Database,
+  Code,
+  Activity,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
   Loader2,
   Play,
   Square,
@@ -43,13 +43,13 @@ import {
   Package,
   Anchor
 } from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area,
@@ -240,10 +240,10 @@ const StatusBadge = ({ status, type }: { status: string; type?: string }) => {
   );
 };
 
-const MetricCard = ({ 
-  title, 
-  value, 
-  change, 
+const MetricCard = ({
+  title,
+  value,
+  change,
   trend,
   icon: Icon,
   status = 'neutral',
@@ -260,7 +260,7 @@ const MetricCard = ({
   subtitle?: string;
 }) => {
   return (
-    <div 
+    <div
       className={`bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700 transition-all duration-200 hover:shadow-md ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
@@ -477,7 +477,7 @@ const DevMonitorDashboard: React.FC = () => {
   const connectDevWebSocket = useCallback(() => {
     try {
       const ws = new WebSocket('ws://localhost:3006'); // Development monitoring WebSocket
-      
+
       ws.onopen = () => {
         console.log('Connected to development monitoring WebSocket');
         setConnectionStatus('connected');
@@ -510,11 +510,11 @@ const DevMonitorDashboard: React.FC = () => {
   // Start mock mode for demonstration
   const startMockMode = useCallback(() => {
     setDevMetrics(generateMockData());
-    
+
     if (autoRefresh) {
       const interval = setInterval(() => {
         setDevMetrics(generateMockData());
-        
+
         // Update historical data
         setHistoricalData(prev => {
           const newPoint = {
@@ -526,11 +526,11 @@ const DevMonitorDashboard: React.FC = () => {
             cpu: 25 + Math.random() * 30,
             latency: 5 + Math.random() * 15
           };
-          
+
           return [...prev.slice(-49), newPoint];
         });
       }, 2000);
-      
+
       return () => clearInterval(interval);
     }
   }, [generateMockData, autoRefresh]);
@@ -543,7 +543,7 @@ const DevMonitorDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action })
       });
-      
+
       if (!response.ok) {
         console.log(`Validator ${action} command sent (mock mode)`);
       }
@@ -560,7 +560,7 @@ const DevMonitorDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ project: projectName })
       });
-      
+
       if (!response.ok) {
         console.log(`Building project ${projectName} (mock mode)`);
       }
@@ -577,7 +577,7 @@ const DevMonitorDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ project: projectName, network })
       });
-      
+
       if (!response.ok) {
         console.log(`Deploying ${projectName} to ${network} (mock mode)`);
       }
@@ -590,7 +590,7 @@ const DevMonitorDashboard: React.FC = () => {
   useEffect(() => {
     const data = [];
     const now = Date.now();
-    
+
     for (let i = 20; i >= 0; i--) {
       const timestamp = now - (i * 10000);
       data.push({
@@ -603,14 +603,14 @@ const DevMonitorDashboard: React.FC = () => {
         latency: 5 + Math.random() * 15
       });
     }
-    
+
     setHistoricalData(data);
   }, []);
 
   // Initialize
   useEffect(() => {
     connectDevWebSocket();
-    
+
     return () => {
       if (wsConnection) {
         wsConnection.close();
@@ -651,7 +651,7 @@ const DevMonitorDashboard: React.FC = () => {
                 </span>
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <button
@@ -661,7 +661,7 @@ const DevMonitorDashboard: React.FC = () => {
                   <RefreshCw className="w-4 h-4" />
                   <span>Restart Validator</span>
                 </button>
-                
+
                 <button
                   onClick={() => setAutoRefresh(!autoRefresh)}
                   className={`px-3 py-1 rounded text-sm flex items-center space-x-1 ${
@@ -672,7 +672,7 @@ const DevMonitorDashboard: React.FC = () => {
                   <span>Auto Refresh</span>
                 </button>
               </div>
-              
+
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Last update: {new Date().toLocaleTimeString()}
               </div>
@@ -693,7 +693,7 @@ const DevMonitorDashboard: React.FC = () => {
             change={`Slot ${devMetrics.testValidator.slot.toLocaleString()}`}
             subtitle={`${Math.round(devMetrics.testValidator.uptime / 60)}m uptime`}
           />
-          
+
           <MetricCard
             title="Transaction Throughput"
             value={`${Math.round(devMetrics.testValidator.transactionThroughput)} TPS`}
@@ -702,7 +702,7 @@ const DevMonitorDashboard: React.FC = () => {
             change={`${devMetrics.testValidator.avgBlockTime.toFixed(0)}ms avg block`}
             trend="up"
           />
-          
+
           <MetricCard
             title="RPC Latency"
             value={`${devMetrics.rpcMetrics.latency.toFixed(1)}ms`}
@@ -711,7 +711,7 @@ const DevMonitorDashboard: React.FC = () => {
             change={`${devMetrics.rpcMetrics.successRate.toFixed(1)}% success`}
             trend="down"
           />
-          
+
           <MetricCard
             title="Active Projects"
             value={devMetrics.anchorProjects.length}
@@ -729,7 +729,7 @@ const DevMonitorDashboard: React.FC = () => {
               <Monitor className="w-6 h-6 mr-2 text-blue-600" />
               Test Validator Status
             </h2>
-            
+
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => controlValidator('start')}
@@ -739,7 +739,7 @@ const DevMonitorDashboard: React.FC = () => {
                 <Play className="w-4 h-4" />
                 <span>Start</span>
               </button>
-              
+
               <button
                 onClick={() => controlValidator('stop')}
                 disabled={!devMetrics.testValidator.isRunning}
@@ -756,27 +756,27 @@ const DevMonitorDashboard: React.FC = () => {
               <div className="text-sm text-gray-600 dark:text-gray-400">Block Height</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.blockHeight.toLocaleString()}</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Programs Loaded</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.programsLoaded}</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Accounts</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.accountsLoaded.toLocaleString()}</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">CPU Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.cpuUsage.toFixed(1)}%</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.memoryUsage.toFixed(1)}%</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Disk Usage</div>
               <div className="text-lg font-semibold text-gray-900 dark:text-white">{devMetrics.testValidator.diskUsage.toFixed(1)} GB</div>
@@ -823,19 +823,19 @@ const DevMonitorDashboard: React.FC = () => {
             <Anchor className="w-6 h-6 mr-2 text-orange-600" />
             Anchor Projects
           </h2>
-          
+
           <div className="space-y-6">
             {devMetrics.anchorProjects.map((project) => (
-              <div key={project.name} className="border border-gray-200 rounded-lg p-4">
+              <div key={project.name} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <Folder className="w-5 h-5 text-gray-600" />
+                    <Folder className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                     <div>
-                      <h3 className="font-semibold text-lg">{project.name}</h3>
-                      <p className="text-sm text-gray-600">{project.path}</p>
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{project.name}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{project.path}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <StatusBadge status={project.buildStatus} />
                     <button
@@ -856,15 +856,15 @@ const DevMonitorDashboard: React.FC = () => {
                 {/* Programs */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <h4 className="font-medium mb-2">Programs ({project.programs.length})</h4>
+                    <h4 className="font-medium mb-2 text-gray-900 dark:text-white">Programs ({project.programs.length})</h4>
                     <div className="space-y-2">
                       {project.programs.map((program) => (
-                        <div key={program.name} className="bg-gray-50 p-3 rounded">
+                        <div key={program.name} className="bg-gray-100 dark:bg-gray-700 p-3 rounded border dark:border-gray-600">
                           <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium">{program.name}</p>
-                              <p className="text-xs text-gray-600">{program.programId}</p>
-                              <p className="text-xs text-gray-500">{(program.size / 1024).toFixed(1)} KB</p>
+                            <div className="flex-1 min-w-0 pr-3">
+                              <p className="font-medium text-gray-900 dark:text-white">{program.name}</p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{program.programId}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{(program.size / 1024).toFixed(1)} KB</p>
                             </div>
                             <div className="text-right">
                               <StatusBadge status={program.deployed ? 'deployed' : 'not deployed'} />
@@ -877,25 +877,25 @@ const DevMonitorDashboard: React.FC = () => {
                   </div>
 
                   <div>
-                    <h4 className="font-medium mb-2">Test Results</h4>
+                    <h4 className="font-medium mb-2 text-gray-900 dark:text-white">Test Results</h4>
                     <div className="space-y-2">
                       {project.testResults.length > 0 ? project.testResults.map((test) => (
-                        <div key={test.testFile} className="bg-gray-50 p-3 rounded">
+                        <div key={test.testFile} className="bg-gray-100 dark:bg-gray-700 p-3 rounded border dark:border-gray-600">
                           <div className="flex items-center justify-between mb-1">
-                            <p className="font-medium text-sm">{test.testFile.replace('tests/', '')}</p>
+                            <p className="font-medium text-sm text-gray-900 dark:text-white">{test.testFile.replace('tests/', '')}</p>
                             <StatusBadge status={test.status} />
                           </div>
-                          <div className="text-xs text-gray-600">
-                            <span className="text-green-600">{test.passed} passed</span> • 
-                            <span className="text-red-600 ml-1">{test.failed} failed</span> • 
-                            <span className="text-gray-500 ml-1">{test.skipped} skipped</span>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
+                            <span className="text-green-600 dark:text-green-400">{test.passed} passed</span> • 
+                            <span className="text-red-600 dark:text-red-400 ml-1">{test.failed} failed</span> •
+                            <span className="text-gray-500 dark:text-gray-400 ml-1">{test.skipped} skipped</span>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">{test.duration}s runtime</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{test.duration}s runtime</p>
                         </div>
                       )) : (
-                        <div className="bg-gray-50 p-3 rounded text-center">
-                          <TestTube className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-600">No tests run yet</p>
+                        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded border dark:border-gray-600 text-center">
+                          <TestTube className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                          <p className="text-sm text-gray-600 dark:text-gray-400">No tests run yet</p>
                         </div>
                       )}
                     </div>
@@ -938,12 +938,12 @@ const DevMonitorDashboard: React.FC = () => {
               <Wallet className="w-6 h-6 mr-2 text-purple-600" />
               Watched Accounts
             </h2>
-            
+
             <div className="space-y-4">
               {devMetrics.watchedAccounts.map((account) => (
-                <div 
-                  key={account.address} 
-                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
+                <div
+                  key={account.address}
+                  className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                   onClick={() => setSelectedAccount(account.address)}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -953,17 +953,17 @@ const DevMonitorDashboard: React.FC = () => {
                         account.type === 'user' ? 'bg-green-500' :
                         account.type === 'token' ? 'bg-yellow-500' : 'bg-gray-500'
                       }`}></div>
-                      <span className="font-medium">{account.name}</span>
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded capitalize">{account.type}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{account.name}</span>
+                      <span className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded capitalize">{account.type}</span>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">{account.balance} SOL</p>
-                      <p className="text-xs text-gray-500">{account.lamports.toLocaleString()} lamports</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{account.balance} SOL</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{account.lamports.toLocaleString()} lamports</p>
                     </div>
                   </div>
-                  
-                  <p className="text-xs text-gray-600 font-mono">{account.address}</p>
-                  
+
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-mono truncate">{account.address}</p>
+
                   {account.changes.length > 0 && (
                     <div className="mt-2 text-xs">
                       <span className="text-green-600">
@@ -982,23 +982,23 @@ const DevMonitorDashboard: React.FC = () => {
               <Hash className="w-6 h-6 mr-2 text-indigo-600" />
               Recent Transactions
             </h2>
-            
+
             <div className="space-y-4">
               {devMetrics.recentTransactions.map((tx) => (
-                <div key={tx.signature} className="border border-gray-200 rounded-lg p-4">
+                <div key={tx.signature} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <StatusBadge status={tx.status} />
-                      <span className="text-sm text-gray-600">Slot {tx.slot.toLocaleString()}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Slot {tx.slot.toLocaleString()}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{(tx.fee / 1000000).toFixed(6)} SOL fee</p>
-                      <p className="text-xs text-gray-500">{tx.computeUnitsUsed.toLocaleString()} CU</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{(tx.fee / 1000000).toFixed(6)} SOL fee</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{tx.computeUnitsUsed.toLocaleString()} CU</p>
                     </div>
                   </div>
-                  
-                  <p className="text-xs text-gray-600 font-mono mb-2">{tx.signature.slice(0, 32)}...</p>
-                  
+
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-mono mb-2 truncate">{tx.signature}</p>
+
                   <div className="space-y-1">
                     {tx.programInstructions.map((instruction, idx) => (
                       <div key={idx} className="text-xs bg-gray-50 p-2 rounded">
@@ -1007,7 +1007,7 @@ const DevMonitorDashboard: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                  
+
                   <p className="text-xs text-gray-500 mt-2">
                     {new Date(tx.timestamp).toLocaleString()}
                   </p>
@@ -1023,23 +1023,23 @@ const DevMonitorDashboard: React.FC = () => {
             <Cpu className="w-6 h-6 mr-2 text-green-600" />
             System Performance
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">CPU Usage</div>
               <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.cpuUsage.toFixed(1)}%</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</div>
               <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.memoryUsage.toFixed(1)}%</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Network In</div>
               <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.networkIO.in.toFixed(0)} MB/s</div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
               <div className="text-sm text-gray-600 dark:text-gray-400">Network Out</div>
               <div className="text-2xl font-semibold text-gray-900 dark:text-white">{devMetrics.systemMetrics.networkIO.out.toFixed(0)} MB/s</div>
@@ -1083,10 +1083,10 @@ const DevMonitorDashboard: React.FC = () => {
               <Bug className="w-6 h-6 mr-2 text-red-600" />
               Development Alerts
             </h2>
-            
+
             <div className="space-y-3">
               {devMetrics.alerts.map((alert) => (
-                <div 
+                <div
                   key={alert.id}
                   className={`p-4 rounded-lg border ${
                     alert.severity === 'critical' ? 'bg-red-50 border-red-200' :

@@ -742,8 +742,8 @@ const RealTimeDashboard: React.FC = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Network Latency Chart */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg border">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
               Network Latency Trend
             </h3>
@@ -753,7 +753,14 @@ const RealTimeDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="time" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'var(--tooltip-bg)', 
+                      border: '1px solid var(--tooltip-border)',
+                      borderRadius: '6px',
+                      color: 'var(--tooltip-text)'
+                    }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="helius_latency"
@@ -784,8 +791,8 @@ const RealTimeDashboard: React.FC = () => {
           </div>
 
           {/* Protocol Availability Chart */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg border">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Gauge className="w-5 h-5 mr-2 text-green-600" />
               Protocol Availability
             </h3>
@@ -795,7 +802,14 @@ const RealTimeDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="time" />
                   <YAxis domain={[95, 100]} />
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'var(--tooltip-bg)', 
+                      border: '1px solid var(--tooltip-border)',
+                      borderRadius: '6px',
+                      color: 'var(--tooltip-text)'
+                    }}
+                  />
                   <Area
                     type="monotone"
                     dataKey="jupiter_availability"

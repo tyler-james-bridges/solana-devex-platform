@@ -9,6 +9,9 @@
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
   --border-color: #e5e7eb;
+  --tooltip-bg: #ffffff;
+  --tooltip-border: #e5e7eb;
+  --tooltip-text: #1f2937;
 }
 
 :root.dark {
@@ -17,6 +20,9 @@
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
   --border-color: #374151;
+  --tooltip-bg: #374151;
+  --tooltip-border: #4b5563;
+  --tooltip-text: #f9fafb;
 }
 
 /* Reset and Base */
