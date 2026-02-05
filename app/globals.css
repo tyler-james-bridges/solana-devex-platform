@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables for robust theming */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+}
+
+:root.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+}
+
 /* Reset and Base */
 * {
   margin: 0;
@@ -10,12 +27,15 @@
 }
 
 html {
-  background-color: #ffffff;
-  transition: background-color 200ms ease-in-out;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
 }
 
+/* Fallback for class-based theming */
 html.dark {
   background-color: #111827;
+  color: #f9fafb;
 }
 
 /* Ensure all major containers have proper backgrounds */
