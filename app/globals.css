@@ -11,6 +11,11 @@
 
 html {
   background-color: #ffffff;
+  transition: background-color 200ms ease-in-out;
+}
+
+html.dark {
+  background-color: #111827;
 }
 
 /* Ensure all major containers have proper backgrounds */
@@ -25,6 +30,12 @@ body {
   background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: color 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+
+.dark body {
+  color: #f9fafb;
+  background-color: #111827;
 }
 
 /* Typography */
@@ -33,6 +44,11 @@ body {
   font-weight: 700;
   color: #111827;
   margin-bottom: 0.5rem;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .typography-h1 {
+  color: #f9fafb;
 }
 
 .typography-h2 {
@@ -40,23 +56,43 @@ body {
   font-weight: 600;
   color: #111827;
   margin-bottom: 0.25rem;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .typography-h2 {
+  color: #f9fafb;
 }
 
 .typography-h3 {
   font-size: 1.25rem;
   font-weight: 600;
   color: #111827;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .typography-h3 {
+  color: #f9fafb;
 }
 
 .typography-body {
   font-size: 0.875rem;
   color: #4b5563;
   line-height: 1.5;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .typography-body {
+  color: #d1d5db;
 }
 
 .typography-caption {
   font-size: 0.75rem;
   color: #6b7280;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .typography-caption {
+  color: #9ca3af;
 }
 
 /* Container */
@@ -78,11 +114,21 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.dark .card {
+  background: #1f2937 !important;
+  border-color: #374151;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
 }
 
 .card-header {
@@ -98,11 +144,21 @@ body {
   font-weight: 600;
   color: #111827;
   margin-bottom: 0.25rem;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .card-title {
+  color: #f9fafb;
 }
 
 .card-description {
   font-size: 0.875rem;
   color: #6b7280;
+  transition: color 200ms ease-in-out;
+}
+
+.dark .card-description {
+  color: #9ca3af;
 }
 
 /* Metric Cards */

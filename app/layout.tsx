@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Navigation from '../components/Navigation'
+import { ThemeProvider } from '../hooks/useTheme'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -38,12 +39,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ErrorBoundary>
-          <Navigation />
-          {children}
-        </ErrorBoundary>
+        <ThemeProvider>
+          <ErrorBoundary>
+            <Navigation />
+            {children}
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   )

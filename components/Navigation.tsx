@@ -11,16 +11,13 @@ import {
   BarChart3, 
   Menu,
   X,
-  Home,
-  Moon,
-  Sun
+  Home
 } from 'lucide-react';
-import { useDarkMode } from '../hooks/useDarkMode';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isDark, toggleDarkMode } = useDarkMode();
 
   const navItems = [
     {
@@ -98,17 +95,10 @@ const Navigation = () => {
             })}
           </div>
 
-          {/* Dark Mode Toggle & Mobile Menu */}
+          {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center space-x-2">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
