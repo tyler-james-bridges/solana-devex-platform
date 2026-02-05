@@ -4,7 +4,7 @@
   "description": "Unified Solana Developer Experience Platform - Complete toolkit with testing, monitoring, CI/CD, and enhanced development tools",
   "main": "index.js",
   "bin": {
-    "solana-devex": "./bin/solana-devex"
+    "sol": "./bin/solana-devex"
   },
   "scripts": {
     "platform:setup": "node bin/solana-devex setup",
@@ -26,7 +26,7 @@
     "type-check": "tsc --noEmit",
     "test": "npm run test:api",
     "test:api": "cd api && npm test",
-    "test:protocols": "solana-devex test protocols",
+    "test:protocols": "sol test protocols",
     "test:agentdex": "node tests/test-agentdex-integration.js",
     "test:coverage": "cd api && npm test -- --coverage",
     "security:audit": "npm audit && cd api && npm audit && cd ../cli && npm audit",

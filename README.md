@@ -15,7 +15,7 @@ A comprehensive, production-ready development platform that integrates all essen
 - **📊 Monitoring Dashboard** - Real-time monitoring for your Solana applications
 
 ### 🌟 Unified Features
-- **Single CLI** - One command (`solana-devex`) for all functionality
+- **Single CLI** - One command (`sol`) for all functionality
 - **Shared Configuration** - Consistent settings across all tools
 - **Seamless Integration** - All components work together out of the box
 - **Production Ready** - Built for teams and enterprise use
@@ -30,10 +30,10 @@ A comprehensive, production-ready development platform that integrates all essen
 npm install -g solana-devex-platform
 
 # Run the setup wizard
-solana-devex setup
+sol setup
 
 # Create your first project
-solana-devex init my-awesome-dapp --testing --cicd --monitoring --validator
+sol init my-awesome-dapp --testing --cicd --monitoring --validator
 ```
 
 ### Manual Setup
@@ -46,10 +46,10 @@ cd solana-devex-platform
 npm install
 
 # Initialize configuration
-solana-devex config init
+sol config init
 
 # Start building!
-solana-devex init my-project
+sol init my-project
 ```
 
 ---
@@ -59,46 +59,46 @@ solana-devex init my-project
 ### Project Management
 ```bash
 # Initialize new project with full platform integration
-solana-devex init [name] --template anchor --testing --cicd --monitoring --validator
+sol init [name] --template anchor --testing --cicd --monitoring --validator
 
 # Build projects (Anchor + TypeScript)
-solana-devex build --release --verify --parallel
+sol build --release --verify --parallel
 
 # Configuration management
 solana-devex config init
-solana-devex config show
+sol config show
 ```
 
 ### Testing & Quality
 ```bash
 # Run tests with blockchain-specific matchers
-solana-devex test --coverage --validator --anchor
+sol test --coverage --validator --anchor
 
 # Enhanced Anchor testing
-solana-devex anchor enhance
-solana-devex anchor monitor
+sol anchor enhance
+sol anchor monitor
 ```
 
 ### Development Environment
 ```bash
 # Enhanced test validator with monitoring
-solana-devex validator start --monitor --reset
-solana-devex validator stop
-solana-devex validator monitor
+sol validator start --monitor --reset
+sol validator stop
+sol validator monitor
 
 # Real-time monitoring dashboard
-solana-devex monitor start --port 3000
-solana-devex monitor api
+sol monitor start --port 3000
+sol monitor api
 ```
 
 ### CI/CD & Deployment
 ```bash
 # Setup complete CI/CD pipeline
-solana-devex cicd setup
-solana-devex cicd actions
+sol-cicd setup
+sol-cicd actions
 
 # GitHub Actions template setup
-solana-devex actions setup
+sol actions setup
 ```
 
 ---
@@ -224,13 +224,13 @@ enhancedTest('Token transfer', async ({ program, provider }) => {
 ### Usage
 ```bash
 # Start with full monitoring
-solana-devex validator start --monitor --reset
+sol validator start --monitor --reset
 
 # View performance dashboard
-solana-devex validator monitor
+sol validator monitor
 
 # Monitor specific accounts
-solana-devex validator monitor --accounts <pubkey1,pubkey2>
+sol validator monitor --accounts <pubkey1,pubkey2>
 ```
 
 ---
@@ -246,7 +246,7 @@ solana-devex validator monitor --accounts <pubkey1,pubkey2>
 ### Access Dashboard
 ```bash
 # Start monitoring suite
-solana-devex monitor start
+sol monitor start
 
 # Access at http://localhost:3000
 # API available at http://localhost:3001
@@ -266,10 +266,10 @@ Pre-configured workflows for:
 ### Setup Pipeline
 ```bash
 # Setup complete CI/CD pipeline
-solana-devex cicd setup
+sol-cicd setup
 
 # Add specific templates
-solana-devex cicd actions --templates test,build,deploy
+sol-cicd actions --templates test,build,deploy
 ```
 
 ---
@@ -342,4 +342,4 @@ Built with ❤️ for the Solana developer community. Special thanks to:
 
 ---
 
-**Ready to supercharge your Solana development? Get started with `solana-devex setup`!** 🚀
+**Ready to supercharge your Solana development? Get started with `sol setup`!** 🚀
