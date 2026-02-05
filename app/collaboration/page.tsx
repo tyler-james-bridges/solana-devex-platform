@@ -1,555 +1,421 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Activity, 
+  GitBranch, 
   Rocket, 
-  Server, 
-  Bug,
-  Clock,
-  Zap,
-  GitBranch,
-  Globe,
+  Clock, 
+  CheckCircle, 
   AlertTriangle,
-  CheckCircle,
   XCircle,
+  Zap,
+  Server,
+  Globe,
   Play,
-  Pause,
-  RefreshCw
-} from 'lucide-react'
-import AgentTeamCard from '@/components/AgentTeamCard'
-import RealTimeMetrics from '@/components/RealTimeMetrics'
-import DeploymentPipeline from '@/components/DeploymentPipeline'
+  Pause
+} from 'lucide-react';
 
 interface AgentTeam {
-  id: string
-  name: string
-  project: string
-  status: 'active' | 'idle' | 'debugging' | 'deploying'
-  members: string[]
-  currentTask: string
-  progress: number
-  lastUpdate: string
+  id: string;
+  name: string;
+  project: string;
+  status: 'active' | 'idle' | 'deploying';
+  members: number;
+  currentTask: string;
+  progress: number;
 }
 
 interface ProjectMetrics {
-  id: string
-  name: string
-  deployments: number
-  successRate: number
-  avgBuildTime: number
-  testsRun: number
-  testsPassed: number
-  coverage: number
-  uptime: number
+  name: string;
+  deployments: number;
+  successRate: number;
+  testsRun: number;
+  coverage: number;
+  status: 'building' | 'testing' | 'deployed' | 'failed';
 }
 
-interface DeploymentStatus {
-  id: string
-  project: string
-  environment: string
-  status: 'pending' | 'building' | 'testing' | 'deploying' | 'success' | 'failed'
-  progress: number
-  startTime: string
-  logs: string[]
-}
-
-interface ResourceMetrics {
-  cpu: number
-  memory: number
-  network: number
-  storage: number
-  blockchain: {
-    rpc: number
-    tps: number
-    slot: number
-  }
-}
-
-interface DebugSession {
-  id: string
-  project: string
-  severity: 'low' | 'medium' | 'high' | 'critical'
-  title: string
-  description: string
-  assignedTo: string[]
-  status: 'open' | 'investigating' | 'resolved'
-  createdAt: string
-}
-
-export default function CollaborationDashboard() {
-  const [agentTeams, setAgentTeams] = useState<AgentTeam[]>([])
-  const [projectMetrics, setProjectMetrics] = useState<ProjectMetrics[]>([])
-  const [deployments, setDeployments] = useState<DeploymentStatus[]>([])
-  const [resources, setResources] = useState<ResourceMetrics>({
-    cpu: 0, memory: 0, network: 0, storage: 0,
-    blockchain: { rpc: 0, tps: 0, slot: 0 }
-  })
-  const [debugSessions, setDebugSessions] = useState<DebugSession[]>([])
-  const [isLive, setIsLive] = useState(true)
-  const [metricsData, setMetricsData] = useState<{[key: string]: any[]}>({
-    cpu: [], memory: [], network: [], tps: [], deployments: []
-  })
-  const wsRef = useRef<WebSocket | null>(null)
-
-  useEffect(() => {
-    // Initialize WebSocket connection for real-time updates
-    const connectWebSocket = () => {
-      const wsUrl = process.env.NODE_ENV === 'production' 
-        ? 'wss://onchain-devex.tools/ws/collaboration'
-        : 'ws://localhost:3001/ws/collaboration'
-      const ws = new WebSocket(wsUrl)
-      
-      ws.onopen = () => {
-        console.log('Connected to collaboration dashboard')
-        setIsLive(true)
-      }
-      
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        
-        switch (data.type) {
-          case 'agent_teams':
-            setAgentTeams(data.payload)
-            break
-          case 'project_metrics':
-            setProjectMetrics(data.payload)
-            break
-          case 'deployments':
-            setDeployments(data.payload)
-            break
-          case 'resources':
-            setResources(data.payload)
-            break
-          case 'debug_sessions':
-            setDebugSessions(data.payload)
-            break
-          case 'metrics_update':
-            setMetricsData(prev => ({
-              ...prev,
-              [data.metricType]: [...prev[data.metricType].slice(-19), {
-                timestamp: new Date().toLocaleTimeString(),
-                value: data.payload
-              }]
-            }))
-            break
-        }
-      }
-      
-      ws.onclose = () => {
-        console.log('Disconnected from collaboration dashboard')
-        setIsLive(false)
-        // Reconnect after 3 seconds
-        setTimeout(connectWebSocket, 3000)
-      }
-      
-      wsRef.current = ws
+const CollaborationPage: React.FC = () => {
+  const [teams] = useState<AgentTeam[]>([
+    {
+      id: '1',
+      name: 'Solana Core Agents',
+      project: 'DeFi Lending Platform',
+      status: 'active',
+      members: 3,
+      currentTask: 'Implementing liquidity pool smart contracts',
+      progress: 75
+    },
+    {
+      id: '2', 
+      name: 'NFT Marketplace Crew',
+      project: 'Creator Economy Hub',
+      status: 'deploying',
+      members: 2,
+      currentTask: 'Deploying to testnet',
+      progress: 90
+    },
+    {
+      id: '3',
+      name: 'Gaming Protocol',
+      project: 'P2E Rayting Game', 
+      status: 'idle',
+      members: 4,
+      currentTask: 'Code review and testing',
+      progress: 45
     }
+  ]);
 
-    connectWebSocket()
-
-    // Initialize with mock data for demo
-    initializeMockData()
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close()
-      }
+  const [projects] = useState<ProjectMetrics[]>([
+    {
+      name: 'DeFi Lending Platform',
+      deployments: 12,
+      successRate: 94.8,
+      testsRun: 1847,
+      coverage: 91.2,
+      status: 'building'
+    },
+    {
+      name: 'Creator Economy Hub',
+      deployments: 8,
+      successRate: 87.5,
+      testsRun: 1203,
+      coverage: 88.6,
+      status: 'testing'
+    },
+    {
+      name: 'P2E Rayting Game',
+      deployments: 15,
+      successRate: 96.9,
+      testsRun: 2156,
+      coverage: 94.1,
+      status: 'deployed'
     }
-  }, [])
+  ]);
 
-  const initializeMockData = () => {
-    // Mock agent teams
-    setAgentTeams([
-      {
-        id: 'team-1',
-        name: 'Solana Core Agents',
-        project: 'DeFi Lending Platform',
-        status: 'active',
-        members: ['Agent-Alpha', 'Agent-Beta', 'Agent-Gamma'],
-        currentTask: 'Implementing liquidity pool smart contracts',
-        progress: 75,
-        lastUpdate: new Date().toISOString()
-      },
-      {
-        id: 'team-2',
-        name: 'NFT Marketplace Crew',
-        project: 'Creator Economy Hub',
-        status: 'deploying',
-        members: ['Agent-Delta', 'Agent-Epsilon'],
-        currentTask: 'Deploying to testnet',
-        progress: 90,
-        lastUpdate: new Date().toISOString()
-      },
-      {
-        id: 'team-3',
-        name: 'Gaming Protocol Team',
-        project: 'P2E Racing Game',
-        status: 'debugging',
-        members: ['Agent-Zeta', 'Agent-Eta', 'Agent-Theta', 'Agent-Iota'],
-        currentTask: 'Debugging transaction batching issue',
-        progress: 45,
-        lastUpdate: new Date().toISOString()
-      }
-    ])
-
-    // Mock project metrics
-    setProjectMetrics([
-      {
-        id: 'proj-1',
-        name: 'DeFi Lending Platform',
-        deployments: 47,
-        successRate: 94.5,
-        avgBuildTime: 4.2,
-        testsRun: 1247,
-        testsPassed: 1198,
-        coverage: 87.3,
-        uptime: 99.8
-      },
-      {
-        id: 'proj-2',
-        name: 'Creator Economy Hub',
-        deployments: 23,
-        successRate: 96.1,
-        avgBuildTime: 3.8,
-        testsRun: 876,
-        testsPassed: 842,
-        coverage: 91.2,
-        uptime: 99.9
-      },
-      {
-        id: 'proj-3',
-        name: 'P2E Racing Game',
-        deployments: 31,
-        successRate: 89.7,
-        avgBuildTime: 5.1,
-        testsRun: 2103,
-        testsPassed: 1987,
-        coverage: 83.4,
-        uptime: 98.7
-      }
-    ])
-
-    // Mock deployments
-    setDeployments([
-      {
-        id: 'deploy-1',
-        project: 'DeFi Lending Platform',
-        environment: 'testnet',
-        status: 'building',
-        progress: 60,
-        startTime: new Date(Date.now() - 300000).toISOString(),
-        logs: [
-          'Building smart contracts...',
-          'Running security checks...',
-          'Compiling programs...'
-        ]
-      },
-      {
-        id: 'deploy-2',
-        project: 'Creator Economy Hub',
-        environment: 'mainnet',
-        status: 'success',
-        progress: 100,
-        startTime: new Date(Date.now() - 600000).toISOString(),
-        logs: [
-          'Build completed successfully',
-          'All tests passed',
-          'Deployed to mainnet'
-        ]
-      }
-    ])
-
-    // Mock resources
-    setResources({
-      cpu: 67,
-      memory: 78,
-      network: 45,
-      storage: 52,
-      blockchain: {
-        rpc: 234,
-        tps: 1847,
-        slot: 247891203
-      }
-    })
-
-    // Mock debug sessions
-    setDebugSessions([
-      {
-        id: 'debug-1',
-        project: 'P2E Racing Game',
-        severity: 'high',
-        title: 'Transaction batching timeout',
-        description: 'Multiple transactions failing due to batching timeout in racing module',
-        assignedTo: ['Agent-Zeta', 'Agent-Eta'],
-        status: 'investigating',
-        createdAt: new Date(Date.now() - 1800000).toISOString()
-      },
-      {
-        id: 'debug-2',
-        project: 'DeFi Lending Platform',
-        severity: 'medium',
-        title: 'Interest rate calculation drift',
-        description: 'Small discrepancies in interest rate calculations over time',
-        assignedTo: ['Agent-Alpha'],
-        status: 'open',
-        createdAt: new Date(Date.now() - 3600000).toISOString()
-      }
-    ])
-  }
+  const [resources] = useState({
+    cpu: 67,
+    memory: 78,
+    network: 45,
+    storage: 52
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': case 'success': case 'resolved': return 'text-green-500'
-      case 'debugging': case 'investigating': case 'failed': return 'text-red-500'
-      case 'deploying': case 'building': case 'pending': return 'text-yellow-500'
-      case 'idle': case 'open': return 'text-gray-500'
-      default: return 'text-gray-500'
+      case 'active': return 'bg-green-100 text-green-800 border-green-200';
+      case 'deploying': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'idle': return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'building': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'testing': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'deployed': return 'bg-green-100 text-green-800 border-green-200';
+      case 'failed': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  }
+  };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'low': return 'text-blue-600 bg-blue-50 border-blue-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active': return <Activity className="w-4 h-4" />;
+      case 'deploying': return <Rocket className="w-4 h-4" />;
+      case 'idle': return <Pause className="w-4 h-4" />;
+      case 'building': return <GitBranch className="w-4 h-4" />;
+      case 'testing': return <CheckCircle className="w-4 h-4" />;
+      case 'deployed': return <CheckCircle className="w-4 h-4" />;
+      case 'failed': return <XCircle className="w-4 h-4" />;
+      default: return <Activity className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               Solana DevEx Collaboration Hub
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Real-time monitoring of agent teams, projects, and deployments
             </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className={`flex items-center space-x-2 ${isLive ? 'text-green-500' : 'text-red-500'}`}>
-              <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
-              <span className="text-sm font-medium">{isLive ? 'LIVE' : 'DISCONNECTED'}</span>
-            </div>
-            <button
-              onClick={() => setIsLive(!isLive)}
-              className="flex items-center space-x-2 px-3 py-1 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors"
-            >
-              {isLive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              <span className="text-sm">{isLive ? 'Pause' : 'Resume'}</span>
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-red-600">DISCONNECTED</span>
+            <button className="ml-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+              Resume
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-12 gap-6">
-        {/* Agent Teams - Left Column */}
-        <div className="col-span-4">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <Users className="w-5 h-5 text-blue-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Agent Teams</h2>
-              <span className="text-sm text-gray-500">({agentTeams.length} active)</span>
+      {/* Overview Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Agent Teams</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                {teams.length}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {teams.filter(t => t.status === 'active').length} active
+              </p>
             </div>
-
-            <div className="space-y-3">
-              {agentTeams.map((team) => (
-                <AgentTeamCard 
-                  key={team.id} 
-                  team={team}
-                  onClick={(team) => console.log('Team clicked:', team.name)}
-                />
-              ))}
-            </div>
+            <Users className="w-8 h-8 text-blue-600" />
           </div>
         </div>
 
-        {/* Center Column - Metrics & Deployments */}
-        <div className="col-span-5 space-y-6">
-          {/* Project Metrics */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <Activity className="w-5 h-5 text-green-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Project Performance</h2>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Projects</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                {projects.length}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {projects.filter(p => p.status === 'deployed').length} deployed
+              </p>
             </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              {projectMetrics.map((project) => (
-                <div key={project.id} className="border rounded-lg p-4">
-                  <h3 className="font-medium text-gray-900 mb-2 text-sm">{project.name}</h3>
-                  
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Success Rate</span>
-                      <span className="font-medium text-green-600">{project.successRate}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Deployments</span>
-                      <span className="font-medium">{project.deployments}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Avg Build</span>
-                      <span className="font-medium">{project.avgBuildTime}min</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Coverage</span>
-                      <span className="font-medium">{project.coverage}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Uptime</span>
-                      <span className="font-medium text-green-600">{project.uptime}%</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Real-time Deployments */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <Rocket className="w-5 h-5 text-purple-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Live Deployments</h2>
-            </div>
-
-            <div className="space-y-4">
-              {deployments.map((deployment) => (
-                <DeploymentPipeline 
-                  key={deployment.id} 
-                  deployment={deployment}
-                  onViewLogs={(deployment) => console.log('View logs for:', deployment.project)}
-                />
-              ))}
-            </div>
+            <GitBranch className="w-8 h-8 text-green-600" />
           </div>
         </div>
 
-        {/* Right Column - Resources & Debug */}
-        <div className="col-span-3 space-y-6">
-          {/* Resource Monitoring */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <Server className="w-5 h-5 text-orange-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Resources</h2>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Deployments</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                {projects.reduce((sum, p) => sum + p.deployments, 0)}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">total</p>
             </div>
-
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">CPU</span>
-                  <span className="font-medium">{resources.cpu}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${resources.cpu}%` }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">Memory</span>
-                  <span className="font-medium">{resources.memory}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-500 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${resources.memory}%` }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">Network</span>
-                  <span className="font-medium">{resources.network}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-yellow-500 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${resources.network}%` }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">Storage</span>
-                  <span className="font-medium">{resources.storage}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-purple-500 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${resources.storage}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4 border-t">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Blockchain Metrics</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">RPC Calls/sec</span>
-                    <span className="font-medium">{resources.blockchain.rpc}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">TPS</span>
-                    <span className="font-medium">{resources.blockchain.tps}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Current Slot</span>
-                    <span className="font-medium">{resources.blockchain.slot.toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Rocket className="w-8 h-8 text-purple-600" />
           </div>
+        </div>
 
-          {/* Debug Sessions */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <Bug className="w-5 h-5 text-red-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Debug Sessions</h2>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Success Rate</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                {((projects.reduce((sum, p) => sum + p.successRate, 0) / projects.length) || 0).toFixed(1)}%
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">average</p>
             </div>
+            <CheckCircle className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+      </div>
 
-            <div className="space-y-3">
-              {debugSessions.map((session) => (
-                <div key={session.id} className={`border rounded-lg p-3 ${getSeverityColor(session.severity)}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium uppercase">{session.severity}</span>
-                    <span className={`text-xs ${getStatusColor(session.status)}`}>
-                      {session.status}
+      {/* Agent Teams */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Users className="w-5 h-5 mr-2 text-blue-600" />
+          Agent Teams
+        </h2>
+        <div className="space-y-4">
+          {teams.map((team) => (
+            <div key={team.id} className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0 mb-4">
+                <div className="flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {team.name}
+                    </h3>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(team.status)}`}>
+                      {getStatusIcon(team.status)}
+                      <span className="ml-1 capitalize">{team.status}</span>
                     </span>
                   </div>
-                  
-                  <h3 className="font-medium text-sm mb-1">{session.title}</h3>
-                  <p className="text-xs text-gray-600 mb-2">{session.description}</p>
-                  
-                  <div className="text-xs space-y-1">
-                    <div>
-                      <span className="text-gray-500">Project:</span> {session.project}
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Assigned:</span> {session.assignedTo.join(', ')}
-                    </div>
-                    <div className="text-gray-400">
-                      {new Date(session.createdAt).toLocaleString()}
-                    </div>
-                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{team.project}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">{team.currentTask}</p>
                 </div>
-              ))}
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {team.members} member{team.members !== 1 ? 's' : ''}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    9:06 PM
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{team.progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${team.progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Project Performance */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Activity className="w-5 h-5 mr-2 text-green-600" />
+          Project Performance
+        </h2>
+        <div className="space-y-4">
+          {projects.map((project, index) => (
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {project.name}
+                  </h3>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(project.status)}`}>
+                    {getStatusIcon(project.status)}
+                    <span className="ml-1 capitalize">{project.status}</span>
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">Deployments</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{project.deployments}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">Success Rate</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{project.successRate}%</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">Tests Run</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{project.testsRun.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 dark:text-gray-400">Coverage</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{project.coverage}%</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* System Resources */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Server className="w-5 h-5 mr-2 text-orange-600" />
+          System Resources
+        </h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600 dark:text-gray-400">CPU</span>
+                <span className="font-medium text-gray-900 dark:text-white">{resources.cpu}%</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${resources.cpu}%` }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600 dark:text-gray-400">Memory</span>
+                <span className="font-medium text-gray-900 dark:text-white">{resources.memory}%</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: `${resources.memory}%` }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600 dark:text-gray-400">Network</span>
+                <span className="font-medium text-gray-900 dark:text-white">{resources.network}%</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${resources.network}%` }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600 dark:text-gray-400">Storage</span>
+                <span className="font-medium text-gray-900 dark:text-white">{resources.storage}%</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${resources.storage}%` }}></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Blockchain Metrics */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Globe className="w-5 h-5 mr-2 text-purple-600" />
+          Blockchain Metrics
+        </h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">234</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">RPC Calls/sec</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">1847</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">TPS</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">247,891,203</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Current Slot</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Live Deployments */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Rocket className="w-5 h-5 mr-2 text-purple-600" />
+          Live Deployments
+        </h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">DeFi Lending Platform</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">testnet</p>
+                </div>
+              </div>
+              <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full">
+                BUILDING
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Debug Sessions */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <AlertTriangle className="w-5 h-5 mr-2 text-amber-600" />
+          Debug Sessions
+        </h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-4 sm:p-6">
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-2">Investigating transaction batching timeout in trading module</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Multiple transaction failing state due to batching timeout</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Project: DeFi Lending Platform</p>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default CollaborationPage;
