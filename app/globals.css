@@ -49,6 +49,20 @@ main, div, section, header, footer {
   background-color: inherit;
 }
 
+/* Force text truncation on mobile */
+@media (max-width: 640px) {
+  .truncate {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  
+  .break-all {
+    word-break: break-all !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
