@@ -23,8 +23,11 @@ import {
   BarChart3,
   Gauge,
   Network,
-  Server
+  Server,
+  Moon,
+  Sun
 } from 'lucide-react';
+import { useDarkMode } from '../hooks/useDarkMode';
 import { 
   LineChart, 
   Line, 
@@ -192,15 +195,15 @@ const MetricCard = ({
   onClick?: () => void;
 }) => {
   const statusColors = {
-    healthy: 'border-green-200 bg-green-50',
-    degraded: 'border-yellow-200 bg-yellow-50',
-    down: 'border-red-200 bg-red-50',
-    neutral: 'border-gray-200 bg-white'
+    healthy: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20',
+    degraded: 'border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20',
+    down: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20',
+    neutral: 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
   };
 
   return (
     <div 
-      className={`p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${statusColors[status]} ${onClick ? 'cursor-pointer' : ''}`}
+      className={`p-4 sm:p-6 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${statusColors[status]} ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between mb-3">
@@ -212,40 +215,40 @@ const MetricCard = ({
             ) : trend === 'down' ? (
               <TrendingDown className="w-4 h-4 text-red-600" />
             ) : null}
-            <span className={`text-sm font-medium ${trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
+            <span className={`text-xs sm:text-sm font-medium ${trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
               {change}
             </span>
           </div>
         )}
       </div>
-      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
-      <div className="text-sm text-gray-600">{title}</div>
+      <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1">{value}</div>
+      <div className="text-sm text-gray-600 dark:text-gray-300">{title}</div>
     </div>
   );
 };
 
 const AlertBadge = ({ alert, onResolve }: { alert: Alert; onResolve?: (id: string) => void }) => {
   const severityColors = {
-    critical: 'bg-red-100 text-red-800 border-red-200',
-    warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    info: 'bg-blue-100 text-blue-800 border-blue-200'
+    critical: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800',
+    warning: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
+    info: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
   };
 
   return (
     <div className={`p-3 rounded-lg border ${severityColors[alert.severity]} ${alert.resolved ? 'opacity-60' : ''}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <AlertTriangle className="w-4 h-4" />
-          <span className="font-medium text-sm">{alert.rule.name}</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+        <div className="flex items-center space-x-2 min-w-0">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span className="font-medium text-sm truncate">{alert.rule.name}</span>
         </div>
         <div className="flex items-center space-x-2">
           {alert.protocol && (
-            <span className="text-xs bg-white px-2 py-1 rounded">{alert.protocol}</span>
+            <span className="text-xs bg-white dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-shrink-0">{alert.protocol}</span>
           )}
           {!alert.resolved && onResolve && (
             <button
               onClick={() => onResolve(alert.id)}
-              className="text-xs bg-white px-2 py-1 rounded hover:bg-gray-50"
+              className="text-xs bg-white dark:bg-gray-700 dark:text-gray-300 px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-600 flex-shrink-0"
             >
               Resolve
             </button>
@@ -263,6 +266,7 @@ const AlertBadge = ({ alert, onResolve }: { alert: Alert; onResolve?: (id: strin
 };
 
 const RealTimeDashboard: React.FC = () => {
+  const { isDark, toggleDarkMode } = useDarkMode();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
@@ -479,11 +483,11 @@ const RealTimeDashboard: React.FC = () => {
 
   if (!dashboardData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="text-center max-w-sm mx-auto">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading REAL-TIME Solana network monitoring...</p>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-gray-600 text-sm sm:text-base">Loading REAL-TIME Solana network monitoring...</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-2">
             Initializing {connectionStatus === 'connecting' ? 'live monitoring...' : 'demo mode...'}
           </p>
         </div>
@@ -492,46 +496,59 @@ const RealTimeDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-safe-bottom transition-colors duration-200">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Real-Time Protocol Monitor</h1>
-              <p className="text-gray-600">
-                REAL Solana mainnet monitoring with live RPC data
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+            <div className="flex-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Real-Time Protocol Monitor</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  REAL Solana mainnet monitoring with live RPC data
+                </p>
                 {isLiveMode ? (
-                  <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
-                    🔴 LIVE - Real Network Data
+                  <span className="inline-flex items-center text-sm bg-green-100 text-green-800 px-2 py-1 rounded sm:ml-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                    LIVE - Real Network Data
                   </span>
                 ) : (
-                  <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                    📊 API Mode - Real Network Data
+                  <span className="inline-flex items-center text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded sm:ml-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+                    API Mode - Real Network Data
                   </span>
                 )}
-              </p>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between sm:space-x-4">
               {/* Connection Status */}
               <div className="flex items-center space-x-2">
                 {isLiveMode ? (
                   <>
                     <Wifi className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600">WebSocket Live</span>
+                    <span className="text-sm text-green-600 hidden sm:inline">WebSocket Live</span>
                   </>
                 ) : (
                   <>
                     <Activity className="w-4 h-4 text-green-600" />
-                    <span className="text-sm text-green-600">Real API Data</span>
+                    <span className="text-sm text-green-600 hidden sm:inline">Real API Data</span>
                   </>
                 )}
               </div>
               
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+
               {/* Notifications */}
               <div className="relative">
-                <Bell className="w-5 h-5 text-gray-600" />
+                <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 {notifications.filter(n => !n.resolved).length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {notifications.filter(n => !n.resolved).length}
@@ -540,8 +557,9 @@ const RealTimeDashboard: React.FC = () => {
               </div>
               
               {/* Last Update */}
-              <div className="text-sm text-gray-500">
-                Last update: {new Date().toLocaleTimeString()}
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                <span className="hidden sm:inline">Last update: </span>
+                {new Date().toLocaleTimeString()}
               </div>
             </div>
           </div>
@@ -549,9 +567,9 @@ const RealTimeDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-6">
         {/* System Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <MetricCard
             title="Network Health"
             value={systemHealth ? `${systemHealth.networkHealth.toFixed(1)}%` : 'N/A'}
@@ -589,21 +607,21 @@ const RealTimeDashboard: React.FC = () => {
         {/* AgentDEX Monitoring Section */}
         {dashboardData.agentdex && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-6 rounded-lg">
-              <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-4 sm:p-6 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">AgentDEX Monitoring</h2>
-                  <p className="text-purple-100">Real-time endpoint monitoring for @JacobsClawd - 13 endpoints tracked</p>
+                  <h2 className="text-xl sm:text-2xl font-bold mb-2">AgentDEX Monitoring</h2>
+                  <p className="text-purple-100 text-sm sm:text-base">Real-time endpoint monitoring for @JacobsClawd - 13 endpoints tracked</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">{dashboardData.agentdex.summary.healthyEndpoints}/{dashboardData.agentdex.summary.totalEndpoints}</div>
+                <div className="text-left sm:text-right">
+                  <div className="text-2xl sm:text-3xl font-bold">{dashboardData.agentdex.summary.healthyEndpoints}/{dashboardData.agentdex.summary.totalEndpoints}</div>
                   <div className="text-sm text-purple-100">Healthy Endpoints</div>
                 </div>
               </div>
             </div>
 
             {/* AgentDEX Overview Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <MetricCard
                 title="Platform Status"
                 value={dashboardData.agentdex.summary.platformStatus.charAt(0).toUpperCase() + dashboardData.agentdex.summary.platformStatus.slice(1)}
@@ -638,29 +656,29 @@ const RealTimeDashboard: React.FC = () => {
             </div>
 
             {/* AgentDEX Endpoints Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Endpoint Categories */}
-              <div className="bg-white p-6 rounded-lg border">
-                <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+                <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
                   <Network className="w-5 h-5 mr-2 text-purple-600" />
                   Endpoint Categories
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {Object.entries(dashboardData.agentdex.summary.categories).map(([category, stats]) => (
-                    <div key={category} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={category} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-3">
-                        <div className={`w-3 h-3 rounded-full ${
+                        <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
                           stats.healthy === stats.total ? 'bg-green-500' :
                           stats.healthy > stats.total * 0.8 ? 'bg-yellow-500' : 'bg-red-500'
                         }`}></div>
                         <div>
-                          <p className="font-medium text-gray-900 capitalize">{category}</p>
-                          <p className="text-sm text-gray-500">{stats.healthy}/{stats.total} healthy</p>
+                          <p className="font-medium text-gray-900 dark:text-white capitalize">{category}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{stats.healthy}/{stats.total} healthy</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">{stats.averageResponseTime}ms avg</p>
-                        <p className="text-xs text-gray-500">{((stats.healthy / stats.total) * 100).toFixed(0)}% uptime</p>
+                      <div className="text-left sm:text-right pl-6 sm:pl-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{stats.averageResponseTime}ms avg</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{((stats.healthy / stats.total) * 100).toFixed(0)}% uptime</p>
                       </div>
                     </div>
                   ))}
@@ -668,8 +686,8 @@ const RealTimeDashboard: React.FC = () => {
               </div>
 
               {/* Top Endpoints Performance */}
-              <div className="bg-white p-6 rounded-lg border">
-                <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+                <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
                   <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
                   Top Performing Endpoints
                 </h3>
@@ -678,15 +696,15 @@ const RealTimeDashboard: React.FC = () => {
                     .sort((a, b) => b.successRate - a.successRate)
                     .slice(0, 5)
                     .map((endpoint) => (
-                      <div key={endpoint.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div key={endpoint.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
                         <div className="flex items-center space-x-3">
                           <StatusIcon status={endpoint.status} />
-                          <div>
-                            <p className="font-medium text-gray-900">{endpoint.name}</p>
-                            <p className="text-sm text-gray-500">{endpoint.method} {endpoint.path}</p>
+                          <div className="min-w-0">
+                            <p className="font-medium text-gray-900 truncate">{endpoint.name}</p>
+                            <p className="text-sm text-gray-500 truncate">{endpoint.method} {endpoint.path}</p>
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right pl-8 sm:pl-0 flex-shrink-0">
                           <p className="text-sm font-medium">{endpoint.responseTime.toFixed(0)}ms</p>
                           <p className="text-xs text-gray-500">{endpoint.successRate.toFixed(1)}%</p>
                         </div>
@@ -697,22 +715,53 @@ const RealTimeDashboard: React.FC = () => {
             </div>
 
             {/* All AgentDEX Endpoints Detailed View */}
-            <div className="bg-white p-6 rounded-lg border">
+            <div className="bg-white p-4 sm:p-6 rounded-lg border">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
                 <Activity className="w-5 h-5 mr-2 text-green-600" />
                 All AgentDEX Endpoints ({dashboardData.agentdex.endpoints.length})
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+              
+              {/* Mobile: List View, Desktop: Grid View */}
+              <div className="block sm:hidden space-y-3 max-h-96 overflow-y-auto">
                 {dashboardData.agentdex.endpoints.map((endpoint) => (
-                  <div key={endpoint.name} className="p-4 bg-gray-50 rounded-lg border">
+                  <div key={endpoint.name} className="p-3 bg-gray-50 rounded-lg border">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
                         <StatusIcon status={endpoint.status} />
-                        <span className="font-medium text-sm">{endpoint.name}</span>
+                        <span className="font-medium text-sm truncate">{endpoint.name}</span>
                       </div>
-                      <span className="text-xs bg-gray-200 px-2 py-1 rounded uppercase">{endpoint.method}</span>
+                      <span className="text-xs bg-gray-200 px-2 py-1 rounded uppercase flex-shrink-0">{endpoint.method}</span>
                     </div>
-                    <div className="text-xs text-gray-600 mb-2">{endpoint.path}</div>
+                    <div className="text-xs text-gray-600 mb-2 truncate">{endpoint.path}</div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-gray-500">Response:</span>
+                        <div className="font-medium">{endpoint.responseTime.toFixed(0)}ms</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Success:</span>
+                        <div className="font-medium">{endpoint.successRate.toFixed(1)}%</div>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded capitalize">{endpoint.category}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop: Grid View */}
+              <div className="hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                {dashboardData.agentdex.endpoints.map((endpoint) => (
+                  <div key={endpoint.name} className="p-4 bg-gray-50 rounded-lg border">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2 min-w-0">
+                        <StatusIcon status={endpoint.status} />
+                        <span className="font-medium text-sm truncate">{endpoint.name}</span>
+                      </div>
+                      <span className="text-xs bg-gray-200 px-2 py-1 rounded uppercase flex-shrink-0">{endpoint.method}</span>
+                    </div>
+                    <div className="text-xs text-gray-600 mb-2 truncate">{endpoint.path}</div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
                         <span className="text-gray-500">Response:</span>
@@ -743,14 +792,14 @@ const RealTimeDashboard: React.FC = () => {
         )}
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Network Latency Chart */}
-          <div className="bg-white p-6 rounded-lg border">
+          <div className="bg-white p-4 sm:p-6 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4 flex items-center">
               <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
               Network Latency Trend
             </h3>
-            <div className="h-64">
+            <div className="h-48 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={historicalData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -787,12 +836,12 @@ const RealTimeDashboard: React.FC = () => {
           </div>
 
           {/* Protocol Availability Chart */}
-          <div className="bg-white p-6 rounded-lg border">
+          <div className="bg-white p-4 sm:p-6 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4 flex items-center">
               <Gauge className="w-5 h-5 mr-2 text-green-600" />
               Protocol Availability
             </h3>
-            <div className="h-64">
+            <div className="h-48 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={historicalData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -842,13 +891,13 @@ const RealTimeDashboard: React.FC = () => {
         </div>
 
         {/* Network Status & Protocol Health */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Network Providers */}
-          <div className="bg-white p-6 rounded-lg border">
+          <div className="bg-white p-4 sm:p-6 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4">Network Providers</h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {Object.entries(dashboardData.network).map(([provider, metrics]) => (
-                <div key={provider} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={provider} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-3">
                     <StatusIcon status={metrics.status} />
                     <div>
@@ -856,7 +905,7 @@ const RealTimeDashboard: React.FC = () => {
                       <p className="text-sm text-gray-500">Slot: {metrics.slot.toLocaleString()}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right pl-8 sm:pl-0">
                     <p className="text-sm font-medium">{metrics.latency}ms</p>
                     <p className="text-xs text-gray-500">{metrics.tps.toFixed(0)} TPS</p>
                   </div>
@@ -866,11 +915,11 @@ const RealTimeDashboard: React.FC = () => {
           </div>
 
           {/* Protocol Status */}
-          <div className="bg-white p-6 rounded-lg border">
+          <div className="bg-white p-4 sm:p-6 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4">Protocol Health</h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {dashboardData.protocols.map((protocol) => (
-                <div key={protocol.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={protocol.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-3">
                     <StatusIcon status={protocol.status} />
                     <div>
@@ -878,7 +927,7 @@ const RealTimeDashboard: React.FC = () => {
                       <p className="text-sm text-gray-500">{protocol.availability.toFixed(1)}% availability</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right pl-8 sm:pl-0">
                     <p className="text-sm font-medium">{protocol.latency}ms</p>
                     <p className="text-xs text-gray-500">{protocol.errorRate.toFixed(1)}% errors</p>
                   </div>
@@ -889,15 +938,15 @@ const RealTimeDashboard: React.FC = () => {
         </div>
 
         {/* Recent Alerts */}
-        <div className="bg-white p-6 rounded-lg border">
+        <div className="bg-white p-4 sm:p-6 rounded-lg border">
           <h3 className="text-lg font-semibold mb-4 flex items-center">
             <AlertTriangle className="w-5 h-5 mr-2 text-yellow-600" />
             Recent Alerts
           </h3>
           
           {dashboardData.alerts.length === 0 ? (
-            <div className="text-center py-8">
-              <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto mb-2" />
+            <div className="text-center py-6 sm:py-8">
+              <CheckCircle2 className="w-8 h-8 sm:w-12 sm:h-12 text-green-600 mx-auto mb-2" />
               <p className="text-gray-600">No recent alerts</p>
               <p className="text-sm text-gray-500">All systems operating normally</p>
             </div>

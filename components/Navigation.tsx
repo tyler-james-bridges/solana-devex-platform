@@ -2,18 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { 
   Monitor, 
   Activity, 
   Terminal, 
   Code, 
   BarChart3, 
-  Settings,
+  Menu,
+  X,
   Home
 } from 'lucide-react';
 
 const Navigation = () => {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     {
@@ -48,24 +51,27 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Code className="w-6 h-6 text-white" />
+          {/* Logo - Mobile Optimized */}
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="bg-blue-600 p-2 rounded-lg flex-shrink-0">
+                <Code className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Solana DevEx Platform</h1>
-                <p className="text-xs text-gray-500">Real-time monitoring & infrastructure</p>
+              <div className="hidden xs:block sm:block">
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">Solana DevEx Platform</h1>
+                <p className="text-xs text-gray-500 hidden sm:block">Real-time monitoring & infrastructure</p>
+              </div>
+              <div className="block xs:hidden">
+                <h1 className="text-lg font-bold text-gray-900">DevEx</h1>
               </div>
             </Link>
           </div>
 
-          {/* Navigation Items */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation Items */}
+          <div className="hidden lg:flex items-center space-x-6">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -89,37 +95,53 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button className="text-gray-600 hover:text-gray-900">
-              <Settings className="w-6 h-6" />
+          <div className="lg:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-600 hover:text-gray-900 p-2"
+              aria-label="Toggle navigation menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden border-t border-gray-200 py-4">
-          <div className="grid grid-cols-2 gap-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex flex-col items-center space-y-1 px-3 py-3 rounded-lg text-xs font-medium transition-colors ${
-                    isActive
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-center">{item.name}</span>
-                </Link>
-              );
-            })}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-200 py-4 bg-white">
+            <div className="space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                      isActive
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <div>
+                      <div>{item.name}</div>
+                      {item.description && (
+                        <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </nav>
   );
