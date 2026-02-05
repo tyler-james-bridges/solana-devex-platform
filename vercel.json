@@ -1,12 +1,4 @@
 {
   "version": 2,
-  "public": true,
-  "domains": ["onchain-devx.tools"],
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "destination": "https://onchain-devx.tools/$1",
-      "statusCode": 308
-    }
-  ]
+  "public": true
 }

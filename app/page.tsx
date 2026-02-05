@@ -228,27 +228,18 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#ffffff' }}>
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors">
       {/* Header */}
       <header className="header">
         <div className="dashboard-container">
           <div className="header-content">
             <div className="logo">
               <div className="logo-icon">
-                <div style={{ 
-                  width: '16px', 
-                  height: '16px', 
-                  background: 'white', 
-                  borderRadius: '2px' 
-                }}></div>
+                <div className="w-4 h-4 bg-white dark:bg-gray-200 rounded-sm"></div>
               </div>
               <div>
                 <div className="logo-text">Solana DevEx</div>
-                <div style={{ 
-                  fontSize: '0.75rem', 
-                  color: '#6b7280',
-                  lineHeight: '1'
-                }}>Platform</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 leading-none">Platform</div>
               </div>
             </div>
             
@@ -267,7 +258,7 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main style={{ flex: 1, backgroundColor: '#f8fafc' }}>
+      <main className="flex-1 bg-gray-50 dark:bg-gray-800 transition-colors">
         <div className="dashboard-container" style={{ 
           paddingTop: '1.5rem', 
           paddingBottom: '1.5rem' 
@@ -341,13 +332,7 @@ export default function Dashboard() {
                         <div className="item-card-content">
                           <StatusIcon status={test.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ 
-                              fontWeight: 500, 
-                              fontSize: '0.875rem', 
-                              color: '#111827',
-                              lineHeight: '1.4',
-                              marginBottom: '0.25rem'
-                            }}>
+                            <p className="font-medium text-sm text-gray-900 dark:text-gray-100 leading-tight mb-1">
                               {test.name}
                             </p>
                             <div className="item-card-meta">
@@ -402,13 +387,7 @@ export default function Dashboard() {
                         <div className="item-card-content">
                           <StatusIcon status={protocol.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ 
-                              fontWeight: 500, 
-                              fontSize: '0.875rem', 
-                              color: '#111827',
-                              lineHeight: '1.4',
-                              marginBottom: '0.25rem'
-                            }}>
+                            <p className="font-medium text-sm text-gray-900 dark:text-gray-100 leading-tight mb-1">
                               {protocol.name}
                             </p>
                             <p className="typography-caption">
@@ -457,24 +436,11 @@ export default function Dashboard() {
                         <div className="item-card-content">
                           <StatusIcon status={deployment.status} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ 
-                              fontWeight: 500, 
-                              fontSize: '0.875rem', 
-                              color: '#111827',
-                              lineHeight: '1.4',
-                              marginBottom: '0.25rem'
-                            }}>
+                            <p className="font-medium text-sm text-gray-900 dark:text-gray-100 leading-tight mb-1">
                               {deployment.name}
                             </p>
                             <div className="item-card-meta">
-                              <span style={{ 
-                                padding: '0.25rem 0.5rem', 
-                                background: '#f3f4f6', 
-                                borderRadius: '0.25rem', 
-                                fontSize: '0.75rem',
-                                border: '1px solid #e5e7eb',
-                                fontWeight: '500'
-                              }}>
+                              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-xs font-medium text-gray-700 dark:text-gray-200">
                                 {deployment.environment}
                               </span>
                               <span>•</span>
@@ -496,24 +462,10 @@ export default function Dashboard() {
                       </div>
                       
                       {deployment.status === 'running' && (
-                        <div style={{ 
-                          marginTop: '0.75rem', 
-                          padding: '0.75rem',
-                          backgroundColor: '#f8fafc',
-                          borderRadius: '0.5rem',
-                          border: '1px solid #e5e7eb'
-                        }}>
-                          <div style={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            marginBottom: '0.5rem',
-                            alignItems: 'center'
-                          }}>
-                            <span className="typography-caption" style={{ fontWeight: '500' }}>Progress</span>
-                            <span className="typography-caption" style={{ 
-                              fontWeight: '600',
-                              color: '#111827'
-                            }}>{Math.round(deployment.progress)}%</span>
+                        <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="typography-caption font-medium">Progress</span>
+                            <span className="typography-caption font-semibold text-gray-900 dark:text-gray-100">{Math.round(deployment.progress)}%</span>
                           </div>
                           <div className="progress-bar">
                             <div 
