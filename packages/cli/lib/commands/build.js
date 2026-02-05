@@ -43,7 +43,7 @@ class BuildCommand {
       this.displayBuildSummary(buildResults);
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Build failed:'), error.message);
+      console.error(chalk.red('\n  Build failed:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -270,13 +270,13 @@ class BuildCommand {
   }
 
   displayBuildSummary(buildResults) {
-    console.log(chalk.bold('\n📊 Build Summary'));
+    console.log(chalk.bold('\n  Build Summary'));
     console.log('━'.repeat(50));
     
     buildResults.forEach(result => {
       const status = result.success ? 
-        chalk.green('✅ SUCCESS') : 
-        chalk.red('❌ FAILED');
+        chalk.green('  SUCCESS') : 
+        chalk.red('  FAILED');
       
       const programName = result.program === 'all' ? 
         `All Programs (${result.programs} total)` : 
@@ -292,8 +292,8 @@ class BuildCommand {
       
       if (result.verified !== undefined) {
         const verifyStatus = result.verified ? 
-          chalk.green('✅ Verified') : 
-          chalk.yellow('⚠️  Not verified');
+          chalk.green('  Verified') : 
+          chalk.yellow('   Not verified');
         console.log(`   Verification: ${verifyStatus}`);
       }
       
@@ -306,7 +306,7 @@ class BuildCommand {
   }
 
   async watch() {
-    console.log(chalk.blue('👀 Watching for file changes...'));
+    console.log(chalk.blue('  Watching for file changes...'));
     console.log(chalk.gray('Press Ctrl+C to stop\n'));
     
     const workspace = await this.validateWorkspace();
@@ -327,25 +327,25 @@ class BuildCommand {
       
       isBuilding = true;
       
-      console.log(chalk.yellow(`\n📝 File changed: ${path.relative(workspace, changedFile)}`));
+      console.log(chalk.yellow(`\n  File changed: ${path.relative(workspace, changedFile)}`));
       
       try {
         await this.execute({ watch: false });
-        console.log(chalk.green('✅ Rebuild completed'));
+        console.log(chalk.green('  Rebuild completed'));
       } catch (error) {
-        console.log(chalk.red('❌ Rebuild failed'));
+        console.log(chalk.red('  Rebuild failed'));
       } finally {
         isBuilding = false;
       }
       
-      console.log(chalk.blue('\n👀 Watching for changes...'));
+      console.log(chalk.blue('\n  Watching for changes...'));
     };
 
     watcher.on('change', rebuild);
     watcher.on('add', rebuild);
     
     process.on('SIGINT', () => {
-      console.log(chalk.yellow('\n⏹️  Stopping file watcher...'));
+      console.log(chalk.yellow('\n   Stopping file watcher...'));
       watcher.close();
       process.exit(0);
     });

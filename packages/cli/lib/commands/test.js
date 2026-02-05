@@ -55,7 +55,7 @@ class TestCommand {
       }
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Test execution failed:'), error.message);
+      console.error(chalk.red('\n  Test execution failed:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -241,9 +241,9 @@ class TestCommand {
     
     lines.forEach(line => {
       // Match test results
-      const passMatch = line.match(/✓|✅.*?(\d+)ms/);
-      const failMatch = line.match(/✗|❌|[0-9]+\)\s/);
-      const skipMatch = line.match(/○|⊖.*?skipped/i);
+      const passMatch = line.match(/ | .*?(\d+)ms/);
+      const failMatch = line.match(/ | |[0-9]+\)\s/);
+      const skipMatch = line.match(/ | .*?skipped/i);
       
       if (passMatch) {
         testResults.passed++;
@@ -309,7 +309,7 @@ class TestCommand {
 
   extractTestName(line) {
     // Extract test name from test output line
-    const cleanLine = line.replace(/✓|✅|✗|❌|○|⊖|\d+\)|\(\d+ms\)/g, '').trim();
+    const cleanLine = line.replace(/ | | | | | |\d+\)|\(\d+ms\)/g, '').trim();
     return cleanLine || 'Unknown test';
   }
 
@@ -340,10 +340,10 @@ class TestCommand {
       
       await fs.writeJSON(path.join(coverageDir, 'coverage-summary.json'), report, { spaces: 2 });
       
-      console.log(chalk.blue(`📊 Coverage report saved to ${coverageDir}`));
+      console.log(chalk.blue(`  Coverage report saved to ${coverageDir}`));
       
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Coverage report generation failed:'), error.message);
+      console.warn(chalk.yellow('   Coverage report generation failed:'), error.message);
     }
   }
 
@@ -366,33 +366,33 @@ class TestCommand {
       
       await fs.writeJSON(path.join(gasReportDir, 'gas-report.json'), gasReport, { spaces: 2 });
       
-      console.log(chalk.blue(`⛽ Gas report saved to ${gasReportDir}`));
+      console.log(chalk.blue(`  Gas report saved to ${gasReportDir}`));
       
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Gas report generation failed:'), error.message);
+      console.warn(chalk.yellow('   Gas report generation failed:'), error.message);
     }
   }
 
   displayTestSummary(testResults, options) {
-    console.log(chalk.bold('\n🧪 Test Summary'));
+    console.log(chalk.bold('\n  Test Summary'));
     console.log('━'.repeat(50));
     
     const total = testResults.passed + testResults.failed + testResults.skipped;
     const successRate = total > 0 ? ((testResults.passed / total) * 100).toFixed(1) : 0;
     
-    console.log(chalk.green(`✅ Passed: ${testResults.passed}`));
-    console.log(chalk.red(`❌ Failed: ${testResults.failed}`));
-    console.log(chalk.yellow(`⊖ Skipped: ${testResults.skipped}`));
-    console.log(chalk.blue(`📊 Success Rate: ${successRate}%`));
-    console.log(chalk.gray(`⏱️  Duration: ${testResults.duration}ms`));
+    console.log(chalk.green(`  Passed: ${testResults.passed}`));
+    console.log(chalk.red(`  Failed: ${testResults.failed}`));
+    console.log(chalk.yellow(`  Skipped: ${testResults.skipped}`));
+    console.log(chalk.blue(`  Success Rate: ${successRate}%`));
+    console.log(chalk.gray(`   Duration: ${testResults.duration}ms`));
     
     if (testResults.testDuration) {
-      console.log(chalk.gray(`🧮 Test Execution: ${testResults.testDuration}ms`));
+      console.log(chalk.gray(`  Test Execution: ${testResults.testDuration}ms`));
     }
     
     // Show failed test details
     if (testResults.failed > 0 && !options.quiet) {
-      console.log(chalk.bold('\n❌ Failed Tests:'));
+      console.log(chalk.bold('\n  Failed Tests:'));
       testResults.tests
         .filter(test => test.status === 'failed')
         .forEach((test, index) => {
@@ -410,7 +410,7 @@ class TestCommand {
   }
 
   async watch(filter, options) {
-    console.log(chalk.blue('👀 Watching for test file changes...'));
+    console.log(chalk.blue('  Watching for test file changes...'));
     console.log(chalk.gray('Press Ctrl+C to stop\n'));
     
     const workspace = await this.validateWorkspace();
@@ -431,17 +431,17 @@ class TestCommand {
       
       isTesting = true;
       
-      console.log(chalk.yellow(`\n📝 File changed: ${path.relative(workspace, changedFile)}`));
+      console.log(chalk.yellow(`\n  File changed: ${path.relative(workspace, changedFile)}`));
       
       try {
         await this.execute(filter, { ...options, watch: false });
       } catch (error) {
-        console.log(chalk.red('❌ Test run failed'));
+        console.log(chalk.red('  Test run failed'));
       } finally {
         isTesting = false;
       }
       
-      console.log(chalk.blue('\n👀 Watching for changes...'));
+      console.log(chalk.blue('\n  Watching for changes...'));
     };
 
     watcher.on('change', runTests);
@@ -451,7 +451,7 @@ class TestCommand {
     await runTests('Initial run');
     
     process.on('SIGINT', () => {
-      console.log(chalk.yellow('\n⏹️  Stopping test watcher...'));
+      console.log(chalk.yellow('\n   Stopping test watcher...'));
       watcher.close();
       process.exit(0);
     });

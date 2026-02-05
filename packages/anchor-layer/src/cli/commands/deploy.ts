@@ -17,10 +17,10 @@ export function createDeployCommand(): Command {
     .option('--dry-run', 'Simulate deployment without actually deploying')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('🚀 Starting Enhanced Anchor Deployment\n'));
+        console.log(chalk.blue('  Starting Enhanced Anchor Deployment\n'));
 
         if (options.dryRun) {
-          console.log(chalk.yellow('🔍 DRY RUN MODE - No actual deployment will occur\n'));
+          console.log(chalk.yellow('  DRY RUN MODE - No actual deployment will occur\n'));
         }
 
         // Initialize enhancement layer
@@ -34,21 +34,21 @@ export function createDeployCommand(): Command {
 
         // Set up event listeners for real-time feedback
         enhancement.on('deployment:start', (data) => {
-          console.log(chalk.cyan(`🚀 Starting deployment for program: ${data.programId}`));
+          console.log(chalk.cyan(`  Starting deployment for program: ${data.programId}`));
         });
 
         enhancement.on('deployment:complete', (result) => {
-          console.log(chalk.green('\n✅ Deployment completed successfully'));
-          console.log(chalk.blue('📋 Deployment Details:'));
+          console.log(chalk.green('\n  Deployment completed successfully'));
+          console.log(chalk.blue('  Deployment Details:'));
           console.log(`   Program ID: ${chalk.cyan(result.programId)}`);
           console.log(`   Transaction: ${chalk.gray(result.transactionSignature)}`);
           console.log(`   Network: ${chalk.yellow(result.networkUrl)}`);
           console.log(`   Duration: ${chalk.magenta((result.deploymentTime / 1000).toFixed(2))}s`);
           
           if (result.verified) {
-            console.log(chalk.green('   ✅ Deployment verified on-chain'));
+            console.log(chalk.green('     Deployment verified on-chain'));
           } else {
-            console.log(chalk.yellow('   ⚠️ Could not verify deployment'));
+            console.log(chalk.yellow('     Could not verify deployment'));
           }
         });
 
@@ -60,7 +60,7 @@ export function createDeployCommand(): Command {
         await enhancement.startRealTimeUpdates();
 
         // Pre-deployment checks
-        console.log(chalk.cyan('🔍 Running pre-deployment checks...'));
+        console.log(chalk.cyan('  Running pre-deployment checks...'));
 
         // Validate network
         const supportedNetworks = ['localnet', 'devnet', 'testnet', 'mainnet-beta'];
@@ -71,7 +71,7 @@ export function createDeployCommand(): Command {
         // Check wallet configuration
         try {
           const walletPath = AnchorUtils.getWalletPath();
-          console.log(chalk.green(`✅ Wallet configured: ${walletPath}`));
+          console.log(chalk.green(`  Wallet configured: ${walletPath}`));
         } catch (error) {
           throw new Error('Wallet not properly configured in Anchor.toml');
         }
@@ -94,11 +94,11 @@ export function createDeployCommand(): Command {
           throw new Error('No programs found to deploy');
         }
 
-        console.log(chalk.green(`✅ Found ${programsToDeploy.length} program(s) to deploy: ${programsToDeploy.join(', ')}`));
+        console.log(chalk.green(`  Found ${programsToDeploy.length} program(s) to deploy: ${programsToDeploy.join(', ')}`));
 
         // Build programs unless skipped
         if (!options.skipBuild) {
-          console.log(chalk.yellow('🔨 Building programs...'));
+          console.log(chalk.yellow('  Building programs...'));
           const { CommandRunner } = require('../../utils/CommandRunner');
           const runner = new CommandRunner();
           
@@ -107,7 +107,7 @@ export function createDeployCommand(): Command {
             await runner.runAnchor('build', [], { silent: false });
           });
           
-          console.log(chalk.green('✅ Programs built successfully\n'));
+          console.log(chalk.green('  Programs built successfully\n'));
         }
 
         // Check if programs are built
@@ -116,18 +116,18 @@ export function createDeployCommand(): Command {
         }
 
         if (options.dryRun) {
-          console.log(chalk.blue('📋 Dry Run Summary:'));
+          console.log(chalk.blue('  Dry Run Summary:'));
           console.log(`   Network: ${chalk.cyan(options.network)}`);
           console.log(`   Programs: ${chalk.cyan(programsToDeploy.join(', '))}`);
           console.log(`   Estimated deployment time: ${chalk.magenta('~30-60s per program')}`);
-          console.log(chalk.green('\n✅ Dry run completed - deployment would succeed'));
+          console.log(chalk.green('\n  Dry run completed - deployment would succeed'));
           
           await enhancement.stopRealTimeUpdates();
           return;
         }
 
         // Deploy programs
-        console.log(chalk.blue(`📡 Deploying to ${options.network}...\n`));
+        console.log(chalk.blue(`  Deploying to ${options.network}...\n`));
 
         const deploymentMonitor = enhancement.getDeploymentMonitor();
         const performanceCollector = enhancement.getPerformanceCollector();
@@ -135,7 +135,7 @@ export function createDeployCommand(): Command {
         // Deploy each program
         const results = [];
         for (const programName of programsToDeploy) {
-          console.log(chalk.cyan(`🚀 Deploying program: ${programName}`));
+          console.log(chalk.cyan(`  Deploying program: ${programName}`));
           
           const result = await performanceCollector.trackDeployPerformance(async () => {
             return await deploymentMonitor.enhancedDeploy({
@@ -149,19 +149,19 @@ export function createDeployCommand(): Command {
 
         // Verification
         if (options.verify) {
-          console.log(chalk.cyan('\n🔍 Verifying deployments...'));
+          console.log(chalk.cyan('\n  Verifying deployments...'));
           
           for (const result of results) {
             if (result.verified) {
-              console.log(chalk.green(`✅ ${result.program}: Verified`));
+              console.log(chalk.green(`  ${result.program}: Verified`));
             } else {
-              console.log(chalk.yellow(`⚠️ ${result.program}: Could not verify`));
+              console.log(chalk.yellow(`  ${result.program}: Could not verify`));
             }
           }
         }
 
         // Summary
-        console.log(chalk.blue('\n📊 Deployment Summary:'));
+        console.log(chalk.blue('\n  Deployment Summary:'));
         console.log(`   Network: ${chalk.cyan(options.network)}`);
         console.log(`   Programs deployed: ${chalk.green(results.length)}`);
         
@@ -171,7 +171,7 @@ export function createDeployCommand(): Command {
         // Stop real-time updates
         await enhancement.stopRealTimeUpdates();
 
-        console.log(chalk.green('\n🎉 All deployments completed successfully!'));
+        console.log(chalk.green('\n  All deployments completed successfully!'));
 
       } catch (error) {
         logger.error('Deploy command failed', 'CLI', error);
@@ -188,7 +188,7 @@ export function createDeployCommand(): Command {
     .option('--network <network>', 'Filter by network')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('📜 Deployment History\n'));
+        console.log(chalk.blue('  Deployment History\n'));
 
         // This would read from deployment logs
         // Mock data for demonstration
@@ -225,7 +225,7 @@ export function createDeployCommand(): Command {
           : deployments;
 
         if (filtered.length === 0) {
-          console.log(chalk.yellow('📭 No deployment history found.'));
+          console.log(chalk.yellow('  No deployment history found.'));
           return;
         }
 
@@ -233,7 +233,7 @@ export function createDeployCommand(): Command {
         
         filtered.forEach(deployment => {
           const date = new Date(deployment.date).toLocaleString();
-          const statusIcon = deployment.status === 'success' ? chalk.green('✅') : chalk.red('❌');
+          const statusIcon = deployment.status === 'success' ? chalk.green(' ') : chalk.red(' ');
           const durationStr = deployment.duration ? `${deployment.duration.toFixed(1)}s` : 'N/A';
           
           console.log(`${statusIcon} ${chalk.cyan(deployment.program)} on ${chalk.yellow(deployment.network)}`);
@@ -259,7 +259,7 @@ export function createDeployCommand(): Command {
           .reduce((sum, d) => sum + d.duration!, 0) / filtered.length;
 
         console.log(chalk.gray('─'.repeat(80)));
-        console.log(chalk.blue('📊 Statistics:'));
+        console.log(chalk.blue('  Statistics:'));
         console.log(`   Total deployments: ${chalk.cyan(filtered.length)}`);
         console.log(`   Success rate: ${chalk.green(successRate)}%`);
         console.log(`   Average duration: ${chalk.magenta(avgDuration.toFixed(1))}s`);
@@ -279,9 +279,9 @@ export function createDeployCommand(): Command {
     .option('--confirm', 'Skip confirmation prompt')
     .action(async (programId, options) => {
       try {
-        console.log(chalk.yellow('⏪ Deployment Rollback\n'));
+        console.log(chalk.yellow('  Deployment Rollback\n'));
         
-        console.log(chalk.red('🚨 WARNING: This is a destructive operation!'));
+        console.log(chalk.red('  WARNING: This is a destructive operation!'));
         console.log(`   Target Program ID: ${chalk.cyan(programId)}`);
         console.log(`   Network: ${chalk.yellow(options.network)}`);
 
@@ -299,12 +299,12 @@ export function createDeployCommand(): Command {
           rl.close();
 
           if (answer !== 'yes') {
-            console.log(chalk.green('✅ Rollback cancelled'));
+            console.log(chalk.green('  Rollback cancelled'));
             return;
           }
         }
 
-        console.log(chalk.yellow('🔄 Performing rollback...'));
+        console.log(chalk.yellow('  Performing rollback...'));
         
         // In a real implementation, this would:
         // 1. Verify the target program ID exists and is valid
@@ -312,8 +312,8 @@ export function createDeployCommand(): Command {
         // 3. Redeploy the previous version
         // 4. Verify the rollback was successful
         
-        console.log(chalk.green('✅ Rollback completed successfully'));
-        console.log(chalk.blue('💡 Remember to update your local code to match the rolled-back version'));
+        console.log(chalk.green('  Rollback completed successfully'));
+        console.log(chalk.blue('  Remember to update your local code to match the rolled-back version'));
 
       } catch (error) {
         console.error(chalk.red('Rollback failed:'), error instanceof Error ? error.message : String(error));

@@ -17,7 +17,7 @@ class NodeCommand {
     try {
       await this.initializeConfig();
       
-      console.log(chalk.bold.blue('🟢 Starting Solana Test Validator'));
+      console.log(chalk.bold.blue('  Starting Solana Test Validator'));
       console.log(chalk.gray('Enhanced local development environment\n'));
       
       // Validate requirements
@@ -30,7 +30,7 @@ class NodeCommand {
       await this.startValidator(validatorConfig);
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Failed to start test validator:'), error.message);
+      console.error(chalk.red('\n  Failed to start test validator:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -133,7 +133,7 @@ class NodeCommand {
             ...program
           });
         } else {
-          console.warn(chalk.yellow(`⚠️  Unknown program: ${programName}`));
+          console.warn(chalk.yellow(`   Unknown program: ${programName}`));
         }
       }
     }
@@ -165,7 +165,7 @@ class NodeCommand {
   async startValidator(config) {
     const args = this.buildValidatorArgs(config);
     
-    console.log(chalk.blue('🚀 Starting validator with configuration:'));
+    console.log(chalk.blue('  Starting validator with configuration:'));
     console.log(chalk.gray(`   Port: ${config.port}`));
     console.log(chalk.gray(`   Reset: ${config.reset}`));
     console.log(chalk.gray(`   Slots per epoch: ${config.slotsPerEpoch}`));
@@ -195,7 +195,7 @@ class NodeCommand {
       // Wait for validator to start
       await this.waitForValidator(config.port, spinner);
       
-      spinner.succeed(chalk.green('✅ Solana test validator started successfully!'));
+      spinner.succeed(chalk.green('  Solana test validator started successfully!'));
       
       // Display connection info
       this.displayConnectionInfo(config);
@@ -210,7 +210,7 @@ class NodeCommand {
       await this.monitorValidator(config);
       
     } catch (error) {
-      spinner.fail(chalk.red('❌ Failed to start validator'));
+      spinner.fail(chalk.red('  Failed to start validator'));
       throw error;
     }
   }
@@ -281,7 +281,7 @@ class NodeCommand {
   }
 
   displayConnectionInfo(config) {
-    console.log(chalk.bold.green('\n🔗 Connection Information'));
+    console.log(chalk.bold.green('\n  Connection Information'));
     console.log('━'.repeat(40));
     console.log(chalk.cyan(`RPC URL:     http://localhost:${config.port}`));
     console.log(chalk.cyan(`WebSocket:   ws://localhost:${config.port + 1}`));
@@ -290,7 +290,7 @@ class NodeCommand {
   }
 
   displayUsefulCommands(config) {
-    console.log(chalk.bold.blue('💡 Useful Commands'));
+    console.log(chalk.bold.blue('  Useful Commands'));
     console.log('━'.repeat(40));
     console.log(chalk.gray('Create a new keypair:'));
     console.log(chalk.cyan('  solana-keygen new'));
@@ -313,7 +313,7 @@ class NodeCommand {
 
   setupGracefulShutdown() {
     const shutdown = () => {
-      console.log(chalk.yellow('\n⏹️  Shutting down validator...'));
+      console.log(chalk.yellow('\n   Shutting down validator...'));
       
       if (this.validatorProcess) {
         this.validatorProcess.kill('SIGTERM');
@@ -343,11 +343,11 @@ class NodeCommand {
         const blockHeight = await connection.getBlockHeight();
         
         if (this.globalOpts.verbose) {
-          console.log(chalk.gray(`📊 Slot: ${slot}, Block: ${blockHeight}`));
+          console.log(chalk.gray(`  Slot: ${slot}, Block: ${blockHeight}`));
         }
         
       } catch (error) {
-        console.error(chalk.red('❌ Validator monitoring error:'), error.message);
+        console.error(chalk.red('  Validator monitoring error:'), error.message);
         clearInterval(monitorInterval);
       }
     }, 30000);
@@ -358,7 +358,7 @@ class NodeCommand {
         clearInterval(monitorInterval);
         
         if (code !== 0 && signal !== 'SIGTERM' && signal !== 'SIGINT') {
-          console.error(chalk.red(`\n❌ Validator exited unexpectedly (code: ${code}, signal: ${signal})`));
+          console.error(chalk.red(`\n  Validator exited unexpectedly (code: ${code}, signal: ${signal})`));
           process.exit(1);
         }
       });

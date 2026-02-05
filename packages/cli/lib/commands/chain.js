@@ -19,7 +19,7 @@ class ChainCommand {
     try {
       await this.initializeConfig();
       
-      console.log(chalk.bold.blue('🌐 Cross-Chain Deployment'));
+      console.log(chalk.bold.blue('  Cross-Chain Deployment'));
       console.log(chalk.gray('Deploy to multiple blockchain networks\n'));
       
       const chains = this.parseChains(options.chains);
@@ -42,9 +42,9 @@ class ChainCommand {
           deploymentResults.push(result);
           
           if (result.success) {
-            spinner.text = `✅ ${chain} deployment completed`;
+            spinner.text = `  ${chain} deployment completed`;
           } else {
-            spinner.text = `❌ ${chain} deployment failed`;
+            spinner.text = `  ${chain} deployment failed`;
           }
           
         } catch (error) {
@@ -64,7 +64,7 @@ class ChainCommand {
       this.displayDeploymentSummary(deploymentResults);
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Cross-chain deployment failed:'), error.message);
+      console.error(chalk.red('\n  Cross-chain deployment failed:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -115,7 +115,7 @@ class ChainCommand {
       }
     };
     
-    console.log(chalk.bold('🔍 Validating target chains...'));
+    console.log(chalk.bold('  Validating target chains...'));
     
     for (const chain of chains) {
       const chainInfo = supportedChains[chain];
@@ -125,12 +125,12 @@ class ChainCommand {
       }
       
       if (!chainInfo.supported) {
-        console.log(chalk.yellow(`⚠️  ${chainInfo.name} support is coming soon!`));
+        console.log(chalk.yellow(`   ${chainInfo.name} support is coming soon!`));
         console.log(chalk.gray(`   ${chainInfo.description}`));
         throw new Error(`${chainInfo.name} deployment not yet supported`);
       }
       
-      console.log(chalk.green(`✅ ${chainInfo.name} - ${chainInfo.description}`));
+      console.log(chalk.green(`  ${chainInfo.name} - ${chainInfo.description}`));
     }
     
     console.log('');
@@ -230,7 +230,7 @@ class ChainCommand {
     // Placeholder for Ethereum deployment
     // This would integrate with Hardhat, Truffle, or Foundry
     
-    console.log(chalk.yellow('🚧 Ethereum deployment coming soon!'));
+    console.log(chalk.yellow('  Ethereum deployment coming soon!'));
     
     return {
       chain: 'ethereum',
@@ -241,7 +241,7 @@ class ChainCommand {
 
   async setupBridge(options = {}) {
     try {
-      console.log(chalk.bold.blue('🌉 Cross-Chain Bridge Setup'));
+      console.log(chalk.bold.blue('  Cross-Chain Bridge Setup'));
       console.log(chalk.gray('Configure cross-chain communication\n'));
       
       const { from, to } = await this.promptForBridgeChains(options);
@@ -259,7 +259,7 @@ class ChainCommand {
       
       const bridgeConfig = supportedBridges[bridgeKey] || supportedBridges[reverseBridgeKey];
       
-      console.log(chalk.green('\n✅ Bridge Configuration:'));
+      console.log(chalk.green('\n  Bridge Configuration:'));
       console.log(chalk.cyan(`Protocol: ${bridgeConfig.protocol}`));
       console.log(chalk.cyan(`Type: ${bridgeConfig.type}`));
       console.log(chalk.gray(`Description: ${bridgeConfig.description}`));
@@ -267,14 +267,14 @@ class ChainCommand {
       // Create bridge configuration file
       await this.createBridgeConfig(from, to, bridgeConfig);
       
-      console.log(chalk.bold('\n📋 Next Steps:'));
+      console.log(chalk.bold('\n  Next Steps:'));
       console.log('1. Deploy contracts on both chains');
       console.log('2. Configure bridge parameters');
       console.log('3. Test cross-chain transactions');
       console.log('4. Monitor bridge operations');
       
     } catch (error) {
-      console.error(chalk.red('❌ Bridge setup failed:'), error.message);
+      console.error(chalk.red('  Bridge setup failed:'), error.message);
     }
   }
 
@@ -359,19 +359,19 @@ class ChainCommand {
     const configPath = path.join(configDir, `${from}-${to}-bridge.json`);
     await fs.writeJSON(configPath, config, { spaces: 2 });
     
-    console.log(chalk.green(`\n📄 Bridge config created: ${configPath}`));
+    console.log(chalk.green(`\n  Bridge config created: ${configPath}`));
   }
 
   async status() {
     try {
-      console.log(chalk.bold.blue('📊 Cross-Chain Status'));
+      console.log(chalk.bold.blue('  Cross-Chain Status'));
       console.log('━'.repeat(40));
       
       // Check for existing deployments
       const deployments = await this.loadDeploymentHistory();
       
       if (deployments.length === 0) {
-        console.log(chalk.yellow('⚠️  No cross-chain deployments found'));
+        console.log(chalk.yellow('   No cross-chain deployments found'));
         console.log(chalk.gray('Run `solana-devex chain deploy` to get started'));
         return;
       }
@@ -379,8 +379,8 @@ class ChainCommand {
       // Display deployment status
       deployments.forEach(deployment => {
         const status = deployment.success ? 
-          chalk.green('✅ ACTIVE') : 
-          chalk.red('❌ FAILED');
+          chalk.green('  ACTIVE') : 
+          chalk.red('  FAILED');
         
         console.log(`${status} ${chalk.bold(deployment.chain)}`);
         console.log(`   Network: ${deployment.network || 'unknown'}`);
@@ -400,7 +400,7 @@ class ChainCommand {
       const bridges = await this.loadBridgeStatus();
       
       if (bridges.length > 0) {
-        console.log(chalk.bold.blue('🌉 Bridge Status'));
+        console.log(chalk.bold.blue('  Bridge Status'));
         console.log('━'.repeat(40));
         
         bridges.forEach(bridge => {
@@ -412,7 +412,7 @@ class ChainCommand {
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get status:'), error.message);
+      console.error(chalk.red('  Failed to get status:'), error.message);
     }
   }
 
@@ -462,7 +462,7 @@ class ChainCommand {
   }
 
   displayDeploymentSummary(results) {
-    console.log(chalk.bold('\n🌐 Cross-Chain Deployment Summary'));
+    console.log(chalk.bold('\n  Cross-Chain Deployment Summary'));
     console.log('━'.repeat(50));
     
     const successful = results.filter(r => r.success).length;
@@ -475,8 +475,8 @@ class ChainCommand {
     
     results.forEach(result => {
       const status = result.success ? 
-        chalk.green('✅ SUCCESS') : 
-        chalk.red('❌ FAILED');
+        chalk.green('  SUCCESS') : 
+        chalk.red('  FAILED');
       
       console.log(`${status} ${chalk.bold(result.chain.toUpperCase())}`);
       

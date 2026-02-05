@@ -325,7 +325,7 @@ export class DeploymentMonitor extends EventEmitter {
 
   // Enhanced deploy command wrapper
   public async enhancedDeploy(options: any = {}): Promise<DeploymentResult> {
-    console.log(chalk.blue('🚀 Starting Enhanced Anchor Deployment'));
+    console.log(chalk.blue('  Starting Enhanced Anchor Deployment'));
     
     // Pre-deployment checks
     await this.runPreDeploymentChecks();
@@ -354,7 +354,7 @@ export class DeploymentMonitor extends EventEmitter {
       await this.executeAnchorBuild();
     }
     
-    console.log(chalk.green('✓ Pre-deployment checks passed'));
+    console.log(chalk.green('  Pre-deployment checks passed'));
   }
 
   private async executeAnchorBuild(): Promise<void> {
@@ -378,12 +378,12 @@ export class DeploymentMonitor extends EventEmitter {
     console.log(chalk.cyan('Running post-deployment validation...'));
     
     if (result.verified) {
-      console.log(chalk.green('✓ Program deployment verified on-chain'));
+      console.log(chalk.green('  Program deployment verified on-chain'));
     } else {
       console.log(chalk.yellow('⚠ Could not verify program deployment'));
     }
     
-    console.log(chalk.blue(`📊 Deployment Summary:`));
+    console.log(chalk.blue(`  Deployment Summary:`));
     console.log(chalk.white(`  Program ID: ${result.programId}`));
     console.log(chalk.white(`  Transaction: ${result.transactionSignature}`));
     console.log(chalk.white(`  Network: ${result.networkUrl}`));

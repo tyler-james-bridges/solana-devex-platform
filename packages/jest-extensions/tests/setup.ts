@@ -14,9 +14,9 @@ beforeAll(async () => {
   if (testContext.cluster === 'localnet') {
     try {
       await testContext.connection.getSlot();
-      console.log('✅ Local validator is ready');
+      console.log('  Local validator is ready');
     } catch (error) {
-      console.warn('⚠️  Local validator may not be running. Some tests might fail.');
+      console.warn('   Local validator may not be running. Some tests might fail.');
       console.warn('Start a local validator with: solana-test-validator');
     }
   }

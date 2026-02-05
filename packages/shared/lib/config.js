@@ -130,9 +130,9 @@ class Config {
       } else {
         fs.writeJsonSync(this.configPath, this.config, { spaces: 2 });
       }
-      console.log(chalk.green(`✅ Configuration saved to ${this.configPath}`));
+      console.log(chalk.green(`  Configuration saved to ${this.configPath}`));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to save configuration: ${error.message}`));
+      console.error(chalk.red(`  Failed to save configuration: ${error.message}`));
     }
   }
 
@@ -196,7 +196,7 @@ function getConfig() {
 }
 
 async function initConfig() {
-  console.log(chalk.blue('🔧 Initializing Solana DevEx Platform configuration...'));
+  console.log(chalk.blue('  Initializing Solana DevEx Platform configuration...'));
   
   const config = getConfig();
   
@@ -293,14 +293,14 @@ async function initConfig() {
 
   config.saveConfig();
   
-  console.log(chalk.green('✅ Configuration initialized successfully!'));
+  console.log(chalk.green('  Configuration initialized successfully!'));
   console.log(chalk.dim(`Configuration saved to: ${config.configPath}`));
 }
 
 function showConfig() {
   const config = getConfig();
   
-  console.log(chalk.blue('\n📋 Current Solana DevEx Platform Configuration:\n'));
+  console.log(chalk.blue('\n  Current Solana DevEx Platform Configuration:\n'));
   
   console.log(chalk.yellow('Platform:'));
   console.log(`  Environment: ${chalk.cyan(config.get('platform.environment'))}`);

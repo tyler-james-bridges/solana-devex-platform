@@ -42,9 +42,9 @@ envCmd.command('create <name>')
     const envManager = new EnvironmentManager();
     try {
       await envManager.createEnvironment(name, options);
-      console.log(chalk.green(`✅ Environment '${name}' created successfully`));
+      console.log(chalk.green(`  Environment '${name}' created successfully`));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to create environment: ${error.message}`));
+      console.error(chalk.red(`  Failed to create environment: ${error.message}`));
       process.exit(1);
     }
   });
@@ -60,9 +60,9 @@ envCmd.command('list')
       return;
     }
 
-    console.log(chalk.blue('\n📋 Available Environments:'));
+    console.log(chalk.blue('\n  Available Environments:'));
     environments.forEach(env => {
-      const status = env.running ? chalk.green('🟢 Running') : chalk.red('🔴 Stopped');
+      const status = env.running ? chalk.green('  Running') : chalk.red('  Stopped');
       console.log(`  ${env.name} - ${status} - Port: ${env.port}`);
     });
   });
@@ -73,9 +73,9 @@ envCmd.command('switch <name>')
     const envManager = new EnvironmentManager();
     try {
       await envManager.switchEnvironment(name);
-      console.log(chalk.green(`✅ Switched to environment '${name}'`));
+      console.log(chalk.green(`  Switched to environment '${name}'`));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to switch environment: ${error.message}`));
+      console.error(chalk.red(`  Failed to switch environment: ${error.message}`));
       process.exit(1);
     }
   });
@@ -94,7 +94,7 @@ validatorCmd.command('start [environment]')
     const validatorManager = new ValidatorManager(config);
     
     try {
-      console.log(chalk.blue('🚀 Starting Solana test validator...'));
+      console.log(chalk.blue('  Starting Solana test validator...'));
       
       const result = await validatorManager.start({
         environment: environment || config.default_environment,
@@ -105,15 +105,15 @@ validatorCmd.command('start [environment]')
       if (options.monitor) {
         const monitoringServer = new MonitoringServer();
         await monitoringServer.start(options.metricsPort);
-        console.log(chalk.green(`📊 Monitoring dashboard available at: http://localhost:${options.metricsPort}`));
+        console.log(chalk.green(`  Monitoring dashboard available at: http://localhost:${options.metricsPort}`));
       }
 
-      console.log(chalk.green('✅ Test validator started successfully'));
-      console.log(chalk.blue(`📍 RPC URL: ${result.rpcUrl}`));
-      console.log(chalk.blue(`🔗 WebSocket URL: ${result.wsUrl}`));
+      console.log(chalk.green('  Test validator started successfully'));
+      console.log(chalk.blue(`  RPC URL: ${result.rpcUrl}`));
+      console.log(chalk.blue(`  WebSocket URL: ${result.wsUrl}`));
       
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to start validator: ${error.message}`));
+      console.error(chalk.red(`  Failed to start validator: ${error.message}`));
       process.exit(1);
     }
   });
@@ -126,9 +126,9 @@ validatorCmd.command('stop')
     
     try {
       await validatorManager.stop();
-      console.log(chalk.green('✅ Test validator stopped successfully'));
+      console.log(chalk.green('  Test validator stopped successfully'));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to stop validator: ${error.message}`));
+      console.error(chalk.red(`  Failed to stop validator: ${error.message}`));
       process.exit(1);
     }
   });
@@ -141,14 +141,14 @@ validatorCmd.command('restart [environment]')
     const validatorManager = new ValidatorManager(config);
     
     try {
-      console.log(chalk.blue('🔄 Restarting test validator...'));
+      console.log(chalk.blue('  Restarting test validator...'));
       await validatorManager.restart({
         environment: environment || config.default_environment,
         reset: options.reset
       });
-      console.log(chalk.green('✅ Test validator restarted successfully'));
+      console.log(chalk.green('  Test validator restarted successfully'));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to restart validator: ${error.message}`));
+      console.error(chalk.red(`  Failed to restart validator: ${error.message}`));
       process.exit(1);
     }
   });
@@ -165,13 +165,13 @@ validatorCmd.command('status')
       const metrics = await performanceCollector.collect();
       
       console.log(boxen(
-        chalk.blue('🔍 Validator Status\n\n') +
-        `Status: ${status.running ? chalk.green('🟢 Running') : chalk.red('🔴 Stopped')}\n` +
+        chalk.blue('  Validator Status\n\n') +
+        `Status: ${status.running ? chalk.green('  Running') : chalk.red('  Stopped')}\n` +
         `Environment: ${chalk.yellow(status.environment || 'default')}\n` +
         `PID: ${status.pid || 'N/A'}\n` +
         `RPC Port: ${status.rpcPort || 'N/A'}\n` +
         `Uptime: ${status.uptime || 'N/A'}\n\n` +
-        chalk.blue('📊 Performance Metrics\n\n') +
+        chalk.blue('  Performance Metrics\n\n') +
         `CPU Usage: ${chalk.yellow(metrics.cpu?.toFixed(2) || 'N/A')}%\n` +
         `Memory Usage: ${chalk.yellow(metrics.memory?.toFixed(2) || 'N/A')} MB\n` +
         `Disk Usage: ${chalk.yellow(metrics.disk?.toFixed(2) || 'N/A')} GB\n` +
@@ -186,7 +186,7 @@ validatorCmd.command('status')
         }
       ));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to get status: ${error.message}`));
+      console.error(chalk.red(`  Failed to get status: ${error.message}`));
       process.exit(1);
     }
   });
@@ -200,11 +200,11 @@ validatorCmd.command('reset')
     const validatorManager = new ValidatorManager(config);
     
     try {
-      console.log(chalk.blue('🧹 Resetting validator state...'));
+      console.log(chalk.blue('  Resetting validator state...'));
       await validatorManager.reset(options.hard);
-      console.log(chalk.green('✅ Validator reset completed'));
+      console.log(chalk.green('  Validator reset completed'));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to reset validator: ${error.message}`));
+      console.error(chalk.red(`  Failed to reset validator: ${error.message}`));
       process.exit(1);
     }
   });
@@ -220,18 +220,18 @@ monitorCmd.command('start')
     const monitoringServer = new MonitoringServer();
     try {
       await monitoringServer.start(options.port);
-      console.log(chalk.green(`📊 Monitoring dashboard started at: http://localhost:${options.port}`));
+      console.log(chalk.green(`  Monitoring dashboard started at: http://localhost:${options.port}`));
       console.log(chalk.blue('Press Ctrl+C to stop'));
       
       // Keep the process alive
       process.on('SIGINT', async () => {
-        console.log(chalk.yellow('\n🛑 Shutting down monitoring server...'));
+        console.log(chalk.yellow('\n  Shutting down monitoring server...'));
         await monitoringServer.stop();
         process.exit(0);
       });
       
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to start monitoring: ${error.message}`));
+      console.error(chalk.red(`  Failed to start monitoring: ${error.message}`));
       process.exit(1);
     }
   });
@@ -243,13 +243,13 @@ monitorCmd.command('metrics')
     const performanceCollector = new PerformanceCollector();
     
     if (options.watch) {
-      console.log(chalk.blue('📊 Watching metrics (Press Ctrl+C to exit)...\n'));
+      console.log(chalk.blue('  Watching metrics (Press Ctrl+C to exit)...\n'));
       
       const interval = setInterval(async () => {
         try {
           const metrics = await performanceCollector.collect();
           console.clear();
-          console.log(chalk.green(`⏰ ${new Date().toLocaleTimeString()}`));
+          console.log(chalk.green(`  ${new Date().toLocaleTimeString()}`));
           console.log(`CPU: ${chalk.yellow(metrics.cpu?.toFixed(2) || 'N/A')}%`);
           console.log(`Memory: ${chalk.yellow(metrics.memory?.toFixed(2) || 'N/A')} MB`);
           console.log(`TPS: ${chalk.yellow(metrics.tps?.toFixed(2) || 'N/A')}`);
@@ -267,13 +267,13 @@ monitorCmd.command('metrics')
     } else {
       try {
         const metrics = await performanceCollector.collect();
-        console.log(chalk.blue('📊 Current Metrics:'));
+        console.log(chalk.blue('  Current Metrics:'));
         console.log(`CPU Usage: ${chalk.yellow(metrics.cpu?.toFixed(2) || 'N/A')}%`);
         console.log(`Memory Usage: ${chalk.yellow(metrics.memory?.toFixed(2) || 'N/A')} MB`);
         console.log(`Disk Usage: ${chalk.yellow(metrics.disk?.toFixed(2) || 'N/A')} GB`);
         console.log(`Transactions/sec: ${chalk.yellow(metrics.tps?.toFixed(2) || 'N/A')}`);
       } catch (error) {
-        console.error(chalk.red(`❌ Failed to collect metrics: ${error.message}`));
+        console.error(chalk.red(`  Failed to collect metrics: ${error.message}`));
         process.exit(1);
       }
     }
@@ -289,9 +289,9 @@ configCmd.command('init')
     const { createDefaultConfig } = require('../lib/config-loader');
     try {
       await createDefaultConfig();
-      console.log(chalk.green('✅ Configuration initialized'));
+      console.log(chalk.green('  Configuration initialized'));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to initialize config: ${error.message}`));
+      console.error(chalk.red(`  Failed to initialize config: ${error.message}`));
       process.exit(1);
     }
   });
@@ -304,7 +304,7 @@ configCmd.command('show')
       console.log(chalk.blue('⚙️  Current Configuration:'));
       console.log(JSON.stringify(config, null, 2));
     } catch (error) {
-      console.error(chalk.red(`❌ Failed to load config: ${error.message}`));
+      console.error(chalk.red(`  Failed to load config: ${error.message}`));
       process.exit(1);
     }
   });

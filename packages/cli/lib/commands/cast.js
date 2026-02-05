@@ -54,14 +54,14 @@ class CastCommand {
       
       const solBalance = balance / LAMPORTS_PER_SOL;
       
-      console.log(chalk.bold('\n💰 Account Balance'));
+      console.log(chalk.bold('\n  Account Balance'));
       console.log('━'.repeat(30));
       console.log(chalk.cyan(`Address: ${address}`));
       console.log(chalk.green(`Balance: ${solBalance} SOL`));
       console.log(chalk.gray(`Lamports: ${balance}`));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get balance:'), error.message);
+      console.error(chalk.red('  Failed to get balance:'), error.message);
     }
   }
 
@@ -78,7 +78,7 @@ class CastCommand {
       spinner.succeed();
       
       if (!accountInfo) {
-        console.log(chalk.yellow('⚠️  Account not found or has no data'));
+        console.log(chalk.yellow('   Account not found or has no data'));
         return;
       }
       
@@ -99,7 +99,7 @@ class CastCommand {
         return;
       }
       
-      console.log(chalk.bold('\n📄 Account Information'));
+      console.log(chalk.bold('\n  Account Information'));
       console.log('━'.repeat(40));
       console.log(chalk.cyan(`Address:     ${address}`));
       console.log(chalk.green(`Balance:     ${balance} SOL`));
@@ -109,12 +109,12 @@ class CastCommand {
       console.log(chalk.gray(`Data Length: ${accountInfo.data.length} bytes`));
       
       if (accountInfo.data.length > 0 && accountInfo.data.length <= 1024) {
-        console.log(chalk.bold('\n📊 Account Data (hex):'));
+        console.log(chalk.bold('\n  Account Data (hex):'));
         console.log(accountInfo.data.toString('hex'));
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get account:'), error.message);
+      console.error(chalk.red('  Failed to get account:'), error.message);
     }
   }
 
@@ -123,7 +123,7 @@ class CastCommand {
       await this.initializeConfig();
       await this.initializeConnection(options.rpcUrl);
       
-      console.log(chalk.blue('🔧 Calling program instruction...'));
+      console.log(chalk.blue('  Calling program instruction...'));
       console.log(chalk.gray(`Program: ${program}`));
       console.log(chalk.gray(`Instruction: ${instruction}`));
       
@@ -135,11 +135,11 @@ class CastCommand {
       // In a real scenario, you'd need to properly serialize instruction data
       // based on the program's IDL
       
-      console.log(chalk.yellow('⚠️  Instruction calling requires program IDL'));
+      console.log(chalk.yellow('   Instruction calling requires program IDL'));
       console.log(chalk.gray('Implement with Anchor IDL parsing for full functionality'));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to call instruction:'), error.message);
+      console.error(chalk.red('  Failed to call instruction:'), error.message);
     }
   }
 
@@ -178,9 +178,9 @@ class CastCommand {
         [keypair]
       );
       
-      spinner.succeed(chalk.green('✅ SOL transfer completed!'));
+      spinner.succeed(chalk.green('  SOL transfer completed!'));
       
-      console.log(chalk.bold('\n💸 Transfer Details'));
+      console.log(chalk.bold('\n  Transfer Details'));
       console.log('━'.repeat(40));
       console.log(chalk.cyan(`From:      ${fromPubkey.toString()}`));
       console.log(chalk.cyan(`To:        ${toAddress}`));
@@ -194,7 +194,7 @@ class CastCommand {
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to send SOL:'), error.message);
+      console.error(chalk.red('  Failed to send SOL:'), error.message);
     }
   }
 
@@ -229,7 +229,7 @@ class CastCommand {
       
       const programData = await fs.readFile(resolvedPath);
       
-      console.log(chalk.blue('\n🚀 Program Deployment'));
+      console.log(chalk.blue('\n  Program Deployment'));
       console.log('━'.repeat(40));
       console.log(chalk.cyan(`Program:   ${path.basename(resolvedPath)}`));
       console.log(chalk.cyan(`Size:      ${(programData.length / 1024).toFixed(1)}KB`));
@@ -238,13 +238,13 @@ class CastCommand {
       
       // TODO: Implement actual program deployment
       // This would typically use Solana CLI or implement the deployment logic
-      console.log(chalk.yellow('\n⚠️  Use `solana program deploy` for actual deployment'));
+      console.log(chalk.yellow('\n   Use `solana program deploy` for actual deployment'));
       console.log(chalk.gray(`Command: solana program deploy ${resolvedPath} --program-id ${programKeypair.publicKey.toString()}`));
       
       spinner.succeed(chalk.green('Deployment preparation completed!'));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to deploy program:'), error.message);
+      console.error(chalk.red('  Failed to deploy program:'), error.message);
     }
   }
 
@@ -296,7 +296,7 @@ class CastCommand {
       console.log(chalk.cyan(`Current slot: ${slot}`));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get slot:'), error.message);
+      console.error(chalk.red('  Failed to get slot:'), error.message);
     }
   }
 
@@ -308,7 +308,7 @@ class CastCommand {
       console.log(chalk.cyan(`Block height: ${blockHeight}`));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get block height:'), error.message);
+      console.error(chalk.red('  Failed to get block height:'), error.message);
     }
   }
 
@@ -322,7 +322,7 @@ class CastCommand {
       
       spinner.succeed();
       
-      console.log(chalk.bold('\n🌐 Cluster Nodes'));
+      console.log(chalk.bold('\n  Cluster Nodes'));
       console.log('━'.repeat(50));
       
       clusterNodes.forEach((node, index) => {
@@ -337,7 +337,7 @@ class CastCommand {
       });
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get cluster nodes:'), error.message);
+      console.error(chalk.red('  Failed to get cluster nodes:'), error.message);
     }
   }
 
@@ -347,7 +347,7 @@ class CastCommand {
       
       const version = await this.connection.getVersion();
       
-      console.log(chalk.bold('\n📊 Solana Version'));
+      console.log(chalk.bold('\n  Solana Version'));
       console.log('━'.repeat(30));
       console.log(chalk.cyan(`Solana Core: ${version['solana-core']}`));
       if (version['feature-set']) {
@@ -355,7 +355,7 @@ class CastCommand {
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get version:'), error.message);
+      console.error(chalk.red('  Failed to get version:'), error.message);
     }
   }
 
@@ -369,7 +369,7 @@ class CastCommand {
       
       spinner.succeed();
       
-      console.log(chalk.bold('\n📈 Performance Samples'));
+      console.log(chalk.bold('\n  Performance Samples'));
       console.log('━'.repeat(50));
       
       samples.forEach((sample, index) => {
@@ -381,7 +381,7 @@ class CastCommand {
       });
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get performance samples:'), error.message);
+      console.error(chalk.red('  Failed to get performance samples:'), error.message);
     }
   }
 }

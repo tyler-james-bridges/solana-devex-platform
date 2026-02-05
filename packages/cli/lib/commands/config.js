@@ -15,7 +15,7 @@ class ConfigCommand {
       const configPath = path.resolve(this.configPath);
       
       if (await fs.pathExists(configPath)) {
-        console.log(chalk.yellow(`⚠️  Config file already exists: ${configPath}`));
+        console.log(chalk.yellow(`   Config file already exists: ${configPath}`));
         console.log(chalk.gray('Use --force to overwrite'));
         return;
       }
@@ -23,12 +23,12 @@ class ConfigCommand {
       const defaultConfig = this.createDefaultConfig();
       await fs.writeFile(configPath, defaultConfig);
       
-      console.log(chalk.green('✅ Created default configuration file'));
+      console.log(chalk.green('  Created default configuration file'));
       console.log(chalk.cyan(`Location: ${configPath}`));
       console.log(chalk.gray('\nEdit this file to customize your project settings.'));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to create config:'), error.message);
+      console.error(chalk.red('  Failed to create config:'), error.message);
     }
   }
 
@@ -39,14 +39,14 @@ class ConfigCommand {
       const value = this.getNestedValue(config, key);
       
       if (value === undefined) {
-        console.log(chalk.yellow(`⚠️  Config key not found: ${key}`));
+        console.log(chalk.yellow(`   Config key not found: ${key}`));
         return;
       }
       
       console.log(chalk.cyan(`${key}:`), this.formatValue(value));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to get config:'), error.message);
+      console.error(chalk.red('  Failed to get config:'), error.message);
     }
   }
 
@@ -70,11 +70,11 @@ class ConfigCommand {
       // Save config
       await saveConfig(config, this.configPath);
       
-      console.log(chalk.green('✅ Config updated'));
+      console.log(chalk.green('  Config updated'));
       console.log(chalk.cyan(`${key}:`), this.formatValue(parsedValue));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to set config:'), error.message);
+      console.error(chalk.red('  Failed to set config:'), error.message);
     }
   }
 
@@ -82,13 +82,13 @@ class ConfigCommand {
     try {
       const config = await loadConfig(this.configPath);
       
-      console.log(chalk.bold('📋 Configuration'));
+      console.log(chalk.bold('  Configuration'));
       console.log('━'.repeat(40));
       
       this.printConfig(config);
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to list config:'), error.message);
+      console.error(chalk.red('  Failed to list config:'), error.message);
     }
   }
 
@@ -328,18 +328,18 @@ watch_mode = true
       }
       
       if (errors.length > 0) {
-        console.log(chalk.red('❌ Configuration validation failed:'));
+        console.log(chalk.red('  Configuration validation failed:'));
         errors.forEach(error => {
           console.log(chalk.red(`   • ${error}`));
         });
         return false;
       } else {
-        console.log(chalk.green('✅ Configuration is valid'));
+        console.log(chalk.green('  Configuration is valid'));
         return true;
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to validate config:'), error.message);
+      console.error(chalk.red('  Failed to validate config:'), error.message);
       return false;
     }
   }
@@ -361,13 +361,13 @@ watch_mode = true
         console.log(JSON.stringify(config, null, 2));
       } else if (format === 'yaml') {
         // Would require yaml library
-        console.log(chalk.yellow('⚠️  YAML export not implemented yet'));
+        console.log(chalk.yellow('   YAML export not implemented yet'));
       } else {
-        console.error(chalk.red(`❌ Unknown format: ${format}`));
+        console.error(chalk.red(`  Unknown format: ${format}`));
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to export config:'), error.message);
+      console.error(chalk.red('  Failed to export config:'), error.message);
     }
   }
 
@@ -381,10 +381,10 @@ watch_mode = true
       
       await this.init();
       
-      console.log(chalk.green('✅ Configuration reset to defaults'));
+      console.log(chalk.green('  Configuration reset to defaults'));
       
     } catch (error) {
-      console.error(chalk.red('❌ Failed to reset config:'), error.message);
+      console.error(chalk.red('  Failed to reset config:'), error.message);
     }
   }
 }

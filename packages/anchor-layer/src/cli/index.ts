@@ -52,8 +52,8 @@ program
 
     // Validate Anchor workspace
     if (!AnchorUtils.isAnchorWorkspace() && !['init', 'help'].includes(thisCommand.name())) {
-      console.error(chalk.red('❌ Error: Not in an Anchor workspace directory'));
-      console.error(chalk.yellow('💡 Run this command from an Anchor project directory or use "anchor-enhance init" to create one'));
+      console.error(chalk.red('  Error: Not in an Anchor workspace directory'));
+      console.error(chalk.yellow('  Run this command from an Anchor project directory or use "anchor-enhance init" to create one'));
       process.exit(1);
     }
   });
@@ -71,29 +71,29 @@ program
   .description('Show Anchor project status and enhancement layer information')
   .action(async () => {
     try {
-      console.log(chalk.blue('📊 Anchor Enhancement Layer Status\n'));
+      console.log(chalk.blue('  Anchor Enhancement Layer Status\n'));
 
       // Workspace validation
       const validation = AnchorUtils.validateWorkspace();
       if (validation.valid) {
-        console.log(chalk.green('✅ Anchor workspace: Valid'));
+        console.log(chalk.green('  Anchor workspace: Valid'));
       } else {
-        console.log(chalk.red('❌ Anchor workspace: Issues found'));
+        console.log(chalk.red('  Anchor workspace: Issues found'));
         validation.issues.forEach(issue => {
-          console.log(chalk.yellow(`   ⚠️  ${issue}`));
+          console.log(chalk.yellow(`      ${issue}`));
         });
       }
 
       // Program information
       const programNames = AnchorUtils.getProgramNames();
-      console.log(chalk.blue(`\n📦 Programs (${programNames.length}):`));
+      console.log(chalk.blue(`\n  Programs (${programNames.length}):`));
       
       if (programNames.length === 0) {
         console.log(chalk.yellow('   No programs found'));
       } else {
         programNames.forEach(name => {
           const hasIdl = AnchorUtils.hasIdl(name);
-          const status = hasIdl ? chalk.green('✅ Built') : chalk.yellow('⏳ Not built');
+          const status = hasIdl ? chalk.green('  Built') : chalk.yellow('  Not built');
           console.log(`   ${name}: ${status}`);
         });
       }
@@ -101,13 +101,13 @@ program
       // Network information
       const network = AnchorUtils.getCurrentNetwork();
       const clusterUrl = AnchorUtils.getClusterUrl();
-      console.log(chalk.blue(`\n🌐 Network:`));
+      console.log(chalk.blue(`\n  Network:`));
       console.log(`   Cluster: ${chalk.cyan(network)}`);
       console.log(`   URL: ${chalk.gray(clusterUrl)}`);
 
       // Test files
       const testFiles = AnchorUtils.getTestFiles();
-      console.log(chalk.blue(`\n🧪 Test Files (${testFiles.length}):`));
+      console.log(chalk.blue(`\n  Test Files (${testFiles.length}):`));
       if (testFiles.length === 0) {
         console.log(chalk.yellow('   No test files found'));
       } else {
@@ -121,14 +121,14 @@ program
       }
 
       // Enhancement layer features
-      console.log(chalk.blue('\n⚡ Enhancement Features:'));
-      console.log(`   ${chalk.green('✅')} Real-time test results`);
-      console.log(`   ${chalk.green('✅')} Deployment monitoring`);
-      console.log(`   ${chalk.green('✅')} Performance tracking`);
-      console.log(`   ${chalk.green('✅')} VS Code integration`);
+      console.log(chalk.blue('\n  Enhancement Features:'));
+      console.log(`   ${chalk.green(' ')} Real-time test results`);
+      console.log(`   ${chalk.green(' ')} Deployment monitoring`);
+      console.log(`   ${chalk.green(' ')} Performance tracking`);
+      console.log(`   ${chalk.green(' ')} VS Code integration`);
 
     } catch (error) {
-      console.error(chalk.red('❌ Error checking status:'), error);
+      console.error(chalk.red('  Error checking status:'), error);
       process.exit(1);
     }
   });
@@ -140,17 +140,17 @@ program
   .option('--deep', 'Perform deep clean including node_modules and target directories')
   .action(async (options) => {
     try {
-      console.log(chalk.blue('🧹 Cleaning Anchor project...'));
+      console.log(chalk.blue('  Cleaning Anchor project...'));
 
       const CommandRunner = require('../utils/CommandRunner').CommandRunner;
       const runner = new CommandRunner();
 
       // Basic clean
       await runner.runAnchor('clean');
-      console.log(chalk.green('✅ Anchor build artifacts cleaned'));
+      console.log(chalk.green('  Anchor build artifacts cleaned'));
 
       if (options.deep) {
-        console.log(chalk.yellow('🚨 Performing deep clean...'));
+        console.log(chalk.yellow('  Performing deep clean...'));
         
         // Remove node_modules
         const fs = require('fs');
@@ -176,12 +176,12 @@ program
           fs.rmSync(anchorPath, { recursive: true, force: true });
         }
 
-        console.log(chalk.green('✅ Deep clean completed'));
-        console.log(chalk.yellow('💡 Run "npm install" and "anchor build" to rebuild'));
+        console.log(chalk.green('  Deep clean completed'));
+        console.log(chalk.yellow('  Run "npm install" and "anchor build" to rebuild'));
       }
 
     } catch (error) {
-      console.error(chalk.red('❌ Error during clean:'), error);
+      console.error(chalk.red('  Error during clean:'), error);
       process.exit(1);
     }
   });
@@ -191,7 +191,7 @@ program
   .command('doctor')
   .description('Diagnose common issues and provide fixes')
   .action(async () => {
-    console.log(chalk.blue('🔬 Running Anchor Enhancement Layer diagnostics...\n'));
+    console.log(chalk.blue('  Running Anchor Enhancement Layer diagnostics...\n'));
 
     const issues: string[] = [];
     const fixes: string[] = [];
@@ -203,7 +203,7 @@ program
       
       try {
         await runner.run('anchor', ['--version'], { timeout: 5000 });
-        console.log(chalk.green('✅ Anchor CLI is installed'));
+        console.log(chalk.green('  Anchor CLI is installed'));
       } catch (error) {
         issues.push('Anchor CLI not found');
         fixes.push('Install Anchor: https://www.anchor-lang.com/docs/installation');
@@ -212,7 +212,7 @@ program
       // Check Rust installation
       try {
         await runner.run('cargo', ['--version'], { timeout: 5000 });
-        console.log(chalk.green('✅ Rust is installed'));
+        console.log(chalk.green('  Rust is installed'));
       } catch (error) {
         issues.push('Rust not found');
         fixes.push('Install Rust: https://rustup.rs/');
@@ -221,7 +221,7 @@ program
       // Check Solana installation
       try {
         await runner.run('solana', ['--version'], { timeout: 5000 });
-        console.log(chalk.green('✅ Solana CLI is installed'));
+        console.log(chalk.green('  Solana CLI is installed'));
       } catch (error) {
         issues.push('Solana CLI not found');
         fixes.push('Install Solana: https://docs.solana.com/cli/install-solana-cli-tools');
@@ -231,7 +231,7 @@ program
       const nodeVersion = process.version;
       const majorVersion = parseInt(nodeVersion.slice(1));
       if (majorVersion >= 16) {
-        console.log(chalk.green(`✅ Node.js version: ${nodeVersion}`));
+        console.log(chalk.green(`  Node.js version: ${nodeVersion}`));
       } else {
         issues.push(`Node.js version ${nodeVersion} is too old`);
         fixes.push('Update Node.js to version 16 or higher');
@@ -240,7 +240,7 @@ program
       // Check workspace structure
       const validation = AnchorUtils.validateWorkspace();
       if (validation.valid) {
-        console.log(chalk.green('✅ Anchor workspace structure is valid'));
+        console.log(chalk.green('  Anchor workspace structure is valid'));
       } else {
         validation.issues.forEach(issue => {
           issues.push(`Workspace: ${issue}`);
@@ -267,7 +267,7 @@ program
         }
         
         if (buildablePrograms > 0) {
-          console.log(chalk.green(`✅ ${buildablePrograms} buildable programs found`));
+          console.log(chalk.green(`  ${buildablePrograms} buildable programs found`));
         } else if (programNames.length > 0) {
           issues.push('Programs found but none appear buildable');
           fixes.push('Check program Cargo.toml files');
@@ -279,17 +279,17 @@ program
       
       if (issues.length === 0) {
         console.log(boxen(
-          chalk.green('🎉 All checks passed! Your environment is ready for enhanced Anchor development.'),
+          chalk.green('  All checks passed! Your environment is ready for enhanced Anchor development.'),
           { padding: 1, borderColor: 'green' }
         ));
       } else {
-        console.log(chalk.red(`❌ Found ${issues.length} issue(s):\n`));
+        console.log(chalk.red(`  Found ${issues.length} issue(s):\n`));
         
         issues.forEach((issue, index) => {
           console.log(chalk.red(`   ${index + 1}. ${issue}`));
         });
         
-        console.log(chalk.yellow('\n💡 Suggested fixes:\n'));
+        console.log(chalk.yellow('\n  Suggested fixes:\n'));
         
         fixes.forEach((fix, index) => {
           console.log(chalk.yellow(`   ${index + 1}. ${fix}`));
@@ -297,7 +297,7 @@ program
       }
 
     } catch (error) {
-      console.error(chalk.red('❌ Error during diagnostics:'), error);
+      console.error(chalk.red('  Error during diagnostics:'), error);
       process.exit(1);
     }
   });

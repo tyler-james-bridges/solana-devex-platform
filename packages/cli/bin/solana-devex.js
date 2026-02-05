@@ -314,7 +314,7 @@ program
 
 // Global error handling
 process.on('uncaughtException', (error) => {
-  console.error(chalk.red('\n❌ Unexpected error:'), error.message);
+  console.error(chalk.red('\n  Unexpected error:'), error.message);
   if (program.opts().verbose) {
     console.error(error.stack);
   }
@@ -322,7 +322,7 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error(chalk.red('\n❌ Unhandled promise rejection:'), reason);
+  console.error(chalk.red('\n  Unhandled promise rejection:'), reason);
   if (program.opts().verbose) {
     console.error('Promise:', promise);
   }

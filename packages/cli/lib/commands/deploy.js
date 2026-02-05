@@ -53,7 +53,7 @@ class DeployCommand {
       this.displayDeploymentSummary([deploymentResult]);
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Deployment failed:'), error.message);
+      console.error(chalk.red('\n  Deployment failed:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -413,7 +413,7 @@ class DeployCommand {
         }
       }
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Verification failed:'), error.message);
+      console.warn(chalk.yellow('   Verification failed:'), error.message);
     }
   }
 
@@ -445,7 +445,7 @@ class DeployCommand {
       }
       
     } catch (error) {
-      console.error(chalk.red('❌ Verification failed:'), error.message);
+      console.error(chalk.red('  Verification failed:'), error.message);
     }
   }
 
@@ -478,8 +478,8 @@ class DeployCommand {
 
   formatVerificationResult(result) {
     const status = result.verified ? 
-      chalk.green('✅ VERIFIED') : 
-      chalk.red('❌ NOT FOUND');
+      chalk.green('  VERIFIED') : 
+      chalk.red('  NOT FOUND');
     
     let output = `${status} ${result.programId}`;
     
@@ -495,7 +495,7 @@ class DeployCommand {
   }
 
   displayDryRunResults(results) {
-    console.log(chalk.bold('\n🧪 Deployment Dry Run'));
+    console.log(chalk.bold('\n  Deployment Dry Run'));
     console.log('━'.repeat(50));
     
     console.log(chalk.blue(`Network: ${results.network}`));
@@ -503,23 +503,23 @@ class DeployCommand {
     
     results.programs.forEach(program => {
       const sizeKB = (program.size / 1024).toFixed(1);
-      console.log(`\n📦 ${chalk.bold(program.name)}`);
+      console.log(`\n  ${chalk.bold(program.name)}`);
       console.log(`   Size: ${sizeKB}KB`);
       console.log(`   Est. Cost: ${program.estimatedCost.toFixed(4)} SOL`);
     });
     
-    console.log(chalk.bold(`\n💰 Total Estimated Cost: ${results.estimatedCost.toFixed(4)} SOL`));
+    console.log(chalk.bold(`\n  Total Estimated Cost: ${results.estimatedCost.toFixed(4)} SOL`));
     console.log('');
   }
 
   displayDeploymentSummary(deploymentResults) {
-    console.log(chalk.bold('\n🚀 Deployment Summary'));
+    console.log(chalk.bold('\n  Deployment Summary'));
     console.log('━'.repeat(50));
     
     deploymentResults.forEach(result => {
       const status = result.success ? 
-        chalk.green('✅ SUCCESS') : 
-        chalk.red('❌ FAILED');
+        chalk.green('  SUCCESS') : 
+        chalk.red('  FAILED');
       
       console.log(`${status} ${chalk.bold(result.network)}`);
       console.log(`   Duration: ${result.duration}ms`);
@@ -531,7 +531,7 @@ class DeployCommand {
       
       // Show program details
       result.programs.forEach(program => {
-        const programStatus = program.success ? '✅' : '❌';
+        const programStatus = program.success ? ' ' : ' ';
         console.log(`   ${programStatus} ${program.program}`);
         
         if (program.programId) {
@@ -540,8 +540,8 @@ class DeployCommand {
         
         if (program.verified !== undefined) {
           const verifyStatus = program.verified ? 
-            chalk.green('✅ Verified') : 
-            chalk.yellow('⚠️  Not verified');
+            chalk.green('  Verified') : 
+            chalk.yellow('   Not verified');
           console.log(`      Verification: ${verifyStatus}`);
         }
         

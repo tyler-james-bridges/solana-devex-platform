@@ -16,7 +16,7 @@ class InitCommand {
       const projectName = name || await this.promptForProjectName();
       const projectPath = path.resolve(projectName);
       
-      console.log(chalk.bold.blue('🚀 Initializing Solana project'));
+      console.log(chalk.bold.blue('  Initializing Solana project'));
       console.log(chalk.gray(`Creating: ${projectPath}\n`));
       
       // Check if directory exists
@@ -56,7 +56,7 @@ class InitCommand {
       this.displayNextSteps(projectName, projectPath);
       
     } catch (error) {
-      console.error(chalk.red('\n❌ Project initialization failed:'), error.message);
+      console.error(chalk.red('\n  Project initialization failed:'), error.message);
       if (this.globalOpts.verbose) {
         console.error(error.stack);
       }
@@ -671,7 +671,7 @@ MIT
       await this.runCommand('git', ['add', '.'], { cwd: projectPath });
       await this.runCommand('git', ['commit', '-m', 'Initial commit'], { cwd: projectPath });
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Git initialization failed:'), error.message);
+      console.warn(chalk.yellow('   Git initialization failed:'), error.message);
     }
   }
 
@@ -705,7 +705,7 @@ MIT
     try {
       await this.runCommand('npm', ['install'], { cwd: projectPath });
     } catch (error) {
-      console.warn(chalk.yellow('⚠️  Dependency installation failed:'), error.message);
+      console.warn(chalk.yellow('   Dependency installation failed:'), error.message);
       console.log(chalk.gray('You can install them manually with: npm install'));
     }
   }
@@ -743,13 +743,13 @@ MIT
   }
 
   displayNextSteps(projectName, projectPath) {
-    console.log(chalk.bold('\n🎉 Project created successfully!'));
+    console.log(chalk.bold('\n  Project created successfully!'));
     console.log('━'.repeat(50));
     
-    console.log(chalk.bold('\n📁 Project Location:'));
+    console.log(chalk.bold('\n  Project Location:'));
     console.log(chalk.cyan(`   ${projectPath}`));
     
-    console.log(chalk.bold('\n🚀 Next Steps:'));
+    console.log(chalk.bold('\n  Next Steps:'));
     console.log(chalk.gray('1. Navigate to your project:'));
     console.log(chalk.cyan(`   cd ${projectName}`));
     console.log('');

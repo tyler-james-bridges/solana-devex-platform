@@ -69,7 +69,7 @@ export class VSCodeIntegration extends EventEmitter {
   public async initialize(): Promise<void> {
     if (!this.config.enabled) return;
 
-    console.log('🔧 Initializing VS Code integration...');
+    console.log('  Initializing VS Code integration...');
 
     // Create .vscode directory if it doesn't exist
     await this.ensureVSCodeDirectory();
@@ -93,7 +93,7 @@ export class VSCodeIntegration extends EventEmitter {
     // Start WebSocket server for real-time communication
     await this.startWebSocketServer();
 
-    console.log('✅ VS Code integration initialized');
+    console.log('  VS Code integration initialized');
   }
 
   private async ensureVSCodeDirectory(): Promise<void> {
@@ -230,7 +230,7 @@ export class VSCodeIntegration extends EventEmitter {
     }
 
     fs.writeFileSync(tasksFile, JSON.stringify(tasksConfig, null, 2));
-    console.log('📝 Enhanced tasks created in .vscode/tasks.json');
+    console.log('  Enhanced tasks created in .vscode/tasks.json');
   }
 
   private async createLaunchConfigurations(): Promise<void> {
@@ -416,7 +416,7 @@ export class VSCodeIntegration extends EventEmitter {
     this.wsServer = new WebSocketServer({ port: this.config.websocketPort });
     
     this.wsServer.on('connection', (ws) => {
-      console.log('🔗 VS Code extension connected');
+      console.log('  VS Code extension connected');
       
       ws.send(JSON.stringify({
         type: 'connected',
@@ -437,11 +437,11 @@ export class VSCodeIntegration extends EventEmitter {
       });
 
       ws.on('close', () => {
-        console.log('🔗 VS Code extension disconnected');
+        console.log('  VS Code extension disconnected');
       });
     });
 
-    console.log(`🔗 VS Code integration WebSocket server started on port ${this.config.websocketPort}`);
+    console.log(`  VS Code integration WebSocket server started on port ${this.config.websocketPort}`);
   }
 
   private handleVSCodeRequest(ws: any, request: any): void {
@@ -584,7 +584,7 @@ export class VSCodeIntegration extends EventEmitter {
       JSON.stringify(rustSnippets, null, 2)
     );
 
-    console.log('📝 Code snippets created in .vscode/snippets/');
+    console.log('  Code snippets created in .vscode/snippets/');
   }
 
   public async cleanup(): Promise<void> {
@@ -592,6 +592,6 @@ export class VSCodeIntegration extends EventEmitter {
       this.wsServer.close();
       this.wsServer = undefined;
     }
-    console.log('🧹 VS Code integration cleaned up');
+    console.log('  VS Code integration cleaned up');
   }
 }

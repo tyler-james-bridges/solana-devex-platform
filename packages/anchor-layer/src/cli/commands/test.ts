@@ -18,7 +18,7 @@ export function createTestCommand(): Command {
     .option('--skip-build', 'Skip building programs before testing')
     .action(async (pattern, options) => {
       try {
-        console.log(chalk.blue('🚀 Starting Enhanced Anchor Tests\n'));
+        console.log(chalk.blue('  Starting Enhanced Anchor Tests\n'));
 
         // Initialize enhancement layer
         const enhancement = new AnchorEnhancementLayer({
@@ -31,18 +31,18 @@ export function createTestCommand(): Command {
 
         // Set up event listeners for real-time feedback
         enhancement.on('test:start', (data) => {
-          console.log(chalk.cyan(`▶️  Starting test run${data.pattern ? ` for pattern: ${data.pattern}` : ''}`));
+          console.log(chalk.cyan(`   Starting test run${data.pattern ? ` for pattern: ${data.pattern}` : ''}`));
         });
 
         enhancement.on('test:complete', (results) => {
-          console.log(chalk.green('\n✅ Test run completed successfully'));
+          console.log(chalk.green('\n  Test run completed successfully'));
           
           if (results.length > 0) {
             const totalTests = results.reduce((sum: number, suite: any) => sum + suite.totalTests, 0);
             const passedTests = results.reduce((sum: number, suite: any) => sum + suite.passed, 0);
             const failedTests = results.reduce((sum: number, suite: any) => sum + suite.failed, 0);
             
-            console.log(chalk.blue('\n📊 Test Summary:'));
+            console.log(chalk.blue('\n  Test Summary:'));
             console.log(`   Tests: ${chalk.green(passedTests)} passed, ${failedTests > 0 ? chalk.red(failedTests) : 0} failed, ${totalTests} total`);
             
             if (results[0].coverage) {
@@ -56,11 +56,11 @@ export function createTestCommand(): Command {
         });
 
         enhancement.on('test:individual:complete', (test) => {
-          console.log(chalk.green(`   ✅ ${test.name} (${test.duration}ms)`));
+          console.log(chalk.green(`     ${test.name} (${test.duration}ms)`));
         });
 
         enhancement.on('test:individual:failed', (test) => {
-          console.log(chalk.red(`   ❌ ${test.name}`));
+          console.log(chalk.red(`     ${test.name}`));
         });
 
         // Start real-time updates
@@ -68,26 +68,26 @@ export function createTestCommand(): Command {
 
         // Build programs unless skipped
         if (!options.skipBuild) {
-          console.log(chalk.yellow('🔨 Building programs...'));
+          console.log(chalk.yellow('  Building programs...'));
           const { CommandRunner } = require('../../utils/CommandRunner');
           const runner = new CommandRunner();
           
           await runner.runAnchor('build', [], { silent: false });
-          console.log(chalk.green('✅ Programs built successfully\n'));
+          console.log(chalk.green('  Programs built successfully\n'));
         }
 
         if (options.watch) {
-          console.log(chalk.cyan('👀 Starting test watcher...\n'));
+          console.log(chalk.cyan('  Starting test watcher...\n'));
           
           // Enable file watching
           const testRunner = enhancement.getTestRunner();
           testRunner.createTestWatcher();
           
-          console.log(chalk.green('🔄 Watching for file changes... (Press Ctrl+C to stop)'));
+          console.log(chalk.green('  Watching for file changes... (Press Ctrl+C to stop)'));
           
           // Keep process alive
           process.on('SIGINT', async () => {
-            console.log(chalk.yellow('\n⏹️  Stopping test watcher...'));
+            console.log(chalk.yellow('\n   Stopping test watcher...'));
             await enhancement.stopRealTimeUpdates();
             process.exit(0);
           });
@@ -132,16 +132,16 @@ export function createTestCommand(): Command {
 
         if (options.setCoverage) {
           config.coverageThreshold = parseInt(options.setCoverage);
-          console.log(chalk.green(`✅ Coverage threshold set to ${config.coverageThreshold}%`));
+          console.log(chalk.green(`  Coverage threshold set to ${config.coverageThreshold}%`));
         }
 
         if (options.setTimeout) {
           config.timeout = parseInt(options.setTimeout);
-          console.log(chalk.green(`✅ Test timeout set to ${config.timeout}ms`));
+          console.log(chalk.green(`  Test timeout set to ${config.timeout}ms`));
         }
 
         if (options.listConfig) {
-          console.log(chalk.blue('📋 Current Test Configuration:'));
+          console.log(chalk.blue('  Current Test Configuration:'));
           console.log(`   Coverage Threshold: ${chalk.cyan(config.coverageThreshold)}%`);
           console.log(`   Timeout: ${chalk.cyan(config.timeout)}ms`);
           console.log(`   Parallel Execution: ${chalk.cyan(config.parallel ? 'enabled' : 'disabled')}`);
@@ -165,20 +165,20 @@ export function createTestCommand(): Command {
     .option('--export', 'Export analytics to CSV')
     .action(async (options) => {
       try {
-        console.log(chalk.blue('📈 Test Analytics\n'));
+        console.log(chalk.blue('  Test Analytics\n'));
 
         // This would integrate with the logging system to show test metrics
         const { FileSystemUtils } = require('../../utils/FileSystemUtils');
         const logDir = '.anchor-enhancement/logs';
         
         if (!FileSystemUtils.getDirectoryInfo(logDir).exists) {
-          console.log(chalk.yellow('📊 No test analytics data available yet.'));
+          console.log(chalk.yellow('  No test analytics data available yet.'));
           console.log(chalk.gray('   Run some tests first to collect analytics data.'));
           return;
         }
 
         // Mock analytics data for demonstration
-        console.log(chalk.green('📊 Test Performance Over Last 7 Days:'));
+        console.log(chalk.green('  Test Performance Over Last 7 Days:'));
         console.log(chalk.gray('─'.repeat(50)));
         
         const mockData = [
@@ -190,20 +190,20 @@ export function createTestCommand(): Command {
 
         mockData.forEach(day => {
           const passRate = ((day.passed / day.tests) * 100).toFixed(1);
-          const status = day.failed === 0 ? chalk.green('✅') : chalk.yellow('⚠️');
+          const status = day.failed === 0 ? chalk.green(' ') : chalk.yellow(' ');
           
           console.log(`${status} ${day.date}: ${day.tests} tests, ${chalk.green(day.passed)} passed, ${day.failed > 0 ? chalk.red(day.failed) : 0} failed (${passRate}% pass rate)`);
           console.log(`   Avg execution time: ${chalk.cyan(day.avgTime)}ms`);
         });
 
         console.log(chalk.gray('\n' + '─'.repeat(50)));
-        console.log(chalk.blue('💡 Insights:'));
+        console.log(chalk.blue('  Insights:'));
         console.log('   • Test execution time has been consistent');
         console.log('   • Pass rate: 96.4% (excellent!)');
         console.log('   • Most failures occur on complex integration tests');
 
         if (options.export) {
-          console.log(chalk.green('\n📄 Analytics exported to test-analytics.csv'));
+          console.log(chalk.green('\n  Analytics exported to test-analytics.csv'));
         }
 
       } catch (error) {

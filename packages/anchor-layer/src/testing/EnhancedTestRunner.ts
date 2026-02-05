@@ -152,7 +152,7 @@ export class EnhancedTestRunner extends EventEmitter {
     
     for (const line of lines) {
       // Match test completion patterns
-      const testMatch = line.match(/^\s*✓\s+(.+?)\s+\((\d+)ms\)/);
+      const testMatch = line.match(/^\s* \s+(.+?)\s+\((\d+)ms\)/);
       if (testMatch) {
         this.emit('test:individual:complete', {
           name: testMatch[1],
@@ -161,7 +161,7 @@ export class EnhancedTestRunner extends EventEmitter {
         });
       }
 
-      const failedMatch = line.match(/^\s*✗\s+(.+)/);
+      const failedMatch = line.match(/^\s* \s+(.+)/);
       if (failedMatch) {
         this.emit('test:individual:failed', {
           name: failedMatch[1],

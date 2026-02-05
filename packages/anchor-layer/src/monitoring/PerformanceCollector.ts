@@ -74,7 +74,7 @@ export class PerformanceCollector extends EventEmitter {
   public async startRealTimeCollection(): Promise<void> {
     if (!this.config.enabled || this.collectInterval) return;
 
-    console.log('🔍 Starting performance monitoring...');
+    console.log('  Starting performance monitoring...');
 
     // Start WebSocket server for real-time updates
     await this.startWebSocketServer();
@@ -91,7 +91,7 @@ export class PerformanceCollector extends EventEmitter {
       }
     }, this.config.collectInterval);
 
-    console.log(`📊 Performance monitoring active (interval: ${this.config.collectInterval}ms)`);
+    console.log(`  Performance monitoring active (interval: ${this.config.collectInterval}ms)`);
   }
 
   public async stopRealTimeCollection(): Promise<void> {
@@ -105,7 +105,7 @@ export class PerformanceCollector extends EventEmitter {
       this.wsServer = undefined;
     }
 
-    console.log('⏹️ Performance monitoring stopped');
+    console.log('  Performance monitoring stopped');
   }
 
   public async collectCurrentMetrics(): Promise<PerformanceMetrics> {
@@ -262,7 +262,7 @@ export class PerformanceCollector extends EventEmitter {
     this.wsServer = new WebSocketServer({ port: this.config.websocketPort });
     
     this.wsServer.on('connection', (ws) => {
-      console.log('📡 Client connected for performance metrics');
+      console.log('  Client connected for performance metrics');
       
       ws.send(JSON.stringify({
         type: 'connected',
@@ -276,7 +276,7 @@ export class PerformanceCollector extends EventEmitter {
       }));
 
       ws.on('close', () => {
-        console.log('📡 Client disconnected from performance metrics');
+        console.log('  Client disconnected from performance metrics');
       });
 
       ws.on('message', (message) => {
@@ -289,7 +289,7 @@ export class PerformanceCollector extends EventEmitter {
       });
     });
 
-    console.log(`📊 Performance metrics WebSocket server started on port ${this.config.websocketPort}`);
+    console.log(`  Performance metrics WebSocket server started on port ${this.config.websocketPort}`);
   }
 
   private handleWebSocketRequest(ws: any, request: any): void {

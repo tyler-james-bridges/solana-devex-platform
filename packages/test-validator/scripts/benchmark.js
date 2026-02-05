@@ -24,7 +24,7 @@ class ValidatorBenchmark {
   }
 
   async run() {
-    console.log(chalk.blue('🏁 Starting Solana Test Validator Benchmark\n'));
+    console.log(chalk.blue('  Starting Solana Test Validator Benchmark\n'));
 
     try {
       await this.initialize();
@@ -38,12 +38,12 @@ class ValidatorBenchmark {
       ];
 
       for (const test of tests) {
-        console.log(chalk.yellow(`\n🧪 Running ${test.name} test...`));
+        console.log(chalk.yellow(`\n  Running ${test.name} test...`));
         try {
           await test.fn();
-          console.log(chalk.green(`✅ ${test.name} completed`));
+          console.log(chalk.green(`  ${test.name} completed`));
         } catch (error) {
-          console.log(chalk.red(`❌ ${test.name} failed: ${error.message}`));
+          console.log(chalk.red(`  ${test.name} failed: ${error.message}`));
           this.results[test.name] = { error: error.message };
         }
       }
@@ -240,23 +240,23 @@ class ValidatorBenchmark {
 
     await fs.writeFile(reportFile, JSON.stringify(report, null, 2));
     
-    console.log(chalk.blue('\n📊 Benchmark Report\n'));
+    console.log(chalk.blue('\n  Benchmark Report\n'));
     
     // Display results in a table format
     Object.entries(this.results).forEach(([testName, result]) => {
       if (result.error) {
-        console.log(chalk.red(`❌ ${testName}: ${result.error}`));
+        console.log(chalk.red(`  ${testName}: ${result.error}`));
       } else {
         const status = this.getStatusIcon(result.status);
         console.log(`${status} ${chalk.bold(testName)}: ${this.formatResult(testName, result)}`);
       }
     });
 
-    console.log(chalk.blue(`\n📁 Detailed report saved to: ${reportFile}`));
+    console.log(chalk.blue(`\n  Detailed report saved to: ${reportFile}`));
     
     // Display summary
     const summary = this.generateSummary();
-    console.log(chalk.blue('\n📈 Summary:'));
+    console.log(chalk.blue('\n  Summary:'));
     console.log(`Overall Performance: ${this.getStatusIcon(summary.overall)} ${summary.overall}`);
     console.log(`Recommendation: ${summary.recommendation}`);
   }
@@ -279,13 +279,13 @@ class ValidatorBenchmark {
 
   getStatusIcon(status) {
     const icons = {
-      'Excellent': '🟢',
-      'Good': '🟡',
-      'Fair': '🟠',
-      'Slow': '🔴',
-      'High': '🔴'
+      'Excellent': ' ',
+      'Good': ' ',
+      'Fair': ' ',
+      'Slow': ' ',
+      'High': ' '
     };
-    return icons[status] || '⚪';
+    return icons[status] || ' ';
   }
 
   generateSummary() {
