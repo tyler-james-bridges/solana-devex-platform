@@ -23,24 +23,6 @@ import {
 import ForumFeed from '../../components/ForumFeed';
 
 export default function CommunityPage() {
-  const socialStats = {
-    twitter: {
-      followers: 128,
-      engagement: '15.2%',
-      recentTweets: 12
-    },
-    github: {
-      stars: 45,
-      forks: 12,
-      contributors: 3
-    },
-    forum: {
-      posts: 15,
-      replies: 42,
-      likes: 186
-    }
-  };
-
   const partnerships = [
     {
       id: 'pyxis-oracle',
@@ -164,10 +146,7 @@ export default function CommunityPage() {
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">@onchain_devex</p>
-                <div className="flex items-center space-x-3 mt-1">
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.twitter.followers} followers</span>
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.twitter.engagement} engagement</span>
-                </div>
+                {/* Removed fake stats - authenticity over fictional metrics */}
               </div>
             </a>
 
@@ -188,10 +167,7 @@ export default function CommunityPage() {
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Open Source Platform</p>
-                <div className="flex items-center space-x-3 mt-1">
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.github.stars} stars</span>
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.github.forks} forks</span>
-                </div>
+                {/* Real GitHub stats available at repository */}
               </div>
             </a>
 
@@ -212,10 +188,7 @@ export default function CommunityPage() {
                   <ExternalLink className="w-3 h-3 text-gray-400" />
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Agent #25 Profile</p>
-                <div className="flex items-center space-x-3 mt-1">
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.forum.posts} posts</span>
-                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.forum.likes} likes</span>
-                </div>
+                {/* Real forum stats: 3 posts documented below */}
               </div>
             </a>
           </div>
