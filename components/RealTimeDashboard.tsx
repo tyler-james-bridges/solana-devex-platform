@@ -255,8 +255,104 @@ const AlertBadge = ({ alert, onResolve }: { alert: Alert; onResolve?: (id: strin
   );
 };
 
+// Generate demo data for fallback mode
+const generateDemoData = (): DashboardData => {
+  const now = Date.now();
+  return {
+    network: {
+      'Helius': {
+        slot: 157890194 + Math.floor(Math.random() * 100),
+        blockHeight: 157890162 + Math.floor(Math.random() * 100),
+        latency: 145 + Math.floor(Math.random() * 30),
+        tps: 2800 + Math.floor(Math.random() * 400),
+        status: 'healthy' as const,
+        health: true,
+        timestamp: new Date().toISOString()
+      },
+      'QuickNode': {
+        slot: 157890194 + Math.floor(Math.random() * 100),
+        blockHeight: 157890162 + Math.floor(Math.random() * 100),
+        latency: 168 + Math.floor(Math.random() * 40),
+        tps: 2700 + Math.floor(Math.random() * 300),
+        status: 'healthy' as const,
+        health: true,
+        timestamp: new Date().toISOString()
+      },
+      'Alchemy': {
+        slot: 157890194 + Math.floor(Math.random() * 100),
+        blockHeight: 157890162 + Math.floor(Math.random() * 100),
+        latency: 189 + Math.floor(Math.random() * 50),
+        tps: 2600 + Math.floor(Math.random() * 250),
+        status: 'healthy' as const,
+        health: true,
+        timestamp: new Date().toISOString()
+      }
+    },
+    protocols: [
+      {
+        name: 'Jupiter Aggregator',
+        status: 'healthy' as const,
+        latency: 142 + Math.floor(Math.random() * 20),
+        availability: 99.2 + Math.random() * 0.8,
+        errorRate: Math.random() * 0.5,
+        timestamp: new Date().toISOString()
+      },
+      {
+        name: 'Kamino Finance',
+        status: 'healthy' as const,
+        latency: 198 + Math.floor(Math.random() * 30),
+        availability: 98.1 + Math.random() * 1.5,
+        errorRate: Math.random() * 1,
+        timestamp: new Date().toISOString()
+      },
+      {
+        name: 'Drift Protocol',
+        status: 'degraded' as const,
+        latency: 567 + Math.floor(Math.random() * 100),
+        availability: 94.3 + Math.random() * 3,
+        errorRate: 2 + Math.random() * 2,
+        timestamp: new Date().toISOString()
+      },
+      {
+        name: 'Raydium AMM',
+        status: 'healthy' as const,
+        latency: 178 + Math.floor(Math.random() * 25),
+        availability: 99.7 + Math.random() * 0.3,
+        errorRate: Math.random() * 0.3,
+        timestamp: new Date().toISOString()
+      }
+    ],
+    alerts: [
+      {
+        id: 'alert-1',
+        rule: {
+          name: 'High Memory Usage',
+          condition: 'memory > 80%',
+          threshold: 80
+        },
+        value: 85.3,
+        severity: 'warning' as const,
+        protocol: 'Solana Test Validator',
+        timestamp: new Date(now - 300000).toISOString(),
+        resolved: false
+      }
+    ],
+    uptime: {
+      network: 99.8,
+      protocols: 97.5,
+      system: 99.9
+    },
+    system: {
+      uptime: 86400 + Math.floor(Math.random() * 3600),
+      totalRequests: 125000 + Math.floor(Math.random() * 10000),
+      errorRate: 0.1 + Math.random() * 0.4,
+      avgResponseTime: 152 + Math.floor(Math.random() * 20)
+    }
+  };
+};
+
 const RealTimeDashboard: React.FC = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(generateDemoData());
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
   const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [selectedTimeframe, setSelectedTimeframe] = useState('1h');
@@ -351,102 +447,6 @@ const RealTimeDashboard: React.FC = () => {
       startFallbackMode();
     }
   }, [isLiveMode]);
-
-  // Generate demo data for fallback mode
-  const generateDemoData = (): DashboardData => {
-    const now = Date.now();
-    return {
-      network: {
-        'Helius': {
-          slot: 157890194 + Math.floor(Math.random() * 100),
-          blockHeight: 157890162 + Math.floor(Math.random() * 100),
-          latency: 145 + Math.floor(Math.random() * 30),
-          tps: 2800 + Math.floor(Math.random() * 400),
-          status: 'healthy' as const,
-          health: true,
-          timestamp: new Date().toISOString()
-        },
-        'QuickNode': {
-          slot: 157890194 + Math.floor(Math.random() * 100),
-          blockHeight: 157890162 + Math.floor(Math.random() * 100),
-          latency: 168 + Math.floor(Math.random() * 40),
-          tps: 2700 + Math.floor(Math.random() * 300),
-          status: 'healthy' as const,
-          health: true,
-          timestamp: new Date().toISOString()
-        },
-        'Alchemy': {
-          slot: 157890194 + Math.floor(Math.random() * 100),
-          blockHeight: 157890162 + Math.floor(Math.random() * 100),
-          latency: 189 + Math.floor(Math.random() * 50),
-          tps: 2600 + Math.floor(Math.random() * 250),
-          status: 'healthy' as const,
-          health: true,
-          timestamp: new Date().toISOString()
-        }
-      },
-      protocols: [
-        {
-          name: 'Jupiter Aggregator',
-          status: 'healthy' as const,
-          latency: 142 + Math.floor(Math.random() * 20),
-          availability: 99.2 + Math.random() * 0.8,
-          errorRate: Math.random() * 0.5,
-          timestamp: new Date().toISOString()
-        },
-        {
-          name: 'Kamino Finance',
-          status: 'healthy' as const,
-          latency: 198 + Math.floor(Math.random() * 30),
-          availability: 98.1 + Math.random() * 1.5,
-          errorRate: Math.random() * 1,
-          timestamp: new Date().toISOString()
-        },
-        {
-          name: 'Drift Protocol',
-          status: 'degraded' as const,
-          latency: 567 + Math.floor(Math.random() * 100),
-          availability: 94.3 + Math.random() * 3,
-          errorRate: 2 + Math.random() * 2,
-          timestamp: new Date().toISOString()
-        },
-        {
-          name: 'Raydium AMM',
-          status: 'healthy' as const,
-          latency: 178 + Math.floor(Math.random() * 25),
-          availability: 99.7 + Math.random() * 0.3,
-          errorRate: Math.random() * 0.3,
-          timestamp: new Date().toISOString()
-        }
-      ],
-      alerts: [
-        {
-          id: 'alert-1',
-          rule: {
-            name: 'High Memory Usage',
-            condition: 'memory > 80%',
-            threshold: 80
-          },
-          value: 85.3,
-          severity: 'warning' as const,
-          protocol: 'Solana Test Validator',
-          timestamp: new Date(now - 300000).toISOString(),
-          resolved: false
-        }
-      ],
-      uptime: {
-        network: 99.8,
-        protocols: 97.5,
-        system: 99.9
-      },
-      system: {
-        uptime: 86400 + Math.floor(Math.random() * 3600),
-        totalRequests: 125000 + Math.floor(Math.random() * 10000),
-        errorRate: 0.1 + Math.random() * 0.4,
-        avgResponseTime: 152 + Math.floor(Math.random() * 20)
-      }
-    };
-  };
 
   // Fallback mode with real API data polling
   const startFallbackMode = useCallback(async () => {
