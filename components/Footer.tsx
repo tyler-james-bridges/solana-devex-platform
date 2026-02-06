@@ -10,9 +10,9 @@ const Footer: React.FC = () => {
             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Platform</h4>
             <ul className="space-y-2">
               <li><a href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Home</a></li>
-              <li><a href="/dashboard" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Dashboard</a></li>
-              <li><a href="/dev-monitor" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Dev Monitor</a></li>
-              <li><a href="/collaboration" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Collaboration</a></li>
+              <li><a href="/dashboard" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Monitor</a></li>
+              <li><a href="/dev-monitor" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Dev Tools</a></li>
+              <li><a href="/community" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Community</a></li>
             </ul>
           </div>
           
@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">GitHub Repository</a></li>
               <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform#readme" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Documentation</a></li>
-              <li><a href="/partnerships" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Community Collaborations</a></li>
+              <li><a href="/community" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Community</a></li>
             </ul>
           </div>
           

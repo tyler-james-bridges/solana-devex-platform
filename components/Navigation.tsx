@@ -8,7 +8,7 @@ import {
   Activity, 
   Terminal, 
   Code, 
-  BarChart3, 
+  Users, 
   Menu,
   X,
   Home,
@@ -23,33 +23,27 @@ const Navigation = () => {
 
   const navItems = [
     {
-      name: 'Overview',
+      name: 'Home',
       href: '/',
       icon: Home
     },
     {
-      name: 'Protocol Monitor',
+      name: 'Monitor',
       href: '/dashboard',
       icon: Activity,
       description: 'Real-time protocol health and network monitoring'
     },
     {
-      name: 'Dev Monitor',
+      name: 'Dev Tools',
       href: '/dev-monitor',
       icon: Terminal,
       description: 'Development workflows and test validator monitoring'
     },
     {
-      name: 'Collaboration',
-      href: '/collaboration',
-      icon: Monitor,
-      description: 'Multi-project workspace and team collaboration'
-    },
-    {
-      name: 'Community Collaborations',
-      href: '/partnerships',
-      icon: BarChart3,
-      description: 'Integration APIs and community collaboration demos'
+      name: 'Community',
+      href: '/community',
+      icon: Users,
+      description: 'Community hub, partnerships, and collaborations'
     }
   ];
 

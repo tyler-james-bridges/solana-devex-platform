@@ -10,6 +10,15 @@ const nextConfig = {
   },
   swcMinify: true,
   experimental: {},
+  async redirects() {
+    return [
+      {
+        source: '/partnerships',
+        destination: '/community',
+        permanent: true,
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
