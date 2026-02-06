@@ -1,5 +1,6 @@
 'use client'
 
+// Community page for Solana DevEx Platform
 import { 
   Twitter, 
   Github, 
@@ -459,38 +460,6 @@ export default function CommunityPage() {
           and contributions to the autonomous agent ecosystem over time.
         </p>
         <ForumFeed showHeader={true} showAll={true} compact={false} />
-      </div></thinking>
-
-Let me also create a comprehensive summary of what was accomplished:
-
-<function_calls>
-<invoke name="Write">
-<parameter name="path">solana-devex-platform/FORUM_FEED_UPDATE_SUMMARY.md
-
-      {/* Community Growth Stats */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
-          <TrendingUp className="w-6 h-6 text-blue-600" />
-          <span>Community Growth</span>
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{socialStats.twitter.followers}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Twitter Followers</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{socialStats.github.stars}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">GitHub Stars</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{socialStats.forum.posts}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Forum Posts</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{socialStats.forum.likes}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Community Likes</div>
-          </div>
-        </div>
       </div>
     </div>
   );
