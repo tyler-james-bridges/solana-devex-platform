@@ -50,12 +50,6 @@ const Navigation = () => {
       href: '/partnerships',
       icon: BarChart3,
       description: 'Integration APIs and community collaboration demos'
-    },
-    {
-      name: 'Community',
-      href: '/community',
-      icon: Twitter,
-      description: 'Connect with our team and follow our progress'
     }
   ];
 
