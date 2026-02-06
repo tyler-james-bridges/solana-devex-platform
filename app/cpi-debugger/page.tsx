@@ -400,61 +400,79 @@ for item in data.iter() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Header Section */}
-      <div className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-          <div className="text-center lg:text-left lg:flex lg:items-center lg:justify-between">
-            <div className="lg:flex-1">
-              <div className="flex items-center justify-center lg:justify-start space-x-3 mb-4">
-                <div className="bg-white bg-opacity-20 p-3 rounded-xl">
-                  <Search className="w-8 h-8 text-white" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
-                  CPI Debugger
-                </h1>
-                <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
-                  FLAGSHIP
-                </div>
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
+          <div>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-blue-600 p-3 rounded-xl">
+                <Search className="w-8 h-8 text-white" />
               </div>
-              
-              <p className="text-lg sm:text-xl text-blue-100 mb-6 max-w-3xl">
-                The most advanced Cross-Program Invocation debugger for Solana. 
-                Analyze complex transactions, identify CPI errors, and optimize your programs like a pro.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
-                <div className="flex items-center space-x-2 text-blue-200">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Real-time transaction analysis</span>
-                </div>
-                <div className="flex items-center space-x-2 text-blue-200">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Smart error detection</span>
-                </div>
-                <div className="flex items-center space-x-2 text-blue-200">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Code optimization suggestions</span>
-                </div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+                CPI Debugger
+              </h1>
+              <div className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-semibold border border-blue-200 dark:border-blue-700">
+                FLAGSHIP
               </div>
             </div>
             
-            {/* Stats Cards */}
-            <div className="mt-8 lg:mt-0 lg:ml-8 grid grid-cols-2 gap-4 lg:gap-6">
-              <div className="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-xl text-center">
-                <div className="text-2xl lg:text-3xl font-bold">50K+</div>
-                <div className="text-blue-200 text-sm">Transactions Debugged</div>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-3xl">
+              The most advanced Cross-Program Invocation debugger for Solana. 
+              Analyze complex transactions, identify CPI errors, and optimize your programs like a pro.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-6">
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span>Real-time transaction analysis</span>
               </div>
-              <div className="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-xl text-center">
-                <div className="text-2xl lg:text-3xl font-bold">95%</div>
-                <div className="text-blue-200 text-sm">Error Detection Rate</div>
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span>Smart error detection</span>
               </div>
-              <div className="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-xl text-center">
-                <div className="text-2xl lg:text-3xl font-bold">8</div>
-                <div className="text-blue-200 text-sm">Supported Protocols</div>
+              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span>Code optimization suggestions</span>
               </div>
-              <div className="bg-white bg-opacity-10 backdrop-blur-sm p-4 rounded-xl text-center">
-                <div className="text-2xl lg:text-3xl font-bold">24/7</div>
-                <div className="text-blue-200 text-sm">Monitoring</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Transactions Debugged</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">50K+</p>
               </div>
+              <Activity className="w-8 h-8 text-blue-600" />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Error Detection Rate</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">95%</p>
+              </div>
+              <CheckCircle2 className="w-8 h-8 text-green-600" />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Supported Protocols</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">8</p>
+              </div>
+              <Shield className="w-8 h-8 text-purple-600" />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monitoring</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">24/7</p>
+              </div>
+              <Clock className="w-8 h-8 text-orange-600" />
             </div>
           </div>
         </div>
@@ -464,7 +482,7 @@ for item in data.iter() {
         {/* Debug Interface */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-xl overflow-hidden mb-8">
           {/* Debug Controls */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-6 border-b dark:border-gray-700">
+          <div className="bg-gray-50 dark:bg-gray-700/50 p-6 border-b dark:border-gray-700">
             <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-6 space-y-4 lg:space-y-0">
               {/* Transaction Input */}
               <div className="flex-1">
@@ -477,7 +495,7 @@ for item in data.iter() {
                     value={transactionSignature}
                     onChange={(e) => setTransactionSignature(e.target.value)}
                     placeholder="Enter transaction signature (e.g., 2ZE7R7TTqgrjbMBeUCBYKUUKsNUCcCx1...)"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   {transactionSignature && (
                     <button
@@ -495,7 +513,7 @@ for item in data.iter() {
                 <button
                   onClick={() => analyzeTransaction(transactionSignature)}
                   disabled={isDebugging || !transactionSignature.trim()}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-sm font-semibold hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center space-x-2 min-w-[140px] justify-center"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2 min-w-[140px] justify-center"
                 >
                   {isDebugging ? (
                     <>
@@ -525,15 +543,15 @@ for item in data.iter() {
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Advanced Analysis Options</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                     <span className="text-sm text-gray-700 dark:text-gray-300">Deep CPI analysis</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                     <span className="text-sm text-gray-700 dark:text-gray-300">Gas optimization suggestions</span>
                   </label>
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                     <span className="text-sm text-gray-700 dark:text-gray-300">Security vulnerability scan</span>
                   </label>
                 </div>
@@ -546,7 +564,7 @@ for item in data.iter() {
             <div className="p-6 space-y-8">
               {debuggerResult.status === 'analyzing' && (
                 <div className="text-center py-12">
-                  <div className="inline-flex items-center space-x-3 text-purple-600 dark:text-purple-400">
+                  <div className="inline-flex items-center space-x-3 text-blue-600 dark:text-blue-400">
                     <Loader2 className="w-8 h-8 animate-spin" />
                     <div className="text-xl font-semibold">Analyzing transaction...</div>
                   </div>
@@ -560,7 +578,7 @@ for item in data.iter() {
                 <>
                   {/* Performance Overview */}
                   {debuggerResult.performance && (
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-6 rounded-lg border dark:border-gray-600">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
                           <Activity className="w-6 h-6 mr-3 text-green-600" />
@@ -641,7 +659,7 @@ for item in data.iter() {
 
                   {/* CPI Flow Visualization */}
                   {debuggerResult.cpiFlow && (
-                    <div className="bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border dark:border-gray-600">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
                           <GitBranch className="w-6 h-6 mr-3 text-indigo-600" />
@@ -682,7 +700,7 @@ for item in data.iter() {
                                         {step.program}
                                       </span>
                                       <ChevronRight className="w-4 h-4 text-gray-400" />
-                                      <span className="text-purple-600 dark:text-purple-400 font-medium">
+                                      <span className="text-blue-600 dark:text-blue-400 font-medium">
                                         {step.instruction}
                                       </span>
                                     </div>
@@ -822,7 +840,7 @@ for item in data.iter() {
 
                   {/* Error Analysis & Suggested Fixes */}
                   {debuggerResult.errors && debuggerResult.errors.length > 0 && (
-                    <div className="bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border dark:border-gray-600">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border dark:border-gray-700">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
                           <Wrench className="w-6 h-6 mr-3 text-red-600" />
@@ -957,7 +975,7 @@ for item in data.iter() {
           <div className="p-6 border-b dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-                <Eye className="w-7 h-7 mr-3 text-purple-600" />
+                <Eye className="w-7 h-7 mr-3 text-blue-600" />
                 Debug Examples & Learning Hub
               </h2>
               <div className="flex items-center space-x-2">
@@ -975,7 +993,7 @@ for item in data.iter() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All Categories</option>
                   <option value="common-errors">Common Errors</option>
@@ -992,7 +1010,7 @@ for item in data.iter() {
                 <select
                   value={selectedDifficulty}
                   onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">All Levels</option>
                   <option value="beginner">Beginner</option>
@@ -1015,15 +1033,15 @@ for item in data.iter() {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-2">
-                        <CategoryIcon className="w-5 h-5 text-purple-600" />
+                        <CategoryIcon className="w-5 h-5 text-blue-600" />
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(example.difficulty)}`}>
                           {example.difficulty}
                         </span>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-purple-600 transition-colors" />
+                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                     </div>
                     
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {example.title}
                     </h3>
                     
@@ -1035,7 +1053,7 @@ for item in data.iter() {
                       {example.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 rounded text-xs font-medium"
+                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-xs font-medium"
                         >
                           #{tag}
                         </span>

@@ -107,32 +107,17 @@ export default function CommunityPage() {
   ];
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Production': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700';
-      case 'Beta': return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700';
-      case 'Development': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600';
-    }
+    // Use consistent gray styling for all status badges to avoid "highlighted" appearance
+    return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600';
   };
 
   const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'blue': return {
-        icon: 'text-blue-600',
-        border: 'border-blue-200 dark:border-blue-800',
-        bg: 'bg-blue-50 dark:bg-blue-900/20'
-      };
-      case 'purple': return {
-        icon: 'text-purple-600',
-        border: 'border-purple-200 dark:border-purple-800',
-        bg: 'bg-purple-50 dark:bg-purple-900/20'
-      };
-      default: return {
-        icon: 'text-gray-600',
-        border: 'border-gray-200 dark:border-gray-700',
-        bg: 'bg-gray-50 dark:bg-gray-800'
-      };
-    }
+    // Use consistent gray styling for all elements to avoid "highlighted" appearance
+    return {
+      icon: 'text-gray-600 dark:text-gray-400',
+      border: 'border-gray-200 dark:border-gray-700',
+      bg: 'bg-white dark:bg-gray-800'
+    };
   };
 
   return (
@@ -151,8 +136,8 @@ export default function CommunityPage() {
           </div>
           
           <div className="flex items-center space-x-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+              <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full mr-2"></div>
               Active Community
             </span>
           </div>
@@ -166,10 +151,10 @@ export default function CommunityPage() {
               href="https://twitter.com/onchain_devex"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+              className="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-600 dark:bg-gray-500 rounded-lg flex items-center justify-center">
                   <Twitter className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -181,7 +166,7 @@ export default function CommunityPage() {
                 <p className="text-xs text-gray-500 dark:text-gray-400">@onchain_devex</p>
                 <div className="flex items-center space-x-3 mt-1">
                   <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.twitter.followers} followers</span>
-                  <span className="text-xs text-blue-600 dark:text-blue-400">{socialStats.twitter.engagement} engagement</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.twitter.engagement} engagement</span>
                 </div>
               </div>
             </a>
@@ -190,10 +175,10 @@ export default function CommunityPage() {
               href="https://github.com/tyler-james-bridges/solana-devex-platform"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-gray-800 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-600 dark:bg-gray-500 rounded-lg flex items-center justify-center">
                   <Github className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -214,10 +199,10 @@ export default function CommunityPage() {
               href="https://agents.colosseum.com/agents/25"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+              className="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-600 dark:bg-gray-500 rounded-lg flex items-center justify-center">
                   <MessageSquare className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -229,7 +214,7 @@ export default function CommunityPage() {
                 <p className="text-xs text-gray-500 dark:text-gray-400">Agent #25 Profile</p>
                 <div className="flex items-center space-x-3 mt-1">
                   <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.forum.posts} posts</span>
-                  <span className="text-xs text-purple-600 dark:text-purple-400">{socialStats.forum.likes} likes</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">{socialStats.forum.likes} likes</span>
                 </div>
               </div>
             </a>
@@ -240,7 +225,7 @@ export default function CommunityPage() {
       {/* Community Partnerships */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
-          <Users className="w-6 h-6 text-blue-600" />
+          <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           <span>Community Partnerships</span>
         </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -256,7 +241,7 @@ export default function CommunityPage() {
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Collaborations</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{partnerships.length}</p>
               </div>
-              <Users className="w-8 h-8 text-blue-600" />
+              <Users className="w-8 h-8 text-gray-600 dark:text-gray-400" />
             </div>
           </div>
           
@@ -268,7 +253,7 @@ export default function CommunityPage() {
                   {partnerships.reduce((total, p) => total + p.endpoints.length, 0)}
                 </p>
               </div>
-              <Network className="w-8 h-8 text-green-600" />
+              <Network className="w-8 h-8 text-gray-600 dark:text-gray-400" />
             </div>
           </div>
 
@@ -278,7 +263,7 @@ export default function CommunityPage() {
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Average Uptime</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">99.9%</p>
               </div>
-              <Activity className="w-8 h-8 text-purple-600" />
+              <Activity className="w-8 h-8 text-gray-600 dark:text-gray-400" />
             </div>
           </div>
 
