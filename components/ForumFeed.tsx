@@ -40,60 +40,9 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
 
   const fetchForumPosts = async () => {
-    try {
-      const response = await fetch('/api/forum-posts');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      
-      // Filter for Tyler's Colosseum forum posts specifically
-      const tylerPosts = data.posts?.filter((post: any) => 
-        post.author?.handle?.toLowerCase().includes('tyler') ||
-        post.author?.handle?.toLowerCase().includes('onchain') ||
-        post.author?.name?.toLowerCase().includes('tyler') ||
-        post.author?.name?.toLowerCase().includes('onchain') ||
-        post.content?.toLowerCase().includes('agent #25') ||
-        post.content?.toLowerCase().includes('project #46') ||
-        post.title?.toLowerCase().includes('devex') ||
-        post.title?.toLowerCase().includes('solana devex platform') ||
-        post.content?.toLowerCase().includes('colosseum') ||
-        post.content?.toLowerCase().includes('hackathon')
-      ) || [];
-
-      // Sort posts chronologically (most recent first)
-      const sortedTylerPosts = tylerPosts.sort((a: any, b: any) => 
-        new Date(b.createdAt || b.created_at || '').getTime() - 
-        new Date(a.createdAt || a.created_at || '').getTime()
-      );
-      
-      // Remove post limits for Tyler's complete history if showAll is true
-      const postsToShow = showAll ? sortedTylerPosts : sortedTylerPosts.slice(0, maxPosts);
-      const formattedPosts: ForumPost[] = postsToShow.map((post: any) => ({
-        id: post.id || Math.random().toString(),
-        title: post.title || 'Untitled Post',
-        content: post.content || '',
-        excerpt: post.excerpt || post.content?.substring(0, 200) + '...' || '',
-        author: {
-          name: post.author?.name || 'Anonymous',
-          handle: post.author?.handle || '',
-          avatar: post.author?.avatar || ''
-        },
-        createdAt: post.createdAt || new Date().toISOString(),
-        updatedAt: post.updatedAt || post.createdAt,
-        likes: post.likes || 0,
-        replies: post.replies || 0,
-        tags: post.tags || [],
-        url: post.url || `https://agents.colosseum.com/forum/posts/${post.id}`
-      }));
-
-      setPosts(formattedPosts);
-      setLastFetch(new Date());
-      setError(null);
-    } catch (err) {
-      console.error('Failed to fetch forum posts:', err);
-      setError('Failed to load forum posts');
-      // Tyler's 3 authentic Colosseum forum posts
+    // Always show Tyler's authentic posts immediately
+    setError(null);
+    // Tyler's 3 authentic Colosseum forum posts
       const completePostHistory = [
         {
           id: 'forum-1516',
@@ -139,9 +88,8 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
       );
 
       setPosts(showAll ? sortedPosts : sortedPosts.slice(0, maxPosts));
-    } finally {
+      setLastFetch(new Date());
       setLoading(false);
-    }
   };
 
   useEffect(() => {
