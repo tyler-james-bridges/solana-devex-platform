@@ -30,8 +30,11 @@ import {
   ArrowRight,
   BookOpen,
   Target,
-  Database
+  Database,
+  Play
 } from 'lucide-react';
+import TransactionSimulator from '../../components/TransactionSimulator';
+import VerifiableDebugger from '../../components/VerifiableDebugger';
 
 interface TransactionDebugger {
   signature: string;
@@ -185,6 +188,7 @@ const CPIDebuggerPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const [activeTab, setActiveTab] = useState<'debugger' | 'simulator' | 'verifiable'>('debugger');
 
   // Analyze transaction for debugging
   const analyzeTransaction = useCallback(async (signature: string) => {
@@ -476,11 +480,75 @@ for item in data.iter() {
             </div>
           </div>
         </div>
+
+        {/* Tab Navigation */}
+        <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
+          <button
+            onClick={() => setActiveTab('debugger')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'debugger'
+                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            <Search className="w-4 h-4 inline mr-2" />
+            Transaction Debugger
+          </button>
+          <button
+            onClick={() => setActiveTab('simulator')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'simulator'
+                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            <Play className="w-4 h-4 inline mr-2" />
+            Safety Simulator
+            <span className="ml-2 px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded text-xs font-semibold">
+              NEW
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab('verifiable')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'verifiable'
+                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            <Shield className="w-4 h-4 inline mr-2" />
+            Verifiable Debugging
+            <span className="ml-2 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-xs font-semibold">
+              UNIQUE
+            </span>
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Debug Interface */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-xl overflow-hidden mb-8">
+        {activeTab === 'simulator' && (
+          <TransactionSimulator 
+            transactionData={transactionSignature}
+            onSimulationComplete={(result) => {
+              console.log('Simulation completed:', result);
+            }}
+          />
+        )}
+
+        {activeTab === 'verifiable' && (
+          <VerifiableDebugger 
+            transactionSignature={transactionSignature}
+            debuggingResults={debuggerResult}
+            onAttestationCreated={(attestation) => {
+              console.log('Attestation created:', attestation);
+            }}
+          />
+        )}
+
+        {activeTab === 'debugger' && (
+          <>
+            {/* Debug Interface */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-xl overflow-hidden mb-8">
           {/* Debug Controls */}
           <div className="bg-gray-50 dark:bg-gray-700/50 p-6 border-b dark:border-gray-700">
             <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-6 space-y-4 lg:space-y-0">
@@ -1084,6 +1152,8 @@ for item in data.iter() {
             )}
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

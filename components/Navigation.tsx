@@ -13,7 +13,8 @@ import {
   X,
   Home,
   Twitter,
-  Github
+  Github,
+  Zap
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -26,6 +27,13 @@ const Navigation = () => {
       name: 'Home',
       href: '/',
       icon: Home
+    },
+    {
+      name: 'DevEx Suite',
+      href: '/devex-suite',
+      icon: Zap,
+      description: 'Complete developer experience platform with safety simulation, verifiable debugging, and agent wallets',
+      isNew: true
     },
     {
       name: 'Monitor',
@@ -83,7 +91,7 @@ const Navigation = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors relative ${
                     isActive
                       ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -92,6 +100,11 @@ const Navigation = () => {
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
+                  {(item as any).isNew && (
+                    <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
+                      NEW
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -154,19 +167,26 @@ const Navigation = () => {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                    className={`flex items-center justify-between px-4 py-3 rounded-lg text-base font-medium transition-colors ${
                       isActive
                         ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                         : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
-                    <div>
-                      <div>{item.name}</div>
-                      {item.description && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.description}</div>
-                      )}
+                    <div className="flex items-center space-x-3">
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <div>
+                        <div>{item.name}</div>
+                        {item.description && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.description}</div>
+                        )}
+                      </div>
                     </div>
+                    {(item as any).isNew && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                        NEW
+                      </span>
+                    )}
                   </Link>
                 );
               })}
