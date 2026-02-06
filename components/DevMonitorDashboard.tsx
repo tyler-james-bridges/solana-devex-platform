@@ -41,7 +41,16 @@ import {
   Bug,
   TestTube,
   Package,
-  Anchor
+  Anchor,
+  Search,
+  GitBranch,
+  Layers,
+  Eye,
+  Wrench,
+  RotateCcw,
+  ChevronRight,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import {
   LineChart,
@@ -203,6 +212,51 @@ interface DevAlert {
   source?: string;
 }
 
+interface TransactionDebugger {
+  signature: string;
+  status: 'analyzing' | 'success' | 'error' | 'not-found';
+  cpiFlow?: CPIFlowStep[];
+  errors?: TransactionError[];
+  performance?: {
+    computeUnitsUsed: number;
+    computeUnitsRequested: number;
+    fee: number;
+    slot: number;
+  };
+}
+
+interface CPIFlowStep {
+  id: string;
+  program: string;
+  programId: string;
+  instruction: string;
+  depth: number;
+  accounts: CPIAccount[];
+  success: boolean;
+  error?: string;
+  computeUnits: number;
+}
+
+interface CPIAccount {
+  pubkey: string;
+  name?: string;
+  isSigner: boolean;
+  isWritable: boolean;
+  beforeBalance?: number;
+  afterBalance?: number;
+  dataChange?: boolean;
+}
+
+interface TransactionError {
+  type: 'account_balance_mismatch' | 'realloc_constraint' | 'program_error' | 'compute_budget';
+  severity: 'critical' | 'warning';
+  instruction: number;
+  programId: string;
+  message: string;
+  suggestedFix: string;
+  codeExample?: string;
+}
+
 const StatusBadge = ({ status, type }: { status: string; type?: string }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -302,6 +356,9 @@ const DevMonitorDashboard: React.FC = () => {
   const [wsConnection, setWsConnection] = useState<WebSocket | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [transactionSignature, setTransactionSignature] = useState('');
+  const [debuggerResult, setDebuggerResult] = useState<TransactionDebugger | null>(null);
+  const [isDebugging, setIsDebugging] = useState(false);
 
   // Mock data for demonstration - in real implementation, this would come from WebSocket or API
   const generateMockData = useCallback((): DeveloperMetrics => {
@@ -592,6 +649,137 @@ const DevMonitorDashboard: React.FC = () => {
     } catch (error) {
       console.log(`Deploying ${projectName} to ${network} (mock mode)`);
     }
+  }, []);
+
+  // Analyze transaction for debugging
+  const analyzeTransaction = useCallback(async (signature: string) => {
+    if (!signature.trim()) return;
+    
+    setIsDebugging(true);
+    setDebuggerResult(null);
+
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Mock transaction analysis results
+    const mockResult: TransactionDebugger = {
+      signature,
+      status: 'success',
+      performance: {
+        computeUnitsUsed: 187450,
+        computeUnitsRequested: 200000,
+        fee: 5000,
+        slot: 157890125
+      },
+      cpiFlow: [
+        {
+          id: '1',
+          program: 'Token Program',
+          programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          instruction: 'Transfer',
+          depth: 0,
+          accounts: [
+            {
+              pubkey: 'HXYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE',
+              name: 'User Wallet',
+              isSigner: true,
+              isWritable: true,
+              beforeBalance: 10.5,
+              afterBalance: 10.0,
+              dataChange: false
+            }
+          ],
+          success: true,
+          computeUnits: 15230
+        },
+        {
+          id: '2',
+          program: 'DEX Program',
+          programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+          instruction: 'swap',
+          depth: 1,
+          accounts: [
+            {
+              pubkey: 'DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
+              name: 'Pool Account',
+              isSigner: false,
+              isWritable: true,
+              beforeBalance: 1000.0,
+              afterBalance: 999.5,
+              dataChange: true
+            }
+          ],
+          success: true,
+          computeUnits: 45800
+        },
+        {
+          id: '3',
+          program: 'System Program',
+          programId: '11111111111111111111111111111111',
+          instruction: 'CreateAccount',
+          depth: 2,
+          accounts: [
+            {
+              pubkey: 'EKJHMYYQcqBKsJxr1XRSR9h1dJb7Q2KE7Qmc2bPgJZmr',
+              name: 'New PDA',
+              isSigner: false,
+              isWritable: true,
+              beforeBalance: 0,
+              afterBalance: 2.039280,
+              dataChange: true
+            }
+          ],
+          success: false,
+          error: 'Account reallocation exceeded maximum allowed size',
+          computeUnits: 25420
+        }
+      ],
+      errors: [
+        {
+          type: 'realloc_constraint',
+          severity: 'critical',
+          instruction: 2,
+          programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+          message: 'Account reallocation constraint violation: Attempted to reallocate account beyond maximum size limit (10KB → 15KB)',
+          suggestedFix: 'Reduce account data size or split data across multiple accounts using PDA derivation patterns',
+          codeExample: `// Instead of large single account
+#[account(
+    realloc = 15_000,
+    realloc::payer = user,
+    realloc::zero = false
+)]
+
+// Use PDA pattern for larger data
+#[derive(Accounts)]
+pub struct SplitData<'info> {
+    #[account(
+        init,
+        payer = user,
+        space = 8 + 8_000, // First chunk
+        seeds = [b"data", user.key().as_ref(), &[0]],
+        bump
+    )]
+    pub data_chunk_0: Account<'info, DataChunk>,
+}`
+        },
+        {
+          type: 'account_balance_mismatch',
+          severity: 'warning',
+          instruction: 1,
+          programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          message: 'Account balance insufficient for transaction. Required: 0.6 SOL, Available: 0.5 SOL',
+          suggestedFix: 'Ensure sufficient account balance before transaction or implement balance checking in your program logic',
+          codeExample: `// Add balance check in instruction
+require!(
+    ctx.accounts.user_wallet.lamports() >= required_amount,
+    ErrorCode::InsufficientBalance
+);`
+        }
+      ]
+    };
+
+    setDebuggerResult(mockResult);
+    setIsDebugging(false);
   }, []);
 
   // Generate initial historical data
@@ -1019,6 +1207,368 @@ const DevMonitorDashboard: React.FC = () => {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Transaction Debugger */}
+        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 flex items-center text-gray-900 dark:text-white">
+            <Search className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-purple-600 flex-shrink-0" />
+            <span className="truncate">Transaction Debugger</span>
+            <span className="ml-2 text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">
+              CPI Error Analysis
+            </span>
+          </h2>
+
+          <div className="mb-6">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Debug complex CPI transactions and identify account balance mismatches, realloc constraints, and other Anchor program errors.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={transactionSignature}
+                  onChange={(e) => setTransactionSignature(e.target.value)}
+                  placeholder="Enter transaction signature (e.g., 2ZE7R7TTqgrjbMBeUCBYKUUKsNUCcCx1...)"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <button
+                onClick={() => analyzeTransaction(transactionSignature)}
+                disabled={isDebugging || !transactionSignature.trim()}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center space-x-2 sm:min-w-[120px]"
+              >
+                {isDebugging ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
+                    <span>Analyzing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4 flex-shrink-0" />
+                    <span>Debug Tx</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {debuggerResult && (
+            <div className="space-y-6">
+              {/* Transaction Overview */}
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border dark:border-gray-600">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                  <div className="flex items-center space-x-3">
+                    <StatusBadge status={debuggerResult.status} />
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Transaction Analysis Complete
+                    </span>
+                  </div>
+                  <button className="flex items-center space-x-2 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
+                    <Copy className="w-4 h-4" />
+                    <span>Copy Signature</span>
+                  </button>
+                </div>
+                
+                {debuggerResult.performance && (
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border dark:border-gray-600">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Compute Units Used</div>
+                      <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
+                        {debuggerResult.performance.computeUnitsUsed.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        of {debuggerResult.performance.computeUnitsRequested.toLocaleString()} requested
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border dark:border-gray-600">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Transaction Fee</div>
+                      <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
+                        {(debuggerResult.performance.fee / 1000000).toFixed(6)} SOL
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {debuggerResult.performance.fee.toLocaleString()} lamports
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border dark:border-gray-600">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Slot</div>
+                      <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
+                        {debuggerResult.performance.slot.toLocaleString()}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border dark:border-gray-600">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">CPI Depth</div>
+                      <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
+                        {Math.max(...(debuggerResult.cpiFlow?.map(step => step.depth + 1) || [0]))} levels
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* CPI Flow Visualization */}
+              {debuggerResult.cpiFlow && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border dark:border-gray-600">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                      <GitBranch className="w-5 h-5 mr-2 text-indigo-600 flex-shrink-0" />
+                      Cross-Program Invocation Flow
+                    </h3>
+                    <span className="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded">
+                      {debuggerResult.cpiFlow.length} instructions
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {debuggerResult.cpiFlow.map((step, index) => (
+                      <div key={step.id} className="relative">
+                        {/* Connection line */}
+                        {index > 0 && (
+                          <div
+                            className="absolute left-6 -top-3 w-0.5 h-6 bg-gray-300 dark:bg-gray-600"
+                            style={{ marginLeft: `${step.depth * 20}px` }}
+                          ></div>
+                        )}
+                        
+                        <div
+                          className={`bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border ${
+                            step.success 
+                              ? 'border-green-200 dark:border-green-800' 
+                              : 'border-red-200 dark:border-red-800'
+                          }`}
+                          style={{ marginLeft: `${step.depth * 20}px` }}
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                                step.success ? 'bg-green-500' : 'bg-red-500'
+                              }`}></div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center space-x-2 flex-wrap gap-1">
+                                  <span className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">
+                                    {step.program}
+                                  </span>
+                                  <ChevronRight className="w-3 h-3 text-gray-400" />
+                                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                                    {step.instruction}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono truncate">
+                                  {step.programId}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center space-x-3 flex-shrink-0">
+                              <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">
+                                {step.computeUnits.toLocaleString()} CU
+                              </span>
+                              {!step.success && step.error && (
+                                <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-1 rounded">
+                                  Error
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {step.error && (
+                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg mb-3">
+                              <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-1">Error Details</p>
+                              <p className="text-xs text-red-700 dark:text-red-300">{step.error}</p>
+                            </div>
+                          )}
+
+                          {/* Account changes */}
+                          {step.accounts.length > 0 && (
+                            <div className="space-y-2">
+                              <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                                Account Changes ({step.accounts.length})
+                              </h4>
+                              <div className="space-y-2">
+                                {step.accounts.slice(0, 3).map((account, accIndex) => (
+                                  <div key={accIndex} className="bg-gray-50 dark:bg-gray-700 p-2 rounded border dark:border-gray-600">
+                                    <div className="flex items-start justify-between">
+                                      <div className="min-w-0 flex-1">
+                                        <div className="flex items-center space-x-2 mb-1">
+                                          <span className="text-xs font-medium text-gray-900 dark:text-white">
+                                            {account.name || 'Unknown Account'}
+                                          </span>
+                                          <div className="flex items-center space-x-1">
+                                            {account.isSigner && (
+                                              <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-1.5 py-0.5 rounded">
+                                                Signer
+                                              </span>
+                                            )}
+                                            {account.isWritable && (
+                                              <span className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 px-1.5 py-0.5 rounded">
+                                                Writable
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <p className="text-xs text-gray-600 dark:text-gray-400 font-mono truncate">
+                                          {account.pubkey}
+                                        </p>
+                                      </div>
+                                      
+                                      {(account.beforeBalance !== undefined && account.afterBalance !== undefined) && (
+                                        <div className="text-right ml-2 flex-shrink-0">
+                                          <div className="text-xs text-gray-600 dark:text-gray-400">
+                                            {account.beforeBalance} → {account.afterBalance} SOL
+                                          </div>
+                                          {account.beforeBalance !== account.afterBalance && (
+                                            <div className={`text-xs font-medium ${
+                                              account.afterBalance > account.beforeBalance 
+                                                ? 'text-green-600 dark:text-green-400' 
+                                                : 'text-red-600 dark:text-red-400'
+                                            }`}>
+                                              {account.afterBalance > account.beforeBalance ? '+' : ''}
+                                              {(account.afterBalance - account.beforeBalance).toFixed(6)}
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                                {step.accounts.length > 3 && (
+                                  <div className="text-xs text-gray-500 dark:text-gray-400 text-center py-1">
+                                    +{step.accounts.length - 3} more accounts
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Error Analysis & Suggested Fixes */}
+              {debuggerResult.errors && debuggerResult.errors.length > 0 && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border dark:border-gray-600">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                      <Wrench className="w-5 h-5 mr-2 text-red-600 flex-shrink-0" />
+                      Error Analysis & Fixes
+                    </h3>
+                    <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-1 rounded">
+                      {debuggerResult.errors.filter(e => e.severity === 'critical').length} critical
+                    </span>
+                  </div>
+
+                  <div className="space-y-4">
+                    {debuggerResult.errors.map((error, index) => (
+                      <div key={index} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border ${
+                        error.severity === 'critical' 
+                          ? 'border-red-200 dark:border-red-800' 
+                          : 'border-yellow-200 dark:border-yellow-800'
+                      }`}>
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                          <div className="flex items-center space-x-3 min-w-0 flex-1">
+                            <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                              error.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500'
+                            }`}></div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center space-x-2 flex-wrap gap-1 mb-1">
+                                <span className="font-medium text-sm text-gray-900 dark:text-white">
+                                  {error.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                                <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">
+                                  Instruction #{error.instruction}
+                                </span>
+                              </div>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 font-mono truncate">
+                                {error.programId}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <button className="flex items-center space-x-2 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 flex-shrink-0">
+                            <ExternalLink className="w-3 h-3" />
+                            <span>View in Explorer</span>
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className={`p-3 rounded-lg ${
+                            error.severity === 'critical' 
+                              ? 'bg-red-50 dark:bg-red-900/20' 
+                              : 'bg-yellow-50 dark:bg-yellow-900/20'
+                          }`}>
+                            <p className="text-sm text-gray-900 dark:text-white font-medium mb-1">Error Details</p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">{error.message}</p>
+                          </div>
+
+                          <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                            <p className="text-sm text-gray-900 dark:text-white font-medium mb-1 flex items-center">
+                              <CheckCircle2 className="w-4 h-4 mr-2 text-green-600" />
+                              Suggested Fix
+                            </p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{error.suggestedFix}</p>
+                            
+                            {error.codeExample && (
+                              <div className="bg-gray-900 dark:bg-gray-800 p-3 rounded-lg overflow-x-auto">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs text-gray-400">Code Example</span>
+                                  <button className="text-xs text-gray-400 hover:text-gray-300 flex items-center space-x-1">
+                                    <Copy className="w-3 h-3" />
+                                    <span>Copy</span>
+                                  </button>
+                                </div>
+                                <pre className="text-xs text-gray-100 whitespace-pre-wrap">
+                                  <code>{error.codeExample}</code>
+                                </pre>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Quick Actions */}
+          <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+            <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center">
+              <Eye className="w-4 h-4 mr-2" />
+              Common Debug Scenarios
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
+              <button 
+                onClick={() => setTransactionSignature('2ZE7R7TTqgrjbMBeUCBYKUUKsNUCcCx1CnXdVmf4at8jkFsjRKnXKdtVfGKQ4cJY5ufg9CfW6ZTgJa9z2BELojA9')}
+                className="text-left p-2 bg-white dark:bg-purple-900/30 rounded border border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/40 transition-colors"
+              >
+                <div className="font-medium text-purple-900 dark:text-purple-100">Realloc Error</div>
+                <div className="text-purple-700 dark:text-purple-300">Account size constraint violation</div>
+              </button>
+              
+              <button 
+                onClick={() => setTransactionSignature('4XyZ9aVsWw2gNpJhRzKJDdTgYhP4mF3J8Q7vRbNuLtE2wSdHjKnMcPqBvF6AzLrT8wGxPy4mJ9nKqWcVbNfDhPaE')}
+                className="text-left p-2 bg-white dark:bg-purple-900/30 rounded border border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/40 transition-colors"
+              >
+                <div className="font-medium text-purple-900 dark:text-purple-100">Balance Mismatch</div>
+                <div className="text-purple-700 dark:text-purple-300">Insufficient account balance</div>
+              </button>
+              
+              <button 
+                onClick={() => setTransactionSignature('8PnMjRgF4wTcHs3VkJdYqPbGfLx2QjE7wZyCpRvNmKsL9AhBjDnTxGwVcPqFyMrE6bNjKdHqXwScVaLpJhRtMzF4')}
+                className="text-left p-2 bg-white dark:bg-purple-900/30 rounded border border-purple-200 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/40 transition-colors"
+              >
+                <div className="font-medium text-purple-900 dark:text-purple-100">CPI Overflow</div>
+                <div className="text-purple-700 dark:text-purple-300">Too many cross-program calls</div>
+              </button>
+            </div>
           </div>
         </div>
 
