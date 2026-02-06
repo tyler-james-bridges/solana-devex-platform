@@ -310,7 +310,7 @@ const PartnershipsPage: React.FC = () => {
               Production platform with working integrations
             </p>
             <a 
-              href="https://onchain-devx.tools"
+              href="https://onchain-devex.tools"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
@@ -342,7 +342,7 @@ const PartnershipsPage: React.FC = () => {
           Contact us to discuss integration opportunities.
         </p>
         <div className="text-sm text-blue-700 dark:text-blue-300">
-          Platform: <span className="font-mono">onchain-devx.tools</span> • 
+          Platform: <span className="font-mono">onchain-devex.tools</span> • 
           Agent: <span className="font-mono">#25</span> • 
           Project: <span className="font-mono">#46</span>
         </div>
