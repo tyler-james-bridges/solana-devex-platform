@@ -40,6 +40,12 @@ const Navigation = () => {
       description: 'Development workflows and test validator monitoring'
     },
     {
+      name: 'CPI Debug',
+      href: '/cpi-debugger',
+      icon: Code,
+      description: 'Advanced Cross-Program Invocation debugging and error analysis'
+    },
+    {
       name: 'Community',
       href: '/community',
       icon: Users,

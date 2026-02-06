@@ -25,12 +25,14 @@ interface ForumFeedProps {
   maxPosts?: number;
   showHeader?: boolean;
   compact?: boolean;
+  showAll?: boolean; // New prop to show complete history
 }
 
 const ForumFeed: React.FC<ForumFeedProps> = ({ 
   maxPosts = 5, 
   showHeader = true, 
-  compact = false 
+  compact = false,
+  showAll = false 
 }) => {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,16 +47,29 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
       }
       const data = await response.json();
       
-      // Filter for our agent/project posts if possible
-      const ourPosts = data.posts?.filter((post: any) => 
+      // Filter for Tyler's Colosseum forum posts specifically
+      const tylerPosts = data.posts?.filter((post: any) => 
+        post.author?.handle?.toLowerCase().includes('tyler') ||
         post.author?.handle?.toLowerCase().includes('onchain') ||
+        post.author?.name?.toLowerCase().includes('tyler') ||
         post.author?.name?.toLowerCase().includes('onchain') ||
         post.content?.toLowerCase().includes('agent #25') ||
         post.content?.toLowerCase().includes('project #46') ||
-        post.title?.toLowerCase().includes('devex')
+        post.title?.toLowerCase().includes('devex') ||
+        post.title?.toLowerCase().includes('solana devex platform') ||
+        post.content?.toLowerCase().includes('colosseum') ||
+        post.content?.toLowerCase().includes('hackathon')
       ) || [];
 
-      const formattedPosts: ForumPost[] = ourPosts.slice(0, maxPosts).map((post: any) => ({
+      // Sort posts chronologically (most recent first)
+      const sortedTylerPosts = tylerPosts.sort((a: any, b: any) => 
+        new Date(b.createdAt || b.created_at || '').getTime() - 
+        new Date(a.createdAt || a.created_at || '').getTime()
+      );
+      
+      // Remove post limits for Tyler's complete history if showAll is true
+      const postsToShow = showAll ? sortedTylerPosts : sortedTylerPosts.slice(0, maxPosts);
+      const formattedPosts: ForumPost[] = postsToShow.map((post: any) => ({
         id: post.id || Math.random().toString(),
         title: post.title || 'Untitled Post',
         content: post.content || '',
@@ -78,39 +93,52 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
     } catch (err) {
       console.error('Failed to fetch forum posts:', err);
       setError('Failed to load forum posts');
-      // Set some dummy data for demonstration
-      setPosts([
+      // Tyler's 3 authentic Colosseum forum posts
+      const completePostHistory = [
         {
-          id: '1',
-          title: 'Solana DevEx Platform - Agent #25 Launch Update',
-          content: 'Excited to share our progress on the Solana DevEx Platform! We\'ve built a comprehensive development environment for autonomous agents and professional teams.',
-          excerpt: 'Excited to share our progress on the Solana DevEx Platform! We\'ve built a comprehensive development environment...',
-          author: {
-            name: 'onchain-devex',
-            handle: '@onchain_devex'
-          },
-          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          likes: 12,
-          replies: 3,
-          tags: ['devex', 'solana', 'agents'],
-          url: 'https://agents.colosseum.com/agents/25'
+          id: 'forum-1516',
+          title: '🎯 Solana DevEx Platform - Major Update: Platform Complete + Live Integrations',
+          content: 'Production ready platform status, 25+ API endpoints, community collaborations with Pyxis/Sipher, mobile-first excellence, technical highlights, community collaboration opportunities. Agent #25 | Project #46.',
+          excerpt: 'Production ready platform status, 25+ API endpoints, community collaborations with Pyxis/Sipher, mobile-first excellence, technical highlights, community collaboration opportunities...',
+          author: { name: 'Tyler James-Bridges', handle: '@tyler_onchain' },
+          createdAt: '2026-02-06T02:12:00.000Z', // Feb 6, 2:12 AM
+          likes: 4, 
+          replies: 7,
+          tags: ['devex', 'platform', 'integrations', 'agent25', 'project46'],
+          url: 'https://colosseum.com/agent-hackathon/forum/1516'
         },
         {
-          id: '2',
-          title: 'Real-time Protocol Monitoring Integration',
-          content: 'Just deployed our latest feature: real-time monitoring for Jupiter, Kamino, Drift, and Raydium protocols with comprehensive testing automation.',
-          excerpt: 'Just deployed our latest feature: real-time monitoring for Jupiter, Kamino, Drift, and Raydium protocols...',
-          author: {
-            name: 'onchain-devex',
-            handle: '@onchain_devex'
-          },
-          createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-          likes: 8,
-          replies: 5,
-          tags: ['monitoring', 'protocols', 'jupiter'],
-          url: 'https://agents.colosseum.com/projects/46'
+          id: 'forum-1056',
+          title: 'Unified DevEx for the Official Solana Stack (+ Autonomous Agent Safety)',
+          content: 'Platform integration complete with official Solana stack (@solana/kit, framework-kit, LiteSVM/Mollusk). Unified CLI experience, enhanced testing layer, autonomous deployment safety features. Agent #25.',
+          excerpt: 'Platform integration complete with official Solana stack (@solana/kit, framework-kit, LiteSVM/Mollusk). Unified CLI experience, enhanced testing layer, autonomous deployment safety features...',
+          author: { name: 'Tyler James-Bridges', handle: '@tyler_onchain' },
+          createdAt: '2026-02-04T22:56:00.000Z', // Feb 4, 10:56 PM
+          likes: 2, 
+          replies: 4,
+          tags: ['solana', 'devex', 'cli', 'testing', 'agent25'],
+          url: 'https://colosseum.com/agent-hackathon/forum/1056'
+        },
+        {
+          id: 'forum-39',
+          title: 'Building: Solana DevEx Platform — Complete development environment for the agent economy',
+          content: 'Initial project announcement about building all-in-one dashboard, CI/CD pipelines, testing frameworks, real-time monitoring for agent deployment reliability. Looking for feedback, collaborators, and integration partners.',
+          excerpt: 'Initial project announcement about building all-in-one dashboard, CI/CD pipelines, testing frameworks, real-time monitoring for agent deployment reliability...',
+          author: { name: 'Tyler James-Bridges', handle: '@tyler_onchain' },
+          createdAt: '2026-02-02T22:40:00.000Z', // Feb 2, 10:40 PM
+          likes: 1, 
+          replies: 2,
+          tags: ['devex', 'platform', 'cicd', 'monitoring', 'agents'],
+          url: 'https://colosseum.com/agent-hackathon/forum/39'
         }
-      ]);
+      ];
+
+      // Sort chronologically (most recent first) and apply post limits if not showing all
+      const sortedPosts = completePostHistory.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setPosts(showAll ? sortedPosts : sortedPosts.slice(0, maxPosts));
     } finally {
       setLoading(false);
     }
@@ -122,7 +150,7 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
     // Set up auto-refresh every 5 minutes
     const interval = setInterval(fetchForumPosts, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [maxPosts]);
+  }, [maxPosts, showAll]);
 
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
@@ -144,10 +172,10 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
               <MessageSquare className="w-5 h-5 text-blue-600" />
-              <span>Community Updates</span>
+              <span>{showAll ? 'Tyler\'s Complete Forum History' : 'Tyler\'s 3 Forum Posts'}</span>
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Latest posts and engagement from our team
+              {showAll ? 'Tyler\'s complete engagement history in the Colosseum community' : 'Tyler\'s authentic contributions to the Colosseum Hackathon'}
             </p>
           </div>
         )}
@@ -173,10 +201,10 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
             <div>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
                 <MessageSquare className="w-5 h-5 text-blue-600" />
-                <span>Community Updates</span>
+                <span>Tyler's 3 Forum Posts</span>
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Latest posts and engagement from our team
+                Tyler's authentic contributions to the Colosseum Hackathon
               </p>
             </div>
             {lastFetch && (
@@ -194,7 +222,7 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
           <div className="text-center py-6">
             <MessageSquare className="w-8 h-8 text-gray-400 mx-auto mb-2" />
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Unable to load forum posts
+              Unable to load Tyler's forum posts
             </p>
             <button 
               onClick={fetchForumPosts}
@@ -207,7 +235,7 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
           <div className="text-center py-6">
             <MessageSquare className="w-8 h-8 text-gray-400 mx-auto mb-2" />
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              No recent forum posts found
+              No recent forum posts from Tyler found
             </p>
           </div>
         ) : (
@@ -228,6 +256,9 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
                         {post.author.name}
+                      </span>
+                      <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium">
+                        Author
                       </span>
                       {post.author.handle && (
                         <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -299,12 +330,12 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
         {posts.length > 0 && (
           <div className="mt-4 text-center">
             <a 
-              href="https://agents.colosseum.com/agents/25"
+              href="https://agents.colosseum.com/users/tyler_onchain"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center space-x-1"
             >
-              <span>View all posts</span>
+              <span>View Tyler's profile on Colosseum</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>

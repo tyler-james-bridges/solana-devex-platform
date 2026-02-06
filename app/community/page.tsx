@@ -448,14 +448,24 @@ export default function CommunityPage() {
         </div>
       </div>
 
-      {/* Live Community Updates */}
+      {/* Complete Forum Contributions */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
           <MessageSquare className="w-6 h-6 text-green-600" />
-          <span>Live Community Updates</span>
+          <span>Complete Forum Contributions</span>
         </h2>
-        <ForumFeed showHeader={false} maxPosts={8} compact={false} />
-      </div>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">
+          Tyler's complete engagement history in the Colosseum community - showcasing sustained participation 
+          and contributions to the autonomous agent ecosystem over time.
+        </p>
+        <ForumFeed showHeader={true} showAll={true} compact={false} />
+      </div></thinking>
+
+Let me also create a comprehensive summary of what was accomplished:
+
+<function_calls>
+<invoke name="Write">
+<parameter name="path">solana-devex-platform/FORUM_FEED_UPDATE_SUMMARY.md
 
       {/* Community Growth Stats */}
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
