@@ -44,10 +44,10 @@ const Navigation = () => {
       description: 'Multi-project workspace and team collaboration'
     },
     {
-      name: 'Partnerships',
+      name: 'Community Collaborations',
       href: '/partnerships',
       icon: BarChart3,
-      description: 'Integration APIs and partnership demos'
+      description: 'Integration APIs and community collaboration demos'
     }
   ];
 

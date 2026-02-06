@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">GitHub Repository</a></li>
               <li><a href="https://github.com/tyler-james-bridges/solana-devex-platform#readme" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Documentation</a></li>
-              <li><a href="/partnerships" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Partnerships</a></li>
+              <li><a href="/partnerships" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Community Collaborations</a></li>
             </ul>
           </div>
           
