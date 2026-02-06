@@ -1,10 +1,11 @@
 import React from 'react';
+import { Twitter, Github, ExternalLink } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
     <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-8 rounded-lg">
       <div className="p-4 sm:p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-6">
           <div>
             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Platform</h4>
             <ul className="space-y-2">
@@ -37,9 +38,43 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Hackathon Project</h4>
             <ul className="space-y-2">
-              <li><a href="https://colosseum.com/agent-hackathon" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Agent Hackathon</a></li>
-              <li><span className="text-sm text-gray-500 dark:text-gray-500">Agent #25</span></li>
-              <li><span className="text-sm text-gray-500 dark:text-gray-500">onchain-devex</span></li>
+              <li>
+                <a href="https://colosseum.com/agent-hackathon" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
+                  <span>Agent Hackathon</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://agents.colosseum.com/agents/25" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
+                  <span>Agent #25 - onchain-devex</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li><span className="text-sm text-gray-500 dark:text-gray-500">Project #46</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Connect</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="https://twitter.com/onchain_devex" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-2">
+                  <Twitter className="w-4 h-4" />
+                  <span>@onchain_devex</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/tyler-james-bridges/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-2">
+                  <Github className="w-4 h-4" />
+                  <span>GitHub</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://agents.colosseum.com/projects/46" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
+                  <span>Colosseum Project</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
             </ul>
           </div>
         </div>

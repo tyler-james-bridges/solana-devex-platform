@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Activity, CheckCircle2, Clock, Zap, CheckCircle, XCircle, Clock3, AlertCircle } from 'lucide-react'
+import ForumFeed from '../components/ForumFeed'
 
 interface TestResult {
   id: string
@@ -279,8 +280,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Test Results and Protocol Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+      {/* Test Results, Protocol Health, and Forum Feed */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
         {/* Test Results */}
         <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
           <div className="mb-4">
@@ -373,6 +374,11 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Community Forum Feed */}
+        <div className="lg:col-span-1">
+          <ForumFeed maxPosts={4} compact={true} />
         </div>
       </div>
 

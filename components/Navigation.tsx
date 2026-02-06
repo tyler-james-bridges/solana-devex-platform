@@ -11,7 +11,9 @@ import {
   BarChart3, 
   Menu,
   X,
-  Home
+  Home,
+  Twitter,
+  Github
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -48,6 +50,12 @@ const Navigation = () => {
       href: '/partnerships',
       icon: BarChart3,
       description: 'Integration APIs and community collaboration demos'
+    },
+    {
+      name: 'Community',
+      href: '/community',
+      icon: Twitter,
+      description: 'Connect with our team and follow our progress'
     }
   ];
 
@@ -95,8 +103,30 @@ const Navigation = () => {
             })}
           </div>
 
-          {/* Theme Toggle & Mobile Menu */}
+          {/* Social Links, Theme Toggle & Mobile Menu */}
           <div className="flex items-center space-x-2">
+            {/* Social Links - Desktop Only */}
+            <div className="hidden md:flex items-center space-x-1">
+              <a
+                href="https://twitter.com/onchain_devex"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2 transition-colors"
+                title="Follow us on Twitter"
+              >
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a
+                href="https://github.com/tyler-james-bridges/solana-devex-platform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2 transition-colors"
+                title="View our GitHub repository"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+            </div>
+
             {/* Theme Toggle */}
             <ThemeToggle />
 
@@ -146,6 +176,33 @@ const Navigation = () => {
                   </Link>
                 );
               })}
+              
+              {/* Mobile Social Links */}
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 px-4 mb-2">Connect with us</p>
+                <div className="flex items-center space-x-4 px-4">
+                  <a
+                    href="https://twitter.com/onchain_devex"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Twitter className="w-4 h-4" />
+                    <span className="text-sm">Twitter</span>
+                  </a>
+                  <a
+                    href="https://github.com/tyler-james-bridges/solana-devex-platform"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Github className="w-4 h-4" />
+                    <span className="text-sm">GitHub</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}
