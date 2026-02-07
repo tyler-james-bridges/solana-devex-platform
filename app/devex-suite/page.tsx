@@ -16,9 +16,10 @@ import {
 import TransactionSimulator from '../../components/TransactionSimulator';
 import VerifiableDebugger from '../../components/VerifiableDebugger';
 import AgentWalletManager from '../../components/AgentWalletManager';
+import SecurityScanner from '../../components/SecurityScanner';
 
 const DevExSuitePage: React.FC = () => {
-  const [activeFeature, setActiveFeature] = useState<'simulator' | 'verifiable' | 'wallets' | null>(null);
+  const [activeFeature, setActiveFeature] = useState<'simulator' | 'verifiable' | 'wallets' | 'security' | null>(null);
 
   const features = [
     {
@@ -58,6 +59,19 @@ const DevExSuitePage: React.FC = () => {
         'Multi-signature support',
         'Granular permission controls',
         'Hardware security module ready'
+      ]
+    },
+    {
+      id: 'security' as const,
+      icon: Shield,
+      title: 'Guardian Security Scanner',
+      description: 'Advanced security analysis powered by Guardian\'s 17-agent swarm. Token scanning, honeypot detection, whale tracking, and threat intelligence.',
+      status: 'Guardian',
+      benefits: [
+        'Real-time threat detection and alerts',
+        'Comprehensive token risk analysis',
+        'Whale activity monitoring and alerts',
+        'Program vulnerability scanning'
       ]
     }
   ];
@@ -116,7 +130,7 @@ const DevExSuitePage: React.FC = () => {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
           {features.map((feature) => {
             const IconComponent = feature.icon;
             const isActive = activeFeature === feature.id;
@@ -198,6 +212,14 @@ const DevExSuitePage: React.FC = () => {
         />
       )}
 
+      {activeFeature === 'security' && (
+        <SecurityScanner 
+          onScanComplete={(result) => {
+            console.log('Security scan completed:', result);
+          }}
+        />
+      )}
+
       {/* No feature selected - show overview */}
       {!activeFeature && (
         <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
@@ -238,6 +260,13 @@ const DevExSuitePage: React.FC = () => {
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 On-chain proof of debugging findings creates tamper-proof 
                 accountability and trust in development work.
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Guardian Security</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Advanced security layer powered by Guardian's 17-agent swarm 
+                with real-time threat detection and comprehensive analysis.
               </p>
             </div>
           </div>
