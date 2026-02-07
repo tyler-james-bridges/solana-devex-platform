@@ -1,5 +1,7 @@
 # Solana DevEx Platform
 
+![Build](https://github.com/tyler-james-bridges/solana-devex-platform/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg) ![Live](https://img.shields.io/badge/Live-onchain--devex.tools-green.svg)
+
 Complete development infrastructure for Solana builders. Production-ready testing, monitoring, and deployment tools unified under a single platform.
 
 **Live**: https://onchain-devex.tools  
