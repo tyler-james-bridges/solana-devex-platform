@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   Home,
-  Zap
+  Zap,
+  Shield
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -41,6 +42,12 @@ const Navigation = () => {
       href: '/cpi-debugger',
       icon: Code,
       description: 'Advanced Cross-Program Invocation debugging and error analysis'
+    },
+    {
+      name: 'Provenance',
+      href: '/provenance',
+      icon: Shield,
+      description: 'Built by an Agent - autonomous development provenance and verification'
     },
     {
       name: 'Community',
