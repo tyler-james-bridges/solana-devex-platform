@@ -378,82 +378,13 @@ const CPIDebuggerPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
       {/* Header Section */}
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-6">
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-600 p-3 rounded-xl">
-                <Search className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-                CPI Debugger
-              </h1>
-              <div className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-semibold border border-blue-200 dark:border-blue-700">
-                FLAGSHIP
-              </div>
-            </div>
-            
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-3xl">
-              The most advanced Cross-Program Invocation debugger for Solana. 
-              Analyze complex transactions, identify CPI errors, and optimize your programs like a pro.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-6">
-              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Real-time transaction analysis</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Smart error detection</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Code optimization suggestions</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Transactions Debugged</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">50K+</p>
-              </div>
-              <Activity className="w-8 h-8 text-blue-600" />
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Error Detection Rate</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">95%</p>
-              </div>
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Supported Protocols</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">8</p>
-              </div>
-              <Shield className="w-8 h-8 text-purple-600" />
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monitoring</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">24/7</p>
-              </div>
-              <Clock className="w-8 h-8 text-orange-600" />
-            </div>
-          </div>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          CPI Debugger
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Advanced Cross-Program Invocation debugging and error analysis.
+        </p>
 
         {/* Tab Navigation */}
         <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
@@ -478,9 +409,6 @@ const CPIDebuggerPage: React.FC = () => {
           >
             <Play className="w-4 h-4 inline mr-2" />
             Safety Simulator
-            <span className="ml-2 px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded text-xs font-semibold">
-              NEW
-            </span>
           </button>
           <button
             onClick={() => setActiveTab('verifiable')}
@@ -492,24 +420,23 @@ const CPIDebuggerPage: React.FC = () => {
           >
             <Shield className="w-4 h-4 inline mr-2" />
             Verifiable Debugging
-            <span className="ml-2 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-xs font-semibold">
-              UNIQUE
-            </span>
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'simulator' && (
+      {activeTab === 'simulator' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
           <TransactionSimulator 
             transactionData={transactionSignature}
             onSimulationComplete={(result) => {
               console.log('Simulation completed:', result);
             }}
           />
-        )}
+        </div>
+      )}
 
-        {activeTab === 'verifiable' && (
+      {activeTab === 'verifiable' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
           <VerifiableDebugger 
             transactionSignature={transactionSignature}
             debuggingResults={debuggerResult}
@@ -517,12 +444,13 @@ const CPIDebuggerPage: React.FC = () => {
               console.log('Attestation created:', attestation);
             }}
           />
-        )}
+        </div>
+      )}
 
-        {activeTab === 'debugger' && (
-          <>
-            {/* Debug Interface */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-xl overflow-hidden mb-8">
+      {activeTab === 'debugger' && (
+        <>
+          {/* Debug Interface */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 overflow-hidden mb-6">
           {/* Debug Controls */}
           <div className="bg-gray-50 dark:bg-gray-700/50 p-6 border-b dark:border-gray-700">
             <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-6 space-y-4 lg:space-y-0">
@@ -1013,7 +941,7 @@ const CPIDebuggerPage: React.FC = () => {
         </div>
 
         {/* Examples Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border dark:border-gray-700 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700">
           <div className="p-6 border-b dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -1128,7 +1056,6 @@ const CPIDebuggerPage: React.FC = () => {
         </div>
           </>
         )}
-      </div>
     </div>
   );
 };
