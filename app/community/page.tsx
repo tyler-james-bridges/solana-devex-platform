@@ -172,7 +172,7 @@ export default function CommunityPage() {
             </a>
 
             <a 
-              href="https://agents.colosseum.com/agents/25"
+              href="https://colosseum.com/agent-hackathon/projects/solana-devex-platform"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
