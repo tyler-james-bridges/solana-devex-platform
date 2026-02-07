@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="https://agents.colosseum.com/agents/25" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
+                <a href="https://colosseum.com/agent-hackathon/projects/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
                   <span>Agent #25 - onchain-devex</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="https://agents.colosseum.com/projects/46" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
+                <a href="https://colosseum.com/agent-hackathon/projects/solana-devex-platform" target="_blank" rel="noopener" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white inline-flex items-center space-x-1">
                   <span>Colosseum Project</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>

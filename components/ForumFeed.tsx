@@ -278,7 +278,7 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
         {posts.length > 0 && (
           <div className="mt-4 text-center">
             <a 
-              href="https://agents.colosseum.com/users/tyler_onchain"
+              href="https://colosseum.com/agent-hackathon/projects/solana-devex-platform"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 inline-flex items-center space-x-1"
