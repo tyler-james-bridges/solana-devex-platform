@@ -548,7 +548,7 @@ const DevMonitorDashboard: React.FC = () => {
 
           return [...prev.slice(-49), newPoint];
         });
-      }, 2000);
+      }, 60000); // Changed from 2000ms to 60000ms (1 minute) - major cost savings
 
       return () => clearInterval(interval);
     }

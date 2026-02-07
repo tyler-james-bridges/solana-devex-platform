@@ -95,8 +95,8 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
   useEffect(() => {
     fetchForumPosts();
     
-    // Set up auto-refresh every 5 minutes
-    const interval = setInterval(fetchForumPosts, 5 * 60 * 1000);
+    // Set up auto-refresh every 30 minutes (reduced from 5 minutes for cost savings)
+    const interval = setInterval(fetchForumPosts, 30 * 60 * 1000);
     return () => clearInterval(interval);
   }, [maxPosts, showAll]);
 

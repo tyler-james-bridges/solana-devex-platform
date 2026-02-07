@@ -94,11 +94,15 @@ export async function POST(request: NextRequest) {
         }
       };
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         success: true,
         data: debugData,
         timestamp: new Date().toISOString()
       });
+
+      // Cache transaction debugging results for 1 hour (transactions are immutable)
+      response.headers.set('Cache-Control', 's-maxage=3600, stale-while-revalidate=1800');
+      return response;
 
     } catch (parseError) {
       console.error('Parse Error:', parseError);

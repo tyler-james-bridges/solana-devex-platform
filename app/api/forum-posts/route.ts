@@ -11,14 +11,14 @@ export async function GET(request: NextRequest) {
       'User-Agent': 'onchain-devex-platform/1.0'
     };
 
-    const response = await fetch(FORUM_API_URL, {
+    const apiResponse = await fetch(FORUM_API_URL, {
       headers,
       method: 'GET',
-      next: { revalidate: 300 } // Cache for 5 minutes
+      next: { revalidate: 1800 } // Cache for 30 minutes (increased from 5 minutes)
     });
 
-    if (!response.ok) {
-      console.error(`Colosseum API error: ${response.status} ${response.statusText}`);
+    if (!apiResponse.ok) {
+      console.error(`Colosseum API error: ${apiResponse.status} ${apiResponse.statusText}`);
       
       // Return Tyler's authentic Colosseum forum posts on API failure
       return NextResponse.json({
@@ -70,12 +70,12 @@ export async function GET(request: NextRequest) {
             url: 'https://colosseum.com/agent-hackathon/forum/39'
           }
         ],
-        error: `API unavailable (${response.status})`,
+        error: `API unavailable (${apiResponse.status})`,
         timestamp: new Date().toISOString()
       });
     }
 
-    const data = await response.json();
+    const data = await apiResponse.json();
     
     // Process and filter the data for Tyler's specific posts
     const filteredPosts = data.posts?.filter((post: any) => {
@@ -89,11 +89,18 @@ export async function GET(request: NextRequest) {
       return searchTerms.some(term => postText.includes(term.toLowerCase()));
     }) || [];
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       posts: filteredPosts.slice(0, 10), // Limit to 10 posts
       timestamp: new Date().toISOString()
     });
+
+    // Add aggressive caching headers to reduce function invocations
+    response.headers.set('Cache-Control', 's-maxage=1800, stale-while-revalidate=900');
+    response.headers.set('CDN-Cache-Control', 's-maxage=1800');
+    response.headers.set('Vercel-CDN-Cache-Control', 's-maxage=1800');
+
+    return response;
 
   } catch (error) {
     console.error('Failed to fetch forum posts:', error);

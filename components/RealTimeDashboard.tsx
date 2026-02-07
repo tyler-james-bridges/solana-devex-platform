@@ -463,7 +463,7 @@ const RealTimeDashboard: React.FC = () => {
       setDashboardData(generateDemoData());
     }
     
-    // Poll real data every 5 seconds
+    // Poll real data every 30 seconds (reduced from 5s to save costs)
     updateIntervalRef.current = setInterval(async () => {
       try {
         const newData = await fetchRealData();
@@ -513,7 +513,7 @@ const RealTimeDashboard: React.FC = () => {
       } catch (error) {
         console.error('Polling error:', error);
       }
-    }, 5000);
+    }, 30000);
   }, []);
 
   // Handle WebSocket messages

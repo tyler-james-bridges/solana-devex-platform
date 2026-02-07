@@ -184,7 +184,7 @@ export default function HomePage() {
         avgLatency: Math.floor(prev.avgLatency + (Math.random() - 0.5) * 10),
         successRate: Number((prev.successRate + (Math.random() - 0.5) * 0.1).toFixed(1))
       }))
-    }, 5000)
+    }, 60000) // Changed from 5000ms to 60000ms (1 minute) for cost savings
 
     return () => clearInterval(interval)
   }, [])

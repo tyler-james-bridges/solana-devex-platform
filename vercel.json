@@ -1,0 +1,41 @@
+{
+  "buildCommand": "npm run build",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "app/api/**/*": {
+      "maxDuration": 10,
+      "memory": 512
+    }
+  },
+  "crons": [],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=86400, stale-while-revalidate=43200"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=300, stale-while-revalidate=150"
+        }
+      ]
+    }
+  ],
+  "rewrites": [],
+  "redirects": [],
+  "github": {
+    "autoAlias": false,
+    "autoJobCancelation": true,
+    "silent": true
+  },
+  "cleanUrls": true,
+  "trailingSlash": false
+}

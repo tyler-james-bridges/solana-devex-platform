@@ -174,13 +174,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     };
 
-    return NextResponse.json(response, { 
-      status: 200,
-      headers: {
-        'Cache-Control': 'no-cache, no-store, max-age=0',
-        'X-Scan-Type': scanType
-      }
-    });
+    const nextResponse = NextResponse.json(response, { status: 200 });
+    
+    // Security scans should be cached for 5 minutes to reduce function calls
+    nextResponse.headers.set('Cache-Control', 's-maxage=300, stale-while-revalidate=150');
+    nextResponse.headers.set('X-Scan-Type', scanType);
+    
+    return nextResponse;
 
   } catch (error) {
     console.error('Security scan error:', error);
@@ -206,7 +206,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (feedType === 'threats') {
       const threatFeed = await guardianClient.getThreatFeed();
       
-      return NextResponse.json({
+      const response = NextResponse.json({
         success: true,
         data: {
           scanType: 'threat_feed',
@@ -215,6 +215,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           count: threatFeed.length
         }
       });
+      
+      // Cache threat feeds for 10 minutes
+      response.headers.set('Cache-Control', 's-maxage=600, stale-while-revalidate=300');
+      return response;
     }
 
     // Default status response
