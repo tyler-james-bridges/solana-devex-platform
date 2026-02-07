@@ -197,177 +197,151 @@ const CPIDebuggerPage: React.FC = () => {
     setIsDebugging(true);
     setDebuggerResult(null);
 
-    // Simulate API delay with progressive updates
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
     // Show initial analysis status
     setDebuggerResult({
       signature,
       status: 'analyzing'
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    // Generate comprehensive mock analysis based on signature pattern
-    const isErrorExample = signature.includes('Error') || signature.includes('Err');
-    const isOptimizedExample = signature.includes('Optimal') || signature.includes('Optim');
-    
-    const mockResult: TransactionDebugger = {
-      signature,
-      status: 'success',
-      performance: {
-        computeUnitsUsed: isOptimizedExample ? 125450 : 289750,
-        computeUnitsRequested: isOptimizedExample ? 150000 : 300000,
-        fee: isOptimizedExample ? 3500 : 8000,
-        slot: 175890125,
-        computeEfficiency: isOptimizedExample ? 83.6 : 96.6,
-        gasOptimization: isOptimizedExample ? 'Excellent - Well optimized transaction structure' : 'Good - Some optimization opportunities available'
-      },
-      metadata: {
-        blockTime: new Date().toISOString(),
-        confirmations: 325,
-        programsInvolved: isErrorExample ? ['Token Program', 'DEX Program'] : ['Token Program', 'DEX Program', 'AMM Program'],
-        accountsModified: isErrorExample ? 8 : 15,
-        totalInstructions: isErrorExample ? 3 : 7
-      },
-      cpiFlow: [
-        {
-          id: '1',
-          program: 'Token Program',
-          programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          instruction: 'Transfer',
-          depth: 0,
-          accounts: [
-            {
-              pubkey: 'HXYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE',
-              name: 'User Token Account',
-              isSigner: true,
-              isWritable: true,
-              beforeBalance: 1000.5,
-              afterBalance: isErrorExample ? 1000.5 : 950.5,
-              dataChange: false,
-              dataSize: 165,
-              rentExemption: true
-            },
-            {
-              pubkey: 'DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
-              name: 'Pool Token Account',
-              isSigner: false,
-              isWritable: true,
-              beforeBalance: 50000.0,
-              afterBalance: isErrorExample ? 50000.0 : 50050.0,
-              dataChange: true,
-              dataSize: 165,
-              rentExemption: true
-            }
-          ],
-          success: true,
-          computeUnits: 15230,
-          gasEfficiency: 'optimal',
-          suggestedOptimizations: isOptimizedExample ? [] : ['Consider batching transfers', 'Use token-2022 for reduced fees']
+    try {
+      // Call our real API endpoint
+      const response = await fetch('/api/debug-transaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          id: '2',
-          program: signature.includes('DEX') ? 'DEX Program' : 'AMM Program',
-          programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-          instruction: signature.includes('swap') ? 'swap' : 'trade',
-          depth: 1,
-          accounts: [
-            {
-              pubkey: 'DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
-              name: 'Liquidity Pool',
-              isSigner: false,
-              isWritable: true,
-              beforeBalance: 25000.0,
-              afterBalance: isErrorExample ? 25000.0 : 24950.0,
-              dataChange: true,
-              dataSize: 8192,
-              rentExemption: true
-            },
-            {
-              pubkey: 'AMMPoolVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
-              name: 'AMM Pool Account',
-              isSigner: false,
-              isWritable: true,
-              beforeBalance: 0.0,
-              afterBalance: 0.0,
-              dataChange: true,
-              dataSize: 4096,
-              rentExemption: true
-            }
-          ],
-          success: !isErrorExample,
-          error: isErrorExample ? 'Account reallocation exceeded maximum allowed size' : undefined,
-          computeUnits: isErrorExample ? 85420 : 145800,
-          gasEfficiency: isOptimizedExample ? 'optimal' : isErrorExample ? 'poor' : 'good',
-          suggestedOptimizations: isOptimizedExample ? [] : ['Optimize account layout', 'Reduce state updates']
-        }
-      ],
-      errors: isErrorExample ? [
-        {
-          type: 'realloc_constraint',
-          severity: 'critical',
-          instruction: 1,
-          programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-          message: 'Account reallocation constraint violation: Attempted to reallocate account beyond maximum size limit (8KB → 12KB)',
-          suggestedFix: 'Implement PDA chunking pattern to split large data across multiple accounts',
-          estimatedFixTime: '2-4 hours',
-          documentation: 'https://docs.rs/anchor-lang/latest/anchor_lang/accounts/account/struct.Account.html#account-reallocation',
-          codeExample: `// Before: Single large account (PROBLEMATIC)
-#[account(
-    realloc = 12_000, // Exceeds 10KB limit
-    realloc::payer = user,
-    realloc::zero = false
-)]
-pub large_account: Account<'info, LargeData>,
+        body: JSON.stringify({ signature }),
+      });
 
-// After: Split into chunks using PDA pattern
-#[derive(Accounts)]
-#[instruction(chunk_id: u8)]
-pub struct InitializeChunk<'info> {
-    #[account(
-        init,
-        payer = user,
-        space = 8 + 8_000, // 8KB chunks
-        seeds = [b"data_chunk", user.key().as_ref(), &[chunk_id]],
-        bump
-    )]
-    pub data_chunk: Account<'info, DataChunk>,
-    
-    #[account(mut)]
-    pub user: Signer<'info>,
-    
-    pub system_program: Program<'info, System>,
-}`
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP ${response.status}`);
+      }
+
+      if (result.success && result.data) {
+        // Successfully got real transaction data
+        setDebuggerResult(result.data);
+      } else {
+        // API returned error but valid response
+        setDebuggerResult({
+          signature,
+          status: 'error',
+          errors: [{
+            type: 'program_error',
+            severity: 'critical',
+            instruction: 0,
+            programId: 'System',
+            message: result.error || 'Failed to fetch transaction data',
+            suggestedFix: 'Verify the transaction signature is correct and the transaction exists on the Solana network',
+            estimatedFixTime: '5-10 minutes'
+          }]
+        });
+      }
+    } catch (error) {
+      console.warn('RPC call failed, falling back to demo data:', error);
+      
+      // Graceful degradation - fall back to demo data if RPC fails
+      const isErrorExample = signature.includes('Error') || signature.includes('Err');
+      const isOptimizedExample = signature.includes('Optimal') || signature.includes('Optim');
+      
+      const fallbackResult: TransactionDebugger = {
+        signature,
+        status: 'success',
+        performance: {
+          computeUnitsUsed: isOptimizedExample ? 125450 : 289750,
+          computeUnitsRequested: isOptimizedExample ? 150000 : 300000,
+          fee: isOptimizedExample ? 3500 : 8000,
+          slot: 175890125,
+          computeEfficiency: isOptimizedExample ? 83.6 : 96.6,
+          gasOptimization: `${isOptimizedExample ? 'Excellent - Well optimized' : 'Good - Some optimization opportunities'} (Demo data - RPC unavailable)`
         },
-        {
-          type: 'compute_budget',
-          severity: 'warning',
-          instruction: 1,
-          programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
-          message: 'High compute unit usage detected. Consider optimizing instruction logic.',
-          suggestedFix: 'Review loops and complex calculations. Use lookup tables for repetitive operations.',
-          estimatedFixTime: '1-2 hours',
-          documentation: 'https://docs.solana.com/developing/programming-model/runtime#compute-budget',
-          codeExample: `// Optimize loops and calculations
-// Before: O(n²) complexity
-for i in 0..data.len() {
-    for j in 0..data.len() {
-        // expensive operation
+        metadata: {
+          blockTime: new Date().toISOString(),
+          confirmations: 325,
+          programsInvolved: isErrorExample ? ['Token Program', 'DEX Program'] : ['Token Program', 'DEX Program', 'AMM Program'],
+          accountsModified: isErrorExample ? 8 : 15,
+          totalInstructions: isErrorExample ? 3 : 7
+        },
+        cpiFlow: [
+          {
+            id: '1',
+            program: 'Token Program',
+            programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            instruction: 'Transfer',
+            depth: 0,
+            accounts: [
+              {
+                pubkey: 'HXYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE',
+                name: 'User Token Account',
+                isSigner: true,
+                isWritable: true,
+                beforeBalance: 1000.5,
+                afterBalance: isErrorExample ? 1000.5 : 950.5,
+                dataChange: false,
+                dataSize: 165,
+                rentExemption: true
+              },
+              {
+                pubkey: 'DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
+                name: 'Pool Token Account',
+                isSigner: false,
+                isWritable: true,
+                beforeBalance: 50000.0,
+                afterBalance: isErrorExample ? 50000.0 : 50050.0,
+                dataChange: true,
+                dataSize: 165,
+                rentExemption: true
+              }
+            ],
+            success: true,
+            computeUnits: 15230,
+            gasEfficiency: 'optimal',
+            suggestedOptimizations: isOptimizedExample ? [] : ['Consider batching transfers', 'Use token-2022 for reduced fees']
+          },
+          {
+            id: '2',
+            program: signature.includes('DEX') ? 'DEX Program' : 'AMM Program',
+            programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+            instruction: signature.includes('swap') ? 'swap' : 'trade',
+            depth: 1,
+            accounts: [
+              {
+                pubkey: 'DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1',
+                name: 'Liquidity Pool',
+                isSigner: false,
+                isWritable: true,
+                beforeBalance: 25000.0,
+                afterBalance: isErrorExample ? 25000.0 : 24950.0,
+                dataChange: true,
+                dataSize: 8192,
+                rentExemption: true
+              }
+            ],
+            success: !isErrorExample,
+            error: isErrorExample ? 'Account reallocation exceeded maximum allowed size' : undefined,
+            computeUnits: isErrorExample ? 85420 : 145800,
+            gasEfficiency: isOptimizedExample ? 'optimal' : isErrorExample ? 'poor' : 'good',
+            suggestedOptimizations: isOptimizedExample ? [] : ['Optimize account layout', 'Reduce state updates']
+          }
+        ],
+        errors: isErrorExample ? [
+          {
+            type: 'realloc_constraint',
+            severity: 'critical',
+            instruction: 1,
+            programId: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
+            message: 'Account reallocation constraint violation (Demo data - RPC unavailable)',
+            suggestedFix: 'Implement PDA chunking pattern to split large data across multiple accounts',
+            estimatedFixTime: '2-4 hours',
+            documentation: 'https://docs.rs/anchor-lang/latest/anchor_lang/accounts/account/struct.Account.html#account-reallocation'
+          }
+        ] : []
+      };
+
+      setDebuggerResult(fallbackResult);
     }
-}
 
-// After: O(n) with lookup table
-let lookup: HashMap<u64, u64> = precomputed_values();
-for item in data.iter() {
-    let result = lookup.get(&item.key).unwrap_or(&0);
-    // efficient operation
-}`
-        }
-      ] : []
-    };
-
-    setDebuggerResult(mockResult);
     setIsDebugging(false);
   }, []);
 
