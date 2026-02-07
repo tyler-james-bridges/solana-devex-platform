@@ -72,4 +72,4 @@ test-results/
 integration-examples/
 planning/
 research/
-internal/
+internal/tsconfig.tsbuildinfo
