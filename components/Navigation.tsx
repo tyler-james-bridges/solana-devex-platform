@@ -32,12 +32,6 @@ const Navigation = () => {
       description: 'Complete developer experience platform with safety simulation, verifiable debugging, and agent wallets'
     },
     {
-      name: 'Monitor',
-      href: '/dashboard',
-      icon: Activity,
-      description: 'Real-time protocol health and network monitoring'
-    },
-    {
       name: 'CPI Debug',
       href: '/cpi-debugger',
       icon: Code,
@@ -48,12 +42,6 @@ const Navigation = () => {
       href: '/provenance',
       icon: Shield,
       description: 'Built by an Agent - autonomous development provenance and verification'
-    },
-    {
-      name: 'Community',
-      href: '/community',
-      icon: Users,
-      description: 'Community hub, partnerships, and collaborations'
     }
   ];
 
@@ -69,7 +57,7 @@ const Navigation = () => {
               </div>
               <div className="hidden xs:block sm:block">
                 <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Solana DevEx Platform</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Real-time monitoring & infrastructure</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Developer tools for Solana</p>
               </div>
               <div className="block xs:hidden">
                 <h1 className="text-lg font-bold text-gray-900 dark:text-white">DevEx</h1>

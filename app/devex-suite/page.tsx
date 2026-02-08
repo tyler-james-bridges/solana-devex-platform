@@ -53,12 +53,12 @@ const DevExSuitePage: React.FC = () => {
       icon: Wallet,
       title: 'Agent Wallet Infrastructure',
       description: 'Secure, self-custodial wallet management for AI agents with granular permission controls and encrypted storage.',
-      status: 'Enterprise',
+      status: 'Core',
       benefits: [
-        'Enterprise-grade encrypted storage',
-        'Multi-signature support',
+        'Encrypted local key storage',
+        'Permission-based access controls',
         'Granular permission controls',
-        'Hardware security module ready'
+        'Configurable security levels'
       ]
     },
     {
@@ -77,10 +77,10 @@ const DevExSuitePage: React.FC = () => {
   ];
 
   const platformStats = [
-    { label: 'Transactions Analyzed', value: '50K+', icon: Activity },
-    { label: 'Safety Checks Passed', value: '95%', icon: CheckCircle2 },
-    { label: 'Wallets Created', value: '2.5K+', icon: Wallet },
-    { label: 'Attestations Verified', value: '100%', icon: Shield }
+    { label: 'Integrated Tools', value: '7', icon: Activity },
+    { label: 'API Endpoints', value: '8', icon: CheckCircle2 },
+    { label: 'Days Built', value: '7', icon: Wallet },
+    { label: 'Live on Mainnet', value: 'Yes', icon: Shield }
   ];
 
   return (
@@ -105,8 +105,8 @@ const DevExSuitePage: React.FC = () => {
           
           <div className="flex items-center space-x-3">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-              All Systems Operational
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+              Agent #25 | Project #46
             </span>
           </div>
         </div>

@@ -79,14 +79,11 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
       id: 'wallet_1',
       name: 'Primary Agent Wallet',
       address: 'HXYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE',
-      publicKey: 'ed25519:EXAMPLE_PUBLIC_KEY_NOT_REAL_1234567890abcdef1234567890abcdef',
-      encryptedPrivateKey: 'encrypted:aes256:EXAMPLE_ENCRYPTED_PRIVATE_KEY_NOT_REAL',
+      publicKey: 'ed25519:demo_public_key',
+      encryptedPrivateKey: 'encrypted:aes256:demo_encrypted_key',
       balance: {
-        sol: 12.5,
-        tokens: [
-          { mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', symbol: 'USDC', amount: 1500000000, uiAmount: '1,500.00', decimals: 6 },
-          { mint: 'So11111111111111111111111111111111111111112', symbol: 'wSOL', amount: 5000000000, uiAmount: '5.00', decimals: 9 }
-        ]
+        sol: 0,
+        tokens: []
       },
       permissions: [
         { operation: 'transfer', enabled: true, limits: { maxAmount: 100, dailyLimit: 1000 } },
@@ -229,7 +226,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Total Wallets</p>
@@ -238,7 +235,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
               <Wallet className="w-8 h-8 text-blue-600" />
             </div>
           </div>
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="bg-green-50 dark:bg-gray-800 p-4 rounded-lg border border-green-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-green-800 dark:text-green-200">Total SOL Balance</p>
@@ -249,7 +246,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
               <Target className="w-8 h-8 text-green-600" />
             </div>
           </div>
-          <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+          <div className="bg-purple-50 dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-purple-800 dark:text-purple-200">Active Wallets</p>
@@ -303,7 +300,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
                   >
                     <option value="basic">Basic - Standard encryption</option>
                     <option value="enhanced">Enhanced - Multi-sig ready</option>
-                    <option value="enterprise">Enterprise - Hardware security</option>
+                    <option value="enterprise">Advanced - Hardware security</option>
                   </select>
                 </div>
 
@@ -322,7 +319,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
                   </select>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <div className="bg-yellow-50 dark:bg-gray-800 p-4 rounded-lg border border-yellow-200 dark:border-gray-700">
                   <div className="flex items-start space-x-2">
                     <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>
@@ -537,7 +534,7 @@ export const AgentWalletManager: React.FC<AgentWalletManagerProps> = ({
                     ))}
                   </div>
 
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-gray-700">
                     <div className="flex items-center space-x-2 text-sm text-blue-800 dark:text-blue-200">
                       <Shield className="w-4 h-4" />
                       <span>Security features active: Multi-signature support, transaction limits, audit logging</span>

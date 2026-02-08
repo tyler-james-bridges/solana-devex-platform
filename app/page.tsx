@@ -1,449 +1,196 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Activity, CheckCircle2, Clock, Zap, CheckCircle, XCircle, Clock3, AlertCircle } from 'lucide-react'
+import Link from 'next/link'
+import { Code, Shield, Zap, Search, Lock, Activity, ArrowRight, ExternalLink, Github } from 'lucide-react'
 import ForumFeed from '../components/ForumFeed'
 
-interface TestResult {
-  id: string
-  name: string
-  protocol: string
-  status: 'passed' | 'failed' | 'running' | 'pending'
-  timestamp: string
-  duration: number
-  latency?: number
-}
-
-interface Protocol {
-  name: string
-  status: 'healthy' | 'degraded' | 'down' | 'unknown'
-  lastCheck: string
-  latency: number
-  successRate: number
-}
-
-interface Deployment {
-  id: string
-  name: string
-  environment: 'mainnet' | 'devnet' | 'localnet'
-  status: 'success' | 'failed' | 'running' | 'pending'
-  progress: number
-  stage: string
-  startedAt: string
-}
-
-interface Metrics {
-  testsRun: number
-  successRate: number
-  avgLatency: number
-  activeDeployments: number
-  totalDeployments: number
-}
-
-const StatusIcon = ({ status }: { status: string }) => {
-  switch (status) {
-    case 'passed':
-    case 'success':
-    case 'healthy':
-      return <CheckCircle className="w-4 h-4 text-green-500" />
-    case 'failed':
-    case 'down':
-      return <XCircle className="w-4 h-4 text-red-500" />
-    case 'running':
-      return <Clock3 className="w-4 h-4 text-blue-500" />
-    case 'degraded':
-      return <AlertCircle className="w-4 h-4 text-yellow-500" />
-    case 'pending':
-    default:
-      return <Clock className="w-4 h-4 text-gray-500" />
+const tools = [
+  {
+    name: 'CPI Debugger',
+    description: 'Paste any Solana mainnet transaction signature. Get real CPI call flows, compute metrics, and account state changes. Live RPC, not mock data.',
+    icon: Search,
+    href: '/cpi-debugger',
+    badge: 'Live RPC'
+  },
+  {
+    name: 'Transaction Safety Simulator',
+    description: 'Pre-execution risk analysis. Evaluate transactions before signing with safety checks, gas optimization, and vulnerability detection.',
+    icon: Shield,
+    href: '/devex-suite',
+    badge: null
+  },
+  {
+    name: 'Verifiable Debugging Attestations',
+    description: 'Cryptographically signed, on-chain proof of debugging sessions. Tamper-proof audit trails with Ed25519 signatures.',
+    icon: Lock,
+    href: '/devex-suite',
+    badge: null
+  },
+  {
+    name: 'Agent Wallet Infrastructure',
+    description: 'Secure key management for AI agents. Granular permission controls, encrypted storage, multi-signature support.',
+    icon: Zap,
+    href: '/devex-suite',
+    badge: null
+  },
+  {
+    name: 'Guardian Security Scanner',
+    description: 'Token risk scoring (0-100), honeypot detection, whale tracking, and real-time threat intelligence. Powered by a 17-agent swarm.',
+    icon: Activity,
+    href: '/devex-suite',
+    badge: 'Guardian Integration'
+  },
+  {
+    name: 'TypeScript SDK',
+    description: 'Published @solana-devex/sdk package with full API client. Import and use programmatically from any TypeScript project.',
+    icon: Code,
+    href: 'https://github.com/tyler-james-bridges/solana-devex-platform/tree/master/packages/sdk',
+    badge: 'npm Package',
+    external: true
   }
-}
+]
 
 export default function HomePage() {
-  const [metrics, setMetrics] = useState<Metrics>({
-    testsRun: 1247,
-    successRate: 98.7,
-    avgLatency: 156,
-    activeDeployments: 12,
-    totalDeployments: 847
-  })
-
-  const [testResults] = useState<TestResult[]>([
-    {
-      id: '1',
-      name: 'Jupiter Swap Integration',
-      protocol: 'Jupiter',
-      status: 'passed',
-      timestamp: '2m ago',
-      duration: 2.3,
-      latency: 145
-    },
-    {
-      id: '2',
-      name: 'Kamino Lending Flow',
-      protocol: 'Kamino',
-      status: 'running',
-      timestamp: 'now',
-      duration: 0,
-      latency: 0
-    },
-    {
-      id: '3',
-      name: 'Drift Perpetuals Test',
-      protocol: 'Drift',
-      status: 'failed',
-      timestamp: '5m ago',
-      duration: 1.8,
-      latency: 892
-    },
-    {
-      id: '4',
-      name: 'Raydium LP Position',
-      protocol: 'Raydium',
-      status: 'passed',
-      timestamp: '8m ago',
-      duration: 3.1,
-      latency: 203
-    }
-  ])
-
-  const [protocols] = useState<Protocol[]>([
-    {
-      name: 'Jupiter Aggregator',
-      status: 'healthy',
-      lastCheck: '30s ago',
-      latency: 142,
-      successRate: 99.2
-    },
-    {
-      name: 'Kamino Finance',
-      status: 'healthy',
-      lastCheck: '45s ago',
-      latency: 198,
-      successRate: 98.1
-    },
-    {
-      name: 'Drift Protocol',
-      status: 'degraded',
-      lastCheck: '1m ago',
-      latency: 567,
-      successRate: 94.3
-    },
-    {
-      name: 'Raydium AMM',
-      status: 'healthy',
-      lastCheck: '20s ago',
-      latency: 178,
-      successRate: 99.7
-    }
-  ])
-
-  const [deployments, setDeployments] = useState<Deployment[]>([
-    {
-      id: '1',
-      name: 'Trading Bot v2.1',
-      environment: 'mainnet',
-      status: 'running',
-      progress: 67,
-      stage: 'Deployment',
-      startedAt: '12m ago'
-    },
-    {
-      id: '2',
-      name: 'Liquidity Monitor',
-      environment: 'devnet',
-      status: 'success',
-      progress: 100,
-      stage: 'Complete',
-      startedAt: '25m ago'
-    },
-    {
-      id: '3',
-      name: 'Analytics Dashboard',
-      environment: 'devnet',
-      status: 'failed',
-      progress: 45,
-      stage: 'Testing',
-      startedAt: '40m ago'
-    }
-  ])
-
-  // Simulate real-time updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Update running deployments
-      setDeployments(prev => prev.map(dep => 
-        dep.status === 'running' 
-          ? { ...dep, progress: Math.min(dep.progress + Math.random() * 5, 100) }
-          : dep
-      ))
-      
-      // Update metrics slightly
-      setMetrics(prev => ({
-        ...prev,
-        avgLatency: Math.floor(prev.avgLatency + (Math.random() - 0.5) * 10),
-        successRate: Number((prev.successRate + (Math.random() - 0.5) * 0.1).toFixed(1))
-      }))
-    }, 60000) // Changed from 5000ms to 60000ms (1 minute) for cost savings
-
-    return () => clearInterval(interval)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 p-4 sm:p-6">
-      {/* Header Section */}
-      <div className="mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              Development Environment
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Complete testing, deployment, and monitoring platform for Solana applications. 
-              Built for autonomous agents and professional development teams.
-            </p>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <a 
-              href="/dashboard" 
-              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-            >
-              Real-Time Dashboard
-            </a>
-            <span className="text-sm font-medium text-green-600">Live</span>
-            <span className="text-sm font-medium text-blue-600">#25</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Tests Run</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                {metrics.testsRun}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                +12 today
-              </p>
-            </div>
-            <Activity className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Success Rate</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                {metrics.successRate}%
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                -0.2%
-              </p>
-            </div>
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Latency</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                {metrics.avgLatency}ms
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                +5ms
-              </p>
-            </div>
-            <Clock className="w-8 h-8 text-purple-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Deployments</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                {metrics.activeDeployments}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {metrics.totalDeployments} total
-              </p>
-            </div>
-            <Zap className="w-8 h-8 text-orange-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Test Results and Protocol Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
-        {/* Test Results */}
-        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Recent Tests</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Latest protocol integration tests and their status
-            </p>
-          </div>
-          <div className="space-y-3">
-            {testResults.map((test) => (
-              <div key={test.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <StatusIcon status={test.status} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                        {test.name}
-                      </p>
-                      <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        <span className="font-medium">{test.protocol}</span>
-                        <span>•</span>
-                        <span>{test.timestamp}</span>
-                        {test.latency && test.latency > 0 && (
-                          <>
-                            <span>•</span>
-                            <span>{test.latency}ms</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                      test.status === 'passed' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700' :
-                      test.status === 'failed' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700' :
-                      test.status === 'running' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 
-                      'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-500'
-                    }`}>
-                      {test.status}
-                    </span>
-                    {test.duration > 0 && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        {test.duration.toFixed(1)}s
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Protocol Health */}
-        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Protocol Health</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Real-time status and performance metrics
-            </p>
-          </div>
-          <div className="space-y-3">
-            {protocols.map((protocol) => (
-              <div key={protocol.name} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <StatusIcon status={protocol.status} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                        {protocol.name}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Last check: {protocol.lastCheck}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                      protocol.status === 'healthy' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700' :
-                      protocol.status === 'degraded' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700' :
-                      protocol.status === 'down' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700' : 
-                      'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-500'
-                    }`}>
-                      {protocol.status}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {protocol.latency > 0 ? `${protocol.latency}ms` : '—'} • {protocol.successRate.toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* CI/CD Pipelines */}
-      <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border dark:border-gray-700 mb-6">
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">CI/CD Pipelines</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Deployment status and progress tracking
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      {/* Hero */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Solana DevEx Platform
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-6">
+            From debugging to deployment -- everything developers need to build on Solana. 
+            Seven integrated tools, live mainnet data, built by an AI agent in 7 days.
           </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <Link
+              href="/cpi-debugger"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Try CPI Debugger
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+            <Link
+              href="/devex-suite"
+              className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-medium border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Explore DevEx Suite
+            </Link>
+          </div>
         </div>
-        <div className="space-y-4">
-          {deployments.map((deployment) => (
-            <div key={deployment.id} className="space-y-3">
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <StatusIcon status={deployment.status} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                        {deployment.name}
-                      </p>
-                      <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        <span className="px-2 py-1 bg-gray-200 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-xs font-medium text-gray-700 dark:text-gray-200">
-                          {deployment.environment}
+
+        {/* Stats bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">7</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Integrated Tools</div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">8</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">API Endpoints</div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">Live</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Mainnet RPC</div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">7 Days</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Built by Agent #25</div>
+          </div>
+        </div>
+
+        {/* Tools grid */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Platform Tools</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {tools.map((tool) => {
+              const Icon = tool.icon
+              const isExternal = 'external' in tool && tool.external
+              const Tag = isExternal ? 'a' : Link
+              const linkProps = isExternal 
+                ? { href: tool.href, target: '_blank', rel: 'noopener noreferrer' }
+                : { href: tool.href }
+              
+              return (
+                <Tag
+                  key={tool.name}
+                  {...linkProps}
+                  className="group bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <Icon className="w-6 h-6 text-blue-600" />
+                    <div className="flex items-center gap-2">
+                      {tool.badge && (
+                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium">
+                          {tool.badge}
                         </span>
-                        <span>•</span>
-                        <span>{deployment.stage}</span>
-                        <span>•</span>
-                        <span>{deployment.startedAt}</span>
-                      </div>
+                      )}
+                      {isExternal ? (
+                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      ) : (
+                        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      )}
                     </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                      deployment.status === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700' :
-                      deployment.status === 'failed' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700' :
-                      deployment.status === 'running' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 
-                      'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-500'
-                    }`}>
-                      {deployment.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              {deployment.status === 'running' && (
-                <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-3 border border-gray-200 dark:border-gray-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Progress</span>
-                    <span className="text-xs font-semibold text-gray-900 dark:text-gray-100">{Math.round(deployment.progress)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${deployment.progress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {tool.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {tool.description}
+                  </p>
+                </Tag>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Links */}
+        <div className="grid gap-4 md:grid-cols-3 mb-12">
+          <a
+            href="https://github.com/tyler-james-bridges/solana-devex-platform"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <Github className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            <div>
+              <div className="font-medium text-gray-900 dark:text-white">Source Code</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">MIT Licensed, open source</div>
             </div>
-          ))}
+            <ExternalLink className="w-4 h-4 text-gray-400 ml-auto" />
+          </a>
+          <a
+            href="https://colosseum.com/agent-hackathon/projects/solana-devex-platform"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <Zap className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            <div>
+              <div className="font-medium text-gray-900 dark:text-white">Colosseum Project</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Agent #25, Project #46</div>
+            </div>
+            <ExternalLink className="w-4 h-4 text-gray-400 ml-auto" />
+          </a>
+          <Link
+            href="/provenance"
+            className="flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <Shield className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            <div>
+              <div className="font-medium text-gray-900 dark:text-white">Built by an Agent</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Full development provenance</div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
+          </Link>
+        </div>
+
+        {/* Forum Posts */}
+        <div className="mb-12">
+          <ForumFeed showHeader={false} showAll={false} compact={true} />
         </div>
       </div>
-
-      {/* Community Updates */}
-      <div className="mb-6">
-        <ForumFeed maxPosts={6} compact={false} />
-      </div>
-
     </div>
   )
 }

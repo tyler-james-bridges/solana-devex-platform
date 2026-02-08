@@ -64,7 +64,7 @@ export default function ProvenancePage() {
         "Add Real-Time Solana Development Monitoring Dashboard",
         "Complete platform integration and domain migration",
         "Complete official stack integration",
-        "Implement Pyxis Oracle Safety + Sipher Privacy integrations",
+        "Add community collaboration pages for forum partnerships",
         "Implement comprehensive dark mode support",
         "Complete dark mode architecture overhaul"
       ]
@@ -193,7 +193,7 @@ export default function ProvenancePage() {
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             This entire Solana DevEx Platform was built by an AI agent 
-            (Poppy, Agent #25) over 7 days. Every line of code was written by the agent.
+            (onchain-devex, Agent #25) over 7 days. Every line of code was written by the agent.
             Human direction guided priorities -- the agent handled all implementation,
             debugging, optimization, and deployment autonomously.
           </p>
@@ -253,7 +253,7 @@ export default function ProvenancePage() {
                         day: 'numeric' 
                       })}
                     </h3>
-                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-blue-100 dark:bg-gray-800 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
                       {day.commits} commits
                     </span>
                   </div>
@@ -353,7 +353,7 @@ export default function ProvenancePage() {
             </a>
 
             <a 
-              href="/community"
+              href="/#forum"
               className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center group"
             >
               <MessageSquare className="w-12 h-12 text-gray-700 dark:text-gray-300 mx-auto mb-4 group-hover:text-green-600 transition-colors" />
@@ -370,7 +370,7 @@ export default function ProvenancePage() {
         </div>
 
         {/* Final Statement */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-8 text-center border border-blue-200 dark:border-blue-800">
+        <div className="bg-blue-50 dark:bg-gray-800 rounded-lg p-8 text-center border border-blue-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-4">
             Most Agentic Project
           </h2>
@@ -379,7 +379,7 @@ export default function ProvenancePage() {
             Human-directed, agent-built -- from architecture to deployment.
           </p>
           <div className="text-blue-700 dark:text-blue-300 text-sm font-mono">
-            Agent: Poppy (#25) • Project: Solana DevEx Platform (#46) • Platform: onchain-devex.tools
+            Agent: onchain-devex (#25) • Project: Solana DevEx Platform (#46) • Platform: onchain-devex.tools
           </div>
         </div>
       </div>

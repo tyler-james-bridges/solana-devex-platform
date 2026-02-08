@@ -292,10 +292,10 @@ await batchTransferTokens([
           {/* Simulation Overview */}
           <div className={`p-4 rounded-lg border ${
             simulationResult.status === 'success'
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+              ? 'bg-green-50 dark:bg-gray-800 border-green-200 dark:border-gray-700'
               : simulationResult.status === 'warning'
-              ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-              : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              ? 'bg-yellow-50 dark:bg-gray-800 border-yellow-200 dark:border-gray-700'
+              : 'bg-red-50 dark:bg-gray-800 border-red-200 dark:border-gray-700'
           }`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
@@ -400,12 +400,12 @@ await batchTransferTokens([
                     key={index}
                     className={`p-4 rounded-lg border ${
                       risk.severity === 'critical'
-                        ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                        ? 'bg-red-50 dark:bg-gray-800 border-red-200 dark:border-gray-700'
                         : risk.severity === 'high'
-                        ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800'
+                        ? 'bg-orange-50 dark:bg-gray-800 border-orange-200 dark:border-gray-700'
                         : risk.severity === 'medium'
-                        ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-                        : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                        ? 'bg-yellow-50 dark:bg-gray-800 border-yellow-200 dark:border-gray-700'
+                        : 'bg-blue-50 dark:bg-gray-800 border-blue-200 dark:border-gray-700'
                     }`}
                   >
                     <div className="flex items-start space-x-3">
@@ -422,7 +422,7 @@ await batchTransferTokens([
                               ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200'
                               : risk.severity === 'medium'
                               ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
-                              : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                              : 'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                           }`}>
                             {risk.severity}
                           </span>
@@ -453,7 +453,7 @@ await batchTransferTokens([
 
             <div className="space-y-4">
               {simulationResult.simulation.optimizations.map((opt, index) => (
-                <div key={index} className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <div key={index} className="bg-yellow-50 dark:bg-gray-800 p-4 rounded-lg border border-yellow-200 dark:border-gray-700">
                   <div className="flex items-start justify-between mb-2">
                     <span className="font-medium text-gray-900 dark:text-white">
                       {opt.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -490,7 +490,7 @@ await batchTransferTokens([
                   {(simulationResult.gasEstimate.minFee / 1000000).toFixed(6)} SOL
                 </div>
               </div>
-              <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="text-center p-4 bg-green-50 dark:bg-gray-800 rounded-lg border border-green-200 dark:border-gray-700">
                 <div className="text-sm text-green-600 mb-1">Recommended</div>
                 <div className="text-lg font-bold text-green-800 dark:text-green-200">
                   {(simulationResult.gasEstimate.recommendedFee / 1000000).toFixed(6)} SOL
@@ -505,7 +505,7 @@ await batchTransferTokens([
             </div>
 
             {simulationResult.gasEstimate.priorityFee && (
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-gray-700">
                 <div className="flex items-center space-x-2 text-blue-800 dark:text-blue-200">
                   <Target className="w-4 h-4" />
                   <span className="font-medium">Priority Fee Recommended: {(simulationResult.gasEstimate.priorityFee / 1000000).toFixed(6)} SOL</span>

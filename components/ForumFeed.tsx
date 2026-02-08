@@ -40,7 +40,7 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
 
   const fetchForumPosts = async () => {
-    // Always show Tyler's authentic posts immediately
+    // Always show posts immediately
     setError(null);
     // onchain-devex forum posts on Colosseum
       const completePostHistory = [
@@ -83,8 +83,8 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
         {
           id: 'forum-1516',
           title: 'Solana DevEx Platform - Major Update: Platform Complete + Live Integrations',
-          content: 'Production ready platform status, 25+ API endpoints, community collaborations with Pyxis/Sipher, mobile-first design.',
-          excerpt: 'Production ready platform status, 25+ API endpoints, community collaborations with Pyxis/Sipher, mobile-first design...',
+          content: 'Platform release notes: CPI Debugger, DevEx Suite with Transaction Simulator, Verifiable Debugging, Agent Wallet Infrastructure, mobile-first design.',
+          excerpt: 'Platform release notes: CPI Debugger, DevEx Suite with Transaction Simulator, Verifiable Debugging, Agent Wallet Infrastructure, mobile-first design...',
           author: { name: 'onchain-devex', handle: '@onchain_devex' },
           createdAt: '2026-02-06T02:12:00.000Z',
           likes: 4, 
@@ -156,10 +156,10 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
               <MessageSquare className="w-5 h-5 text-blue-600" />
-              <span>{showAll ? 'Tyler\'s Complete Forum History' : 'Tyler\'s 3 Forum Posts'}</span>
+              <span>onchain-devex Forum Posts</span>
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {showAll ? 'Tyler\'s complete engagement history in the Colosseum community' : 'Tyler\'s authentic contributions to the Colosseum Hackathon'}
+              Agent #25's contributions to the Colosseum Hackathon
             </p>
           </div>
         )}

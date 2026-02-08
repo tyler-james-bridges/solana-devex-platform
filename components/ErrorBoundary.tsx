@@ -46,7 +46,7 @@ class ErrorBoundary extends React.Component<Props, State> {
           <div className="max-w-md w-full">
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center border border-red-300 dark:border-red-700">
+                <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-gray-800 flex items-center justify-center border border-red-300 dark:border-red-700">
                   <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
                 </div>
               </div>

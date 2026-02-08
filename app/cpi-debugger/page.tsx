@@ -30,11 +30,8 @@ import {
   ArrowRight,
   BookOpen,
   Target,
-  Database,
-  Play
+  Database
 } from 'lucide-react';
-import TransactionSimulator from '../../components/TransactionSimulator';
-import VerifiableDebugger from '../../components/VerifiableDebugger';
 
 interface TransactionDebugger {
   signature: string;
@@ -106,78 +103,79 @@ interface DebugExample {
   tags: string[];
 }
 
+// Real mainnet transaction signatures for each example category
 const debugExamples: DebugExample[] = [
   {
-    id: 'realloc-error',
-    title: 'Account Reallocation Error',
-    description: 'Classic account size constraint violation in Anchor program',
-    signature: 'ReallocErrYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbMBeUCBYKUU',
-    category: 'common-errors',
-    difficulty: 'beginner',
-    tags: ['anchor', 'realloc', 'constraints']
-  },
-  {
-    id: 'balance-mismatch',
-    title: 'Insufficient Balance in DEX Swap',
-    description: 'Token account balance insufficient for swap operation',
-    signature: 'BalanceMSh4XyZ9aVsWw2gNpJhRzKJDdTgYhP4mF3J8Q7vRbNuLtE2wSdHjKnMcPqBvF6Az',
-    category: 'common-errors',
-    difficulty: 'intermediate',
-    tags: ['dex', 'spl-token', 'balance']
-  },
-  {
-    id: 'cpi-overflow',
-    title: 'CPI Stack Overflow',
-    description: 'Too many cross-program invocations causing stack overflow',
-    signature: 'CPIOvfWX8PnMjRgF4wTcHs3VkJdYqPbGfLx2QjE7wZyCpRvNmKsL9AhBjDnTxGwVcPqF',
-    category: 'common-errors',
-    difficulty: 'advanced',
-    tags: ['cpi', 'stack-overflow', 'complex']
-  },
-  {
-    id: 'compute-optimization',
-    title: 'Compute Unit Optimization',
-    description: 'Efficiently structured transaction using minimal compute',
-    signature: 'OptimalCUYrCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbMB',
-    category: 'optimizations',
-    difficulty: 'intermediate',
-    tags: ['optimization', 'compute-units', 'efficiency']
-  },
-  {
-    id: 'amm-arbitrage',
-    title: 'AMM Arbitrage Transaction',
-    description: 'Complex multi-hop arbitrage across different AMM protocols',
-    signature: 'AMMArbitrageCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbM',
+    id: 'jupiter-swap',
+    title: 'Jupiter DEX Swap',
+    description: 'Real Jupiter aggregator swap with multi-hop routing across Solana DEXes',
+    signature: '4qRefbKfE4hqE4at89J3sEuZw5azdJNWMBoCNbPfiwBTGmuuT9gxpSMaV5F7mXehpKoKAgissZT32ZBVDjQ3uphv',
     category: 'defi-protocols',
-    difficulty: 'advanced',
-    tags: ['amm', 'arbitrage', 'defi', 'raydium', 'orca']
+    difficulty: 'beginner',
+    tags: ['jupiter', 'swap', 'dex']
   },
   {
-    id: 'nft-marketplace',
-    title: 'NFT Marketplace Listing',
-    description: 'NFT listing with royalty enforcement and metadata updates',
-    signature: 'NFTListingCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbM',
-    category: 'advanced-patterns',
+    id: 'jupiter-failed',
+    title: 'Failed DEX Swap',
+    description: 'Jupiter swap that failed on-chain -- inspect the error and CPI trace',
+    signature: '4C3tBZCGuiVBEvti7HMcVHCVPAXjRtxeNKnPmBDHNcSAzSaNMDdg8MRN1RuESWpVHRtDhtjAZWzJwVJqmfDUS3Pk',
+    category: 'common-errors',
     difficulty: 'intermediate',
-    tags: ['nft', 'marketplace', 'royalties', 'metaplex']
+    tags: ['jupiter', 'error', 'failed-tx']
   },
   {
-    id: 'stake-delegation',
-    title: 'Validator Stake Delegation',
-    description: 'Staking SOL to validator with reward optimization',
-    signature: 'StakeDelegCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbM',
+    id: 'raydium-amm',
+    title: 'Raydium AMM Swap',
+    description: 'Raydium automated market maker swap with liquidity pool interaction',
+    signature: '5KSSXcvFCi3HHbgDJkbMz3mwwtzkvVjv78Qik9JUfx9Xkgca7AZBQqBBaVYVocRY1zKBVH4xic7FwWDvnsCqHwYD',
+    category: 'defi-protocols',
+    difficulty: 'intermediate',
+    tags: ['raydium', 'amm', 'liquidity-pool']
+  },
+  {
+    id: 'marinade-stake',
+    title: 'Marinade Liquid Staking',
+    description: 'SOL staking via Marinade Finance liquid staking protocol',
+    signature: '5jd2Ep9rkKJTb9HZRsk7ZfA71K9Z5thzdkK16e21VCtsF6ppCaPBtS8vZKusf48vCfLmLi656n99KEWBZS65VkXr',
     category: 'advanced-patterns',
     difficulty: 'beginner',
-    tags: ['staking', 'delegation', 'validator']
+    tags: ['staking', 'marinade', 'liquid-staking']
   },
   {
-    id: 'perpetuals-trade',
-    title: 'Perpetuals Trading Error',
-    description: 'Margin requirements not met in perpetual swap',
-    signature: 'PerpsErrorCZ9u2ZyGXfPzqQr5XsGHF9JLLksJjBLbK4M7jXgE2ZE7R7TTqgrjbM',
+    id: 'metaplex-nft',
+    title: 'Metaplex NFT Operation',
+    description: 'NFT metadata update or transfer via Metaplex Token Metadata program',
+    signature: '2FQrCPh3vXsfaja5DBSmDUvQWuagnpAoJsR6U5yGffdLCmp4RC58wxo3wM5GNEomr2SXkVs45wJeXaCMSv8Er6pN',
+    category: 'advanced-patterns',
+    difficulty: 'intermediate',
+    tags: ['nft', 'metaplex', 'metadata']
+  },
+  {
+    id: 'drift-perps',
+    title: 'Drift Perpetuals Trade',
+    description: 'Perpetual futures position on Drift Protocol with margin and settlement',
+    signature: '4rkqcnobwgj5XjYZ1SF1TR6rynizd3d18ry22zN8ugcL8iS1a64Tt2vGow8ZMecQz3rgQ7FuUroRakD2nXfv1995',
     category: 'defi-protocols',
     difficulty: 'advanced',
-    tags: ['perpetuals', 'margin', 'mango', 'drift']
+    tags: ['drift', 'perpetuals', 'margin']
+  },
+  {
+    id: 'multi-hop-failed',
+    title: 'Multi-Hop Routing Failure',
+    description: 'Complex multi-hop swap that failed mid-route -- trace the CPI chain to find the break point',
+    signature: '32qyvRCYuZU4oapu5Q2Javp6HRdhTmSZN8bXPxGTGGYz1rzT8yYDxrjbtHK86Rooz4w2QyC33AVoFwHbhrX5jbR5',
+    category: 'common-errors',
+    difficulty: 'advanced',
+    tags: ['routing', 'multi-hop', 'cpi-trace']
+  },
+  {
+    id: 'raydium-lp',
+    title: 'Raydium LP Position',
+    description: 'Adding or removing liquidity from a Raydium AMM pool',
+    signature: 'thFtERBem3GUVuuSewRFJ4BWYzH3GZXuJNriRN8FXNWnE4QzDpsq9pgX8msuvmARkbs6nrVk6gMN1LoETv2rM2Z',
+    category: 'defi-protocols',
+    difficulty: 'intermediate',
+    tags: ['raydium', 'liquidity', 'lp']
   }
 ];
 
@@ -188,7 +186,7 @@ const CPIDebuggerPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [activeTab, setActiveTab] = useState<'debugger' | 'simulator' | 'verifiable'>('debugger');
+  // Single-purpose page: transaction debugging only
 
   // Analyze transaction for debugging
   const analyzeTransaction = useCallback(async (signature: string) => {
@@ -386,73 +384,15 @@ const CPIDebuggerPage: React.FC = () => {
           Advanced Cross-Program Invocation debugging and error analysis.
         </p>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
-          <button
-            onClick={() => setActiveTab('debugger')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'debugger'
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-          >
-            <Search className="w-4 h-4 inline mr-2" />
-            Transaction Debugger
-          </button>
-          <button
-            onClick={() => setActiveTab('simulator')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'simulator'
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-          >
-            <Play className="w-4 h-4 inline mr-2" />
-            Safety Simulator
-          </button>
-          <button
-            onClick={() => setActiveTab('verifiable')}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'verifiable'
-                ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-          >
-            <Shield className="w-4 h-4 inline mr-2" />
-            Verifiable Debugging
-          </button>
-        </div>
       </div>
 
-      {activeTab === 'simulator' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
-          <TransactionSimulator 
-            transactionData={transactionSignature}
-            onSimulationComplete={(result) => {
-              console.log('Simulation completed:', result);
-            }}
-          />
-        </div>
-      )}
-
-      {activeTab === 'verifiable' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
-          <VerifiableDebugger 
-            transactionSignature={transactionSignature}
-            debuggingResults={debuggerResult}
-            onAttestationCreated={(attestation) => {
-              console.log('Attestation created:', attestation);
-            }}
-          />
-        </div>
-      )}
-
-      {activeTab === 'debugger' && (
+      {/* Transaction Debugger */}
+      {(
         <>
           {/* Debug Interface */}
           <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 overflow-hidden mb-6">
           {/* Debug Controls */}
-          <div className="bg-gray-50 dark:bg-gray-700/50 p-6 border-b dark:border-gray-700">
+          <div className="bg-gray-50 dark:bg-gray-800 p-6 border-b dark:border-gray-700">
             <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-6 space-y-4 lg:space-y-0">
               {/* Transaction Input */}
               <div className="flex-1">
@@ -615,7 +555,7 @@ const CPIDebuggerPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-gray-700">
                         <div className="flex items-center space-x-2 mb-2">
                           <Lightbulb className="w-5 h-5 text-blue-600" />
                           <span className="font-semibold text-blue-900 dark:text-blue-100">Gas Optimization Insight</span>
@@ -654,8 +594,8 @@ const CPIDebuggerPage: React.FC = () => {
                             <div
                               className={`bg-white dark:bg-gray-800 p-5 rounded-lg border shadow-sm ${
                                 step.success 
-                                  ? 'border-green-200 dark:border-green-800' 
-                                  : 'border-red-200 dark:border-red-800'
+                                  ? 'border-green-200 dark:border-gray-700' 
+                                  : 'border-red-200 dark:border-gray-700'
                               }`}
                               style={{ marginLeft: `${step.depth * 24}px` }}
                             >
@@ -708,7 +648,7 @@ const CPIDebuggerPage: React.FC = () => {
                               </div>
 
                               {step.error && (
-                                <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                                <div className="mb-4 p-4 bg-red-50 dark:bg-gray-800 border border-red-200 dark:border-gray-700 rounded-lg">
                                   <div className="flex items-center space-x-2 mb-2">
                                     <XCircle className="w-5 h-5 text-red-600" />
                                     <span className="font-semibold text-red-800 dark:text-red-200">Error Details</span>
@@ -718,7 +658,7 @@ const CPIDebuggerPage: React.FC = () => {
                               )}
 
                               {step.suggestedOptimizations && step.suggestedOptimizations.length > 0 && (
-                                <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                                <div className="mb-4 p-4 bg-yellow-50 dark:bg-gray-800 border border-yellow-200 dark:border-gray-700 rounded-lg">
                                   <div className="flex items-center space-x-2 mb-2">
                                     <Zap className="w-5 h-5 text-yellow-600" />
                                     <span className="font-semibold text-yellow-800 dark:text-yellow-200">Optimization Opportunities</span>
@@ -749,7 +689,7 @@ const CPIDebuggerPage: React.FC = () => {
                                               </span>
                                               <div className="flex items-center space-x-2">
                                                 {account.isSigner && (
-                                                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-xs font-medium">
+                                                  <span className="px-2 py-1 bg-blue-100 dark:bg-gray-800/30 text-blue-800 dark:text-blue-200 rounded text-xs font-medium">
                                                     Signer
                                                   </span>
                                                 )}
@@ -825,10 +765,10 @@ const CPIDebuggerPage: React.FC = () => {
                         {debuggerResult.errors.map((error, index) => (
                           <div key={index} className={`bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm ${
                             error.severity === 'critical' 
-                              ? 'border-red-200 dark:border-red-800' 
+                              ? 'border-red-200 dark:border-gray-700' 
                               : error.severity === 'warning'
-                              ? 'border-yellow-200 dark:border-yellow-800'
-                              : 'border-blue-200 dark:border-blue-800'
+                              ? 'border-yellow-200 dark:border-gray-700'
+                              : 'border-blue-200 dark:border-gray-700'
                           }`}>
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center space-x-3 flex-1">
@@ -858,7 +798,7 @@ const CPIDebuggerPage: React.FC = () => {
                                     ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
                                     : error.severity === 'warning'
                                     ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
-                                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                                    : 'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                                 }`}>
                                   {error.severity}
                                 </span>
@@ -873,10 +813,10 @@ const CPIDebuggerPage: React.FC = () => {
                             {/* Error Description */}
                             <div className={`p-4 rounded-lg mb-4 ${
                               error.severity === 'critical' 
-                                ? 'bg-red-50 dark:bg-red-900/20' 
+                                ? 'bg-red-50 dark:bg-gray-800' 
                                 : error.severity === 'warning'
-                                ? 'bg-yellow-50 dark:bg-yellow-900/20'
-                                : 'bg-blue-50 dark:bg-blue-900/20'
+                                ? 'bg-yellow-50 dark:bg-gray-800'
+                                : 'bg-blue-50 dark:bg-gray-800'
                             }`}>
                               <div className="flex items-center space-x-2 mb-2">
                                 {error.severity === 'critical' ? <XCircle className="w-5 h-5 text-red-600" />
@@ -888,7 +828,7 @@ const CPIDebuggerPage: React.FC = () => {
                             </div>
 
                             {/* Suggested Fix */}
-                            <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mb-4">
+                            <div className="bg-green-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
                               <div className="flex items-center space-x-2 mb-2">
                                 <CheckCircle2 className="w-5 h-5 text-green-600" />
                                 <span className="font-semibold text-gray-900 dark:text-white">Recommended Solution</span>
@@ -913,7 +853,7 @@ const CPIDebuggerPage: React.FC = () => {
 
                             {/* Documentation Link */}
                             {error.documentation && (
-                              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-gray-700">
                                 <div className="flex items-center space-x-2">
                                   <BookOpen className="w-4 h-4 text-blue-600" />
                                   <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Related Documentation</span>
@@ -949,8 +889,7 @@ const CPIDebuggerPage: React.FC = () => {
                 Debug Examples & Learning Hub
               </h2>
               <div className="flex items-center space-x-2">
-                <Star className="w-5 h-5 text-yellow-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Curated by experts</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Real mainnet transactions</span>
               </div>
             </div>
             
@@ -998,7 +937,7 @@ const CPIDebuggerPage: React.FC = () => {
                 return (
                   <div
                     key={example.id}
-                    className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-5 rounded-lg border dark:border-gray-600 hover:shadow-md transition-all duration-200 cursor-pointer"
+                    className="group bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer"
                     onClick={() => loadExample(example)}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -1023,7 +962,7 @@ const CPIDebuggerPage: React.FC = () => {
                       {example.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded text-xs font-medium"
+                          className="px-2 py-1 bg-blue-100 dark:bg-gray-800/30 text-blue-800 dark:text-blue-200 rounded text-xs font-medium"
                         >
                           #{tag}
                         </span>
@@ -1056,7 +995,7 @@ const CPIDebuggerPage: React.FC = () => {
         </div>
           </>
         )}
-    </div>
+      </div>
   );
 };
 

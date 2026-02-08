@@ -111,10 +111,10 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
   };
 
   const getRiskColor = (riskScore: number) => {
-    if (riskScore >= 80) return 'text-red-600 bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400';
-    if (riskScore >= 60) return 'text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-400';
-    if (riskScore >= 40) return 'text-yellow-600 bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-400';
-    return 'text-green-600 bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400';
+    if (riskScore >= 80) return 'text-red-600 bg-red-50 border-red-200 dark:bg-gray-800 dark:border-gray-700 dark:text-red-400';
+    if (riskScore >= 60) return 'text-orange-600 bg-orange-50 border-orange-200 dark:bg-gray-800 dark:border-gray-700 dark:text-orange-400';
+    if (riskScore >= 40) return 'text-yellow-600 bg-yellow-50 border-yellow-200 dark:bg-gray-800 dark:border-gray-700 dark:text-yellow-400';
+    return 'text-green-600 bg-green-50 border-green-200 dark:bg-gray-800 dark:border-gray-700 dark:text-green-400';
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -190,7 +190,7 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
                   flag.severity === 'critical' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
                   flag.severity === 'high' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' :
                   flag.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200' :
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                  'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                 }`}>
                   {flag.severity}
                 </span>
@@ -305,7 +305,7 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
 
           <div className="space-y-4">
             {programScan.vulnerabilities.map((vuln: any, index: number) => (
-              <div key={index} className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+              <div key={index} className="bg-red-50 dark:bg-gray-800 p-4 rounded-lg border border-red-200 dark:border-gray-700">
                 <div className="flex items-start justify-between mb-2">
                   <span className="font-medium text-gray-900 dark:text-white">{vuln.title}</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -336,13 +336,13 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
 
         <div className="space-y-4">
           {programScan.recommendations.map((rec: any, index: number) => (
-            <div key={index} className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <div key={index} className="bg-yellow-50 dark:bg-gray-800 p-4 rounded-lg border border-yellow-200 dark:border-gray-700">
               <div className="flex items-start justify-between mb-2">
                 <span className="font-medium text-gray-900 dark:text-white">{rec.title}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                   rec.priority === 'critical' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
                   rec.priority === 'high' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' :
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                  'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                 }`}>
                   {rec.priority}
                 </span>
@@ -369,7 +369,7 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
           </h4>
           <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
             whaleData.metrics.classification === 'trader' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' :
-            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+            'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
           }`}>
             {whaleData.metrics.classification}
           </span>
@@ -427,7 +427,7 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
                   <div className={`text-sm px-2 py-1 rounded ${
                     tx.impact === 'market_moving' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
                     tx.impact === 'significant' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' :
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                    'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                   }`}>
                     {tx.impact}
                   </div>
@@ -592,9 +592,9 @@ export const SecurityScanner: React.FC<SecurityScannerProps> = ({ onScanComplete
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {threatFeed.slice(0, 10).map((threat: any, index: number) => (
               <div key={index} className={`p-4 rounded-lg border ${
-                threat.severity === 'critical' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' :
-                threat.severity === 'high' ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800' :
-                'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
+                threat.severity === 'critical' ? 'bg-red-50 dark:bg-gray-800 border-red-200 dark:border-gray-700' :
+                threat.severity === 'high' ? 'bg-orange-50 dark:bg-gray-800 border-orange-200 dark:border-gray-700' :
+                'bg-yellow-50 dark:bg-gray-800 border-yellow-200 dark:border-gray-700'
               }`}>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

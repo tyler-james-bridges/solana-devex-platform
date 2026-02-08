@@ -203,7 +203,7 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
           </div>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+        <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-gray-700">
           <div className="flex items-start space-x-3">
             <Info className="w-5 h-5 text-blue-600 mt-0.5" />
             <div>
@@ -225,7 +225,7 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
         <div className="p-6">
           <div className="text-center">
             <div className="mb-6">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-gray-800/30 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-8 h-8 text-blue-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -262,7 +262,7 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
                           isCompleted 
                             ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
                             : isActive
-                            ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                            ? 'bg-blue-100 text-blue-600 dark:bg-gray-800/30 dark:text-blue-400'
                             : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'
                         }`}>
                           {isActive ? (
@@ -294,10 +294,10 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
           {/* Status Banner */}
           <div className={`p-4 rounded-lg border flex items-center space-x-3 ${
             attestation.verificationStatus === 'confirmed'
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+              ? 'bg-green-50 dark:bg-gray-800 border-green-200 dark:border-gray-700'
               : attestation.verificationStatus === 'pending'
-              ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-              : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              ? 'bg-yellow-50 dark:bg-gray-800 border-yellow-200 dark:border-gray-700'
+              : 'bg-red-50 dark:bg-gray-800 border-red-200 dark:border-gray-700'
           }`}>
             {attestation.verificationStatus === 'confirmed' ? (
               <CheckCircle2 className="w-6 h-6 text-green-600" />
@@ -355,10 +355,10 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
               {attestation.debuggingSession.findings.map((finding, index) => (
                 <div key={index} className={`p-4 rounded-lg border ${
                   finding.severity === 'critical' || finding.severity === 'high'
-                    ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                    ? 'bg-red-50 dark:bg-gray-800 border-red-200 dark:border-gray-700'
                     : finding.severity === 'medium'
-                    ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-                    : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                    ? 'bg-yellow-50 dark:bg-gray-800 border-yellow-200 dark:border-gray-700'
+                    : 'bg-blue-50 dark:bg-gray-800 border-blue-200 dark:border-gray-700'
                 }`}>
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
@@ -372,7 +372,7 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
                           ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200'
                           : finding.severity === 'medium'
                           ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
-                          : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200'
+                          : 'bg-blue-100 text-blue-800 dark:bg-gray-800/30 dark:text-blue-200'
                       }`}>
                         {finding.severity}
                       </span>
@@ -568,7 +568,7 @@ export const VerifiableDebugger: React.FC<VerifiableDebuggerProps> = ({
           </div>
 
           {/* Verification Instructions */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-lg border border-blue-200 dark:border-gray-700">
             <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
               <Target className="w-5 h-5 mr-2" />
               Independent Verification
