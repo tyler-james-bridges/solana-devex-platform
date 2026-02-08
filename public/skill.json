@@ -1,131 +1,70 @@
 {
-  "name": "Solana DevEx Platform",
-  "description": "Unified Solana Developer Experience Platform providing comprehensive development infrastructure with testing, monitoring, CI/CD, protocol health checks, and real-time analytics for the Solana ecosystem",
-  "version": "1.0.0",
-  "author": "tmoney_145",
+  "name": "onchain-devex",
+  "description": "CPI debugging and developer tools for Solana. Debug any mainnet transaction, scan tokens for security risks.",
+  "version": "0.1.0",
+  "author": "onchain-devex (Agent #25)",
   "homepage": "https://onchain-devex.tools",
   "repository": "https://github.com/tyler-james-bridges/solana-devex-platform",
-  "tags": ["devex", "debugging", "cpi", "solana", "security", "infrastructure"],
+  "npm": "https://www.npmjs.com/package/onchain-devex",
+  "tags": ["devex", "debugging", "cpi", "solana", "security"],
+  "sdk": {
+    "install": "npm install onchain-devex",
+    "usage": "import { SolanaDevExClient } from 'onchain-devex'"
+  },
   "tools": [
     {
-      "name": "health_check",
-      "description": "Basic service health and uptime monitoring",
-      "method": "GET",
-      "path": "/api/health",
-      "parameters": {},
+      "name": "debug_transaction",
+      "description": "Debug a Solana transaction by signature. Returns CPI execution trace, error diagnostics, compute unit usage, and account state changes. Uses live mainnet RPC.",
+      "method": "POST",
+      "path": "/api/debug-transaction",
+      "parameters": {
+        "signature": "string (base58 transaction signature)"
+      },
       "response": {
-        "status": "string",
-        "timestamp": "string",
-        "uptime": "number",
-        "version": "string"
+        "success": "boolean",
+        "data": {
+          "signature": "string",
+          "status": "string (success|error|not-found)",
+          "cpiFlow": "array (execution trace)",
+          "errors": "array (diagnostics with suggested fixes)",
+          "performance": "object (compute units, fees, efficiency)",
+          "metadata": "object (block time, programs involved)"
+        }
       }
     },
     {
-      "name": "forum_posts",
-      "description": "Retrieve Colosseum forum posts related to the platform and Solana DevEx",
-      "method": "GET", 
-      "path": "/api/forum-posts",
+      "name": "security_scan",
+      "description": "Scan a Solana token or program for security risks. Returns risk score, honeypot detection, and threat analysis.",
+      "method": "POST",
+      "path": "/api/security/scan",
+      "parameters": {
+        "mintAddress": "string (token mint, optional)",
+        "programId": "string (program ID, optional)",
+        "walletAddress": "string (wallet to track, optional)",
+        "scanType": "string (token|program|honeypot|whale|comprehensive, optional)"
+      },
+      "response": {
+        "success": "boolean",
+        "data": {
+          "scanType": "string",
+          "results": "object",
+          "timestamp": "string",
+          "scanId": "string"
+        }
+      }
+    },
+    {
+      "name": "threat_feed",
+      "description": "Get active security threats and intelligence data.",
+      "method": "GET",
+      "path": "/api/security/scan?type=threats",
       "parameters": {},
       "response": {
         "success": "boolean",
-        "posts": "array",
-        "timestamp": "string"
-      }
-    },
-    {
-      "name": "protocol_tests",
-      "description": "Get all protocol test results and summaries",
-      "method": "GET",
-      "path": "/api/tests",
-      "parameters": {},
-      "response": {
-        "tests": "array",
-        "summary": {
-          "total": "number",
-          "passed": "number", 
-          "failed": "number",
-          "running": "number"
+        "data": {
+          "results": "array (threat alerts)",
+          "count": "number"
         }
-      }
-    },
-    {
-      "name": "run_protocol_tests",
-      "description": "Execute protocol integration tests for Jupiter, Kamino, Drift, Raydium",
-      "method": "POST",
-      "path": "/api/tests/run",
-      "parameters": {
-        "protocols": "array (optional)",
-        "headers": {
-          "x-api-key": "string (required)"
-        }
-      },
-      "response": {
-        "message": "string",
-        "testId": "string",
-        "protocols": "array"
-      }
-    },
-    {
-      "name": "protocol_health",
-      "description": "Get current health status of all monitored Solana protocols",
-      "method": "GET", 
-      "path": "/api/protocols/health",
-      "parameters": {},
-      "response": {
-        "protocols": "array",
-        "lastUpdated": "string"
-      }
-    },
-    {
-      "name": "deployment_pipelines",
-      "description": "Get CI/CD pipeline status and deployment history",
-      "method": "GET",
-      "path": "/api/pipelines", 
-      "parameters": {},
-      "response": {
-        "pipelines": "array",
-        "summary": {
-          "total": "number",
-          "success": "number",
-          "running": "number",
-          "failed": "number"
-        }
-      }
-    },
-    {
-      "name": "deploy_project",
-      "description": "Trigger automated deployment pipeline for Solana projects",
-      "method": "POST",
-      "path": "/api/pipelines/deploy",
-      "parameters": {
-        "name": "string",
-        "environment": "string (devnet|testnet|mainnet)",
-        "projectPath": "string (optional)",
-        "walletPath": "string (optional)",
-        "headers": {
-          "x-api-key": "string (required)"
-        }
-      },
-      "response": {
-        "message": "string", 
-        "deploymentId": "string",
-        "environment": "string"
-      }
-    },
-    {
-      "name": "platform_metrics",
-      "description": "Get real-time platform performance metrics and statistics",
-      "method": "GET",
-      "path": "/api/metrics",
-      "parameters": {},
-      "response": {
-        "metrics": {
-          "testsRun": "number",
-          "successRate": "number",
-          "avgLatency": "number", 
-          "activeDeployments": "number"
-        },
-        "timestamp": "string"
       }
     }
   ]

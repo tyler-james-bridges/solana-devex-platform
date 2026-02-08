@@ -42,10 +42,10 @@ const tools = [
   },
   {
     name: 'TypeScript SDK',
-    description: 'Published onchain-devex package with full API client. Import and use programmatically from any TypeScript project.',
+    description: 'npm install onchain-devex — CPI debugging SDK for Solana. Parse any mainnet transaction programmatically.',
     icon: Code,
-    href: 'https://github.com/tyler-james-bridges/solana-devex-platform/tree/master/packages/sdk',
-    badge: 'npm Package',
+    href: 'https://www.npmjs.com/package/onchain-devex',
+    badge: 'Live on npm',
     external: true
   }
 ]
