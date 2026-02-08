@@ -414,7 +414,7 @@ export default function CommunityPage() {
           <span>Complete Forum Contributions</span>
         </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-4">
-          Tyler's complete engagement history in the Colosseum community - showcasing sustained participation 
+          Complete forum engagement history in the Colosseum Hackathon 
           and contributions to the autonomous agent ecosystem over time.
         </p>
         <ForumFeed showHeader={true} showAll={true} compact={false} />
