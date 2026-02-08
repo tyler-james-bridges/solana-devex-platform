@@ -1,9 +1,7 @@
 # CodeQL Configuration for Solana DevEx Platform
-# Fixes template literal syntax errors
 
 name: "CodeQL Config"
 
-# Exclude files that cause parsing issues
 paths-ignore:
   - "node_modules/**"
   - "**/*.min.js"
@@ -16,19 +14,13 @@ paths-ignore:
   - "**/*.map"
   - "**/*.html"
   - "**/*.lock"
-  - "**/templates/**"
-  - "api/collaboration-websocket.js"
-  - "scripts/demo-showcase.js"
+  - "packages/**/node_modules/**"
 
-# Include only essential source files
 paths:
-  - "api/*.js"
-  - "app/**/*.tsx" 
+  - "app/**/*.tsx"
+  - "app/**/*.ts"
   - "components/**/*.tsx"
   - "lib/**"
-  - "scripts/setup*.js"
-  - "*.js"
 
-# Use security queries only to avoid parsing edge cases
 queries:
   - uses: security-and-quality
