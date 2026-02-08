@@ -42,7 +42,7 @@ const tools = [
   },
   {
     name: 'TypeScript SDK',
-    description: 'Published @solana-devex/sdk package with full API client. Import and use programmatically from any TypeScript project.',
+    description: 'Published onchain-devex package with full API client. Import and use programmatically from any TypeScript project.',
     icon: Code,
     href: 'https://github.com/tyler-james-bridges/solana-devex-platform/tree/master/packages/sdk',
     badge: 'npm Package',

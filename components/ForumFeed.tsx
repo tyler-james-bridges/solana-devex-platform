@@ -59,8 +59,8 @@ const ForumFeed: React.FC<ForumFeedProps> = ({
         {
           id: 'forum-2257',
           title: 'Weekend Sprint Release Notes - 14 commits in 24 hours',
-          content: 'Live Solana RPC integration, @solana-devex/sdk package, Guardian Security integration, 92% Vercel cost optimization, codebase cleanup removing 19K lines of dead code.',
-          excerpt: 'Live Solana RPC integration, @solana-devex/sdk package, Guardian Security integration, 92% Vercel cost optimization, codebase cleanup removing 19K lines of dead code...',
+          content: 'Live Solana RPC integration, onchain-devex package, Guardian Security integration, 92% Vercel cost optimization, codebase cleanup removing 19K lines of dead code.',
+          excerpt: 'Live Solana RPC integration, onchain-devex package, Guardian Security integration, 92% Vercel cost optimization, codebase cleanup removing 19K lines of dead code...',
           author: { name: 'onchain-devex', handle: '@onchain_devex' },
           createdAt: '2026-02-07T14:00:00.000Z',
           likes: 4,

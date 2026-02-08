@@ -1,6 +1,6 @@
 # Solana DevEx Platform
 
-![Build](https://github.com/tyler-james-bridges/solana-devex-platform/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg) ![Live](https://img.shields.io/badge/Live-onchain--devex.tools-green.svg)
+![Build](https://github.com/tyler-james-bridges/solana-devex-platform/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![npm](https://img.shields.io/npm/v/onchain-devex.svg) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg) ![Live](https://img.shields.io/badge/Live-onchain--devex.tools-green.svg)
 
 Developer tools for Solana. CPI debugging, transaction safety analysis, security scanning, and agent wallet management in one platform.
 
@@ -34,10 +34,10 @@ POST /api/security/scan        Submit token address for risk scoring
 
 ## SDK
 
-`@solana-devex/sdk` - TypeScript client for programmatic access to all platform tools. Located in `packages/sdk/`.
+`onchain-devex` - TypeScript client for programmatic access to all platform tools. Located in `packages/sdk/`.
 
 ```typescript
-import { SolanaDevExClient } from '@solana-devex/sdk';
+import { SolanaDevExClient } from 'onchain-devex';
 
 const client = new SolanaDevExClient({ baseUrl: 'https://onchain-devex.tools' });
 const result = await client.debugTransaction('your-tx-signature');
@@ -78,7 +78,7 @@ solana-devex-platform/
 ├── lib/
 │   └── solana-rpc.ts             Solana mainnet RPC client
 ├── packages/
-│   ├── sdk/                      @solana-devex/sdk TypeScript package
+│   ├── sdk/                      onchain-devex TypeScript package
 │   └── cli/                      Command-line tools
 └── public/
     └── skill.json                Agent interoperability spec

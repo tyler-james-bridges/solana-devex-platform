@@ -114,7 +114,7 @@ export default function ProvenancePage() {
     "cd71b66 Vercel cost optimization: 92% reduction in function invocations",
     "0266cf3 Clean up navigation and CPI debugger header",
     "3a2ea68 Codebase cleanup: remove 32 dead files, unused components and orphaned APIs",
-    "a5e47ff Add @solana-devex/sdk package and Guardian Security integration",
+    "a5e47ff Add onchain-devex package and Guardian Security integration",
     "1f5c3f2 Live Solana RPC integration, comprehensive README, agent skill files",
     "f634137 Fix DevEx Suite UI to match existing site design patterns",
     "b2c2122 Add comprehensive DevEx Suite with competitive differentiators",
@@ -159,7 +159,7 @@ export default function ProvenancePage() {
     {
       icon: Shield,
       title: "SDK Package Creation",
-      description: "Built @solana-devex/sdk with full TypeScript coverage and security integrations"
+      description: "Built onchain-devex with full TypeScript coverage and security integrations"
     },
     {
       icon: Users,
