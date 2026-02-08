@@ -1,6 +1,6 @@
 /**
  * @solana-devex/sdk
- * TypeScript SDK for the Solana DevEx Platform
+ * TypeScript SDK for CPI debugging on Solana
  * 
  * @version 0.1.0
  * @license MIT
@@ -20,24 +20,14 @@ export {
 
 // Types
 export type {
-  // Config
   SolanaDevExConfig,
-
-  // API
   APIResponse,
-
-  // CPI Debugging
   CPIAccount,
   CPIFlowStep,
   TransactionError,
   TransactionPerformance,
   TransactionMetadata,
   DebugResult,
-
-  // Security
-  SecurityReport,
-
-  // RPC
   RpcTransactionDetails,
   NetworkMetrics,
 } from './types';

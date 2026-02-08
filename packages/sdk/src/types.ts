@@ -1,9 +1,8 @@
 /**
- * Core types for the Solana DevEx Platform SDK
- * These types match the platform's internal components and API responses
+ * Core types for @solana-devex/sdk
  */
 
-// Base API Response Types
+// API Response
 export interface APIResponse<T> {
   success: boolean;
   data: T | null;
@@ -11,7 +10,7 @@ export interface APIResponse<T> {
   timestamp?: string;
 }
 
-// CPI Flow and Transaction Analysis Types
+// CPI Debugging Types
 export interface CPIAccount {
   pubkey: string;
   name?: string;
@@ -67,7 +66,6 @@ export interface TransactionMetadata {
   totalInstructions: number;
 }
 
-// Debug Result Types
 export interface DebugResult {
   signature: string;
   status: 'analyzing' | 'success' | 'error' | 'not-found';
@@ -77,64 +75,7 @@ export interface DebugResult {
   metadata?: TransactionMetadata;
 }
 
-// Simulation Types
-export interface AccountChange {
-  account: string;
-  type: 'balance' | 'data' | 'ownership' | 'creation';
-  before: string;
-  after: string;
-  impact: 'low' | 'medium' | 'high';
-}
-
-export interface Risk {
-  type: 'high_value_transfer' | 'authority_change' | 'program_upgrade' | 'account_closure' | 'suspicious_activity';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  description: string;
-  mitigation: string;
-}
-
-export interface Optimization {
-  type: 'compute_reduction' | 'fee_optimization' | 'account_consolidation' | 'instruction_batching';
-  description: string;
-  potentialSaving: string;
-  codeExample?: string;
-}
-
-export interface SafetyCheck {
-  name: string;
-  status: 'passed' | 'warning' | 'failed';
-  description: string;
-  details?: string;
-}
-
-export interface GasEstimate {
-  minFee: number;
-  maxFee: number;
-  recommendedFee: number;
-  priorityFee?: number;
-}
-
-export interface SimulationData {
-  wouldSucceed: boolean;
-  estimatedComputeUnits: number;
-  estimatedFee: number;
-  accountChanges: AccountChange[];
-  programsInvolved: string[];
-  cpiCalls: number;
-  risks: Risk[];
-  optimizations: Optimization[];
-}
-
-export interface SimulationResult {
-  id: string;
-  status: 'running' | 'success' | 'warning' | 'error';
-  timestamp: Date;
-  simulation: SimulationData;
-  safetyChecks: SafetyCheck[];
-  gasEstimate: GasEstimate;
-}
-
-// Protocol Health Types
+// Network
 export interface NetworkMetrics {
   slot: number;
   blockHeight: number;
@@ -145,118 +86,7 @@ export interface NetworkMetrics {
   timestamp: string;
 }
 
-export interface ProtocolMetrics {
-  name: string;
-  status: 'healthy' | 'degraded' | 'down';
-  latency: number;
-  availability: number;
-  errorRate: number;
-  timestamp: string;
-}
-
-export interface ProtocolHealth {
-  protocol: string;
-  status: 'healthy' | 'degraded' | 'down';
-  uptime: number;
-  latency: number;
-  errorRate: number;
-  lastCheck: string;
-  metrics: {
-    averageResponseTime: number;
-    successRate: number;
-    totalRequests: number;
-    failedRequests: number;
-  };
-  alerts?: Alert[];
-}
-
-export interface Alert {
-  id: string;
-  rule: {
-    name: string;
-    condition: string;
-    threshold: number;
-  };
-  value: number;
-  severity: 'critical' | 'warning' | 'info';
-  protocol?: string;
-  timestamp: string;
-  resolved?: boolean;
-}
-
-// Security Analysis Types
-export interface SecurityVulnerability {
-  type: 'authority_bypass' | 'integer_overflow' | 'reentrancy' | 'uninitialized_account' | 'missing_signer_check';
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  location: string;
-  description: string;
-  recommendation: string;
-  codeExample?: string;
-  references?: string[];
-}
-
-export interface SecurityReport {
-  programId: string;
-  scanTimestamp: string;
-  overallRisk: 'critical' | 'high' | 'medium' | 'low';
-  vulnerabilities: SecurityVulnerability[];
-  summary: {
-    totalIssues: number;
-    criticalIssues: number;
-    highIssues: number;
-    mediumIssues: number;
-    lowIssues: number;
-  };
-  recommendations: string[];
-  complianceScore: number;
-}
-
-// Platform Metrics Types
-export interface EndpointMetrics {
-  name: string;
-  path: string;
-  method: string;
-  status: 'healthy' | 'degraded' | 'down';
-  responseTime: number;
-  errorRate: number;
-  successRate: number;
-  totalRequests: number;
-  p50: number;
-  p95: number;
-  p99: number;
-}
-
-export interface PlatformMetrics {
-  timestamp: string;
-  overall: {
-    status: 'healthy' | 'degraded' | 'down';
-    uptime: number;
-    totalRequests: number;
-    errorRate: number;
-    averageResponseTime: number;
-  };
-  endpoints: EndpointMetrics[];
-  network: NetworkMetrics;
-  protocols: ProtocolMetrics[];
-  system: {
-    cpuUsage: number;
-    memoryUsage: number;
-    diskUsage: number;
-    networkTraffic: number;
-  };
-}
-
-// Configuration Types
-export interface SolanaDevExConfig {
-  apiUrl?: string;
-  rpcEndpoint?: string;
-  apiKey?: string;
-  timeout?: number;
-  retryAttempts?: number;
-  enableCaching?: boolean;
-}
-
-// RPC Utilities Types
+// RPC Types
 export interface RpcTransactionDetails {
   signature: string;
   slot: number;
@@ -285,7 +115,17 @@ export interface RpcTransactionDetails {
   };
 }
 
-// Error Types
+// Configuration
+export interface SolanaDevExConfig {
+  apiUrl?: string;
+  rpcEndpoint?: string;
+  apiKey?: string;
+  timeout?: number;
+  retryAttempts?: number;
+  enableCaching?: boolean;
+}
+
+// Errors
 export class SolanaDevExError extends Error {
   public readonly code: string;
   public readonly statusCode?: number;

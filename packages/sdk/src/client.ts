@@ -6,7 +6,6 @@
 import { 
   SolanaDevExConfig, 
   DebugResult, 
-  SecurityReport, 
   APIResponse,
   NetworkError,
   AuthenticationError,
@@ -85,55 +84,6 @@ export class SolanaDevExClient {
     } catch (error) {
       if (error instanceof SolanaDevExError) throw error;
       throw new NetworkError(`Transaction debugging failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  }
-
-  /**
-   * Run security analysis on a Solana token or program.
-   * Uses Guardian's agent swarm for risk scoring, honeypot detection, and whale tracking.
-   * 
-   * @param address - Token mint address or program ID
-   * @returns Security report with risk score, threats, and analysis
-   */
-  async securityScan(address: string): Promise<SecurityReport> {
-    this.validateAddress(address);
-    
-    const cacheKey = `security:${address}`;
-    const cached = this.getFromCache<SecurityReport>(cacheKey);
-    if (cached) return cached;
-
-    try {
-      const response = await this.makeRequest<SecurityReport>('POST', '/api/security/scan', {
-        address
-      });
-
-      if (response.success && response.data) {
-        this.setCache(cacheKey, response.data, 600000); // 10 min
-        return response.data;
-      }
-
-      throw new SolanaDevExError(
-        response.error || 'Failed to run security scan',
-        'SECURITY_SCAN_FAILED'
-      );
-    } catch (error) {
-      if (error instanceof SolanaDevExError) throw error;
-      throw new NetworkError(`Security scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  }
-
-  /**
-   * Get security threats feed
-   * @returns Active threats and intelligence data
-   */
-  async getThreats(): Promise<any> {
-    try {
-      const response = await this.makeRequest<any>('GET', '/api/security/scan?type=threats');
-      if (response.success && response.data) return response.data;
-      throw new SolanaDevExError(response.error || 'Failed to fetch threats', 'THREATS_FAILED');
-    } catch (error) {
-      if (error instanceof SolanaDevExError) throw error;
-      throw new NetworkError(`Threats fetch failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -236,11 +186,6 @@ export class SolanaDevExClient {
     if (!signature || typeof signature !== 'string') throw new ValidationError('Transaction signature required');
     if (signature.length < 80 || signature.length > 100) throw new ValidationError('Invalid signature format');
     if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(signature)) throw new ValidationError('Signature must be valid base58');
-  }
-
-  private validateAddress(address: string): void {
-    if (!address || typeof address !== 'string') throw new ValidationError('Address required');
-    if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(address)) throw new ValidationError('Address must be valid base58');
   }
 
   private delay(ms: number): Promise<void> {
