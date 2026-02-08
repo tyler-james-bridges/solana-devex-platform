@@ -1,47 +1,36 @@
 {
   "name": "@solana-devex/sdk",
   "version": "0.1.0",
-  "description": "TypeScript SDK for the Solana DevEx Platform - CPI debugging, transaction simulation, and developer tools",
+  "description": "TypeScript SDK for Solana DevEx Platform - CPI debugging, security scanning, and direct RPC utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/index.esm.js",
   "files": [
     "dist",
-    "src",
     "README.md"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "build:esm": "tsc --module es2015 --outDir dist/esm && mv dist/esm/index.js dist/index.esm.js",
-    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "build": "tsc",
     "clean": "rm -rf dist",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
     "solana",
-    "blockchain",
     "web3",
-    "defi",
     "cpi",
     "debugging",
-    "transaction",
-    "simulation",
-    "developer-tools"
+    "security",
+    "developer-tools",
+    "blockchain"
   ],
-  "author": "Solana DevEx Platform Team",
+  "author": "onchain-devex",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solana-devex/platform.git",
+    "url": "https://github.com/tyler-james-bridges/solana-devex-platform.git",
     "directory": "packages/sdk"
   },
   "bugs": {
-    "url": "https://github.com/solana-devex/platform/issues"
+    "url": "https://github.com/tyler-james-bridges/solana-devex-platform/issues"
   },
   "homepage": "https://onchain-devex.tools",
   "peerDependencies": {
@@ -51,17 +40,11 @@
     "cross-fetch": "^4.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
+    "@solana/web3.js": "^1.95.0",
     "typescript": "^5.4.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
