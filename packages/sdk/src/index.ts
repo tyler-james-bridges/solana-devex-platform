@@ -1,5 +1,5 @@
 /**
- * @solana-devex/sdk
+ * onchain-devex
  * TypeScript SDK for CPI debugging on Solana
  * 
  * @version 0.1.0

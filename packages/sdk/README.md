@@ -1,11 +1,11 @@
-# @solana-devex/sdk
+# onchain-devex
 
 TypeScript SDK for CPI debugging on Solana. Parse any mainnet transaction into a detailed execution trace with cross-program invocation analysis, error diagnostics, and performance metrics.
 
 ## Install
 
 ```bash
-npm install @solana-devex/sdk @solana/web3.js
+npm install onchain-devex @solana/web3.js
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install @solana-devex/sdk @solana/web3.js
 ### Debug a Transaction via Platform API
 
 ```typescript
-import { SolanaDevExClient } from '@solana-devex/sdk';
+import { SolanaDevExClient } from 'onchain-devex';
 
 const client = new SolanaDevExClient();
 
@@ -46,7 +46,7 @@ import {
   getTransactionDetails, 
   parseTransactionForCPI,
   analyzeTransactionErrors 
-} from '@solana-devex/sdk';
+} from 'onchain-devex';
 
 // Full RPC client
 const rpc = new SolanaRpcClient('https://api.mainnet-beta.solana.com');

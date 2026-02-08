@@ -1,5 +1,5 @@
 /**
- * Core types for @solana-devex/sdk
+ * Core types for onchain-devex
  */
 
 // API Response

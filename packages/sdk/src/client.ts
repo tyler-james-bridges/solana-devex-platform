@@ -119,7 +119,7 @@ export class SolanaDevExClient {
 
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
-          'User-Agent': '@solana-devex/sdk'
+          'User-Agent': 'onchain-devex'
         };
 
         if (this.config.apiKey) {

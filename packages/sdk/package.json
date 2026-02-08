@@ -1,5 +1,5 @@
 {
-  "name": "@solana-devex/sdk",
+  "name": "onchain-devex",
   "version": "0.1.0",
   "description": "TypeScript SDK for Solana DevEx Platform - CPI debugging, security scanning, and direct RPC utilities",
   "main": "dist/index.js",
@@ -47,7 +47,6 @@
     "node": ">=18.0.0"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
+    "registry": "https://registry.npmjs.org/"
   }
 }
