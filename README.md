@@ -1,107 +1,72 @@
 # Solana DevEx Platform
 
-![Build](https://github.com/tyler-james-bridges/solana-devex-platform/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![npm](https://img.shields.io/npm/v/onchain-devex.svg) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg) ![Live](https://img.shields.io/badge/Live-onchain--devex.tools-green.svg)
+![Build](https://github.com/tyler-james-bridges/solana-devex-platform/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg) ![Live](https://img.shields.io/badge/Live-onchain--devex.tools-green.svg)
 
-Developer tools for Solana. CPI debugging, transaction safety analysis, security scanning, and agent wallet management in one platform.
+Developer tools for Solana. Live mainnet RPC integration, real transaction analysis, and a published npm SDK.
 
-**Live**: [onchain-devex.tools](https://onchain-devex.tools)
-**Hackathon**: [Colosseum Agent Hackathon](https://colosseum.com/agent-hackathon/projects/solana-devex-platform) - Agent #25, Project #46
+**Live**: https://onchain-devex.tools  
+**Colosseum Hackathon**: Agent #25 Project #46  
+**npm**: [`onchain-devex`](https://www.npmjs.com/package/onchain-devex)
 
-## Tools
+## What It Does
 
-### CPI Debugger
-Cross-program invocation analysis using live Solana mainnet RPC. Paste a transaction signature and get execution traces, account state changes, program invocations, and error diagnostics. Includes real mainnet examples from Jupiter, Raydium, Marinade, Metaplex, and Drift.
+Paste any Solana mainnet transaction signature → get real CPI call flows, compute unit analysis, cross-program invocation traces, and error diagnostics. All data from live Solana RPC — nothing mocked.
 
-### Transaction Safety Simulator
-Pre-execution transaction analysis. Detects risks, estimates compute units and fees, checks for unsafe token approvals, and flags suspicious program interactions before you sign.
+## What's Live
 
-### Verifiable Debugging Attestations
-Cryptographic proof of debugging findings. SHA-256 hashing with Ed25519 signatures creates tamper-proof records of what was found, when, and by whom. Structured for IPFS storage and on-chain anchoring.
+| Tool | Description |
+|------|-------------|
+| **CPI Debugger** | Real-time cross-program invocation analysis against mainnet |
+| **Transaction Simulator** | Pre-execution risk analysis and safety checks |
+| **Verifiable Attestations** | Cryptographic proof of debugging sessions (Ed25519) |
+| **Agent Wallet Infrastructure** | Secure key management for AI agent operations |
+| **Guardian Security Scanner** | Token risk scoring, honeypot detection, whale tracking |
+| **Protocol Monitor** | Health monitoring for Jupiter, Raydium, Drift, Kamino |
+| **TypeScript SDK** | `npm install onchain-devex` — programmatic CPI debugging |
 
-### Agent Wallet Infrastructure
-Wallet management for AI agents. Encrypted key storage, granular permission controls (per-operation limits, daily caps, program invoke restrictions), and configurable security levels.
+## Quick Start
 
-### Guardian Security Scanner
-Token risk analysis powered by Guardian's agent swarm. Honeypot detection, whale tracking, liquidity analysis, and threat intelligence for Solana tokens and programs.
-
-## API Routes
-
+```bash
+npm install onchain-devex
 ```
-POST /api/debug-transaction    Fetch and parse a Solana transaction by signature (live mainnet RPC)
-GET  /api/security/scan        Token security analysis and threat detection
-POST /api/security/scan        Submit token address for risk scoring
-```
-
-## SDK
-
-`onchain-devex` - TypeScript client for programmatic access to all platform tools. Located in `packages/sdk/`.
 
 ```typescript
-import { SolanaDevExClient } from 'onchain-devex';
+import { parseCPITransaction } from 'onchain-devex';
 
-const client = new SolanaDevExClient({ baseUrl: 'https://onchain-devex.tools' });
-const result = await client.debugTransaction('your-tx-signature');
+const result = await parseCPITransaction(
+  '5UfDuX...',  // any mainnet tx signature
+  'https://api.mainnet-beta.solana.com'
+);
+
+console.log(result.cpiCalls);    // cross-program invocations
+console.log(result.computeUnits); // compute budget analysis
 ```
+
+Or use the web interface at [onchain-devex.tools](https://onchain-devex.tools).
+
+## API Endpoints
+
+```
+POST /api/debug-transaction    — Parse a mainnet transaction signature
+POST /api/security/scan        — Security scan for token contracts
+GET  /api/forum-posts          — Colosseum forum integration
+```
+
+## Agent Interoperability
+
+The platform exposes a [`skill.json`](https://onchain-devex.tools/skill.json) for agent-to-agent discovery and integration.
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Blockchain**: @solana/web3.js (mainnet RPC)
-- **Security**: Guardian integration for token analysis
 - **Deployment**: Vercel
-- **CI**: GitHub Actions
+- **Package**: Published on npm as `onchain-devex`
 
-## Project Structure
+## Built By
 
-```
-solana-devex-platform/
-├── app/
-│   ├── api/
-│   │   ├── debug-transaction/    Live Solana RPC transaction parsing
-│   │   └── security/scan/        Guardian security scanning
-│   ├── cpi-debugger/             CPI debugging interface
-│   ├── devex-suite/              Tool suite (simulator, attestations, wallets, scanner)
-│   └── provenance/               Build provenance and git history
-├── components/
-│   ├── AgentWalletManager.tsx    Wallet creation and management
-│   ├── SecurityScanner.tsx       Token risk analysis UI
-│   ├── TransactionSimulator.tsx  Pre-execution safety checks
-│   ├── VerifiableDebugger.tsx    Attestation generation
-│   ├── ForumFeed.tsx             Hackathon forum posts
-│   ├── Navigation.tsx            Site navigation
-│   ├── Footer.tsx                Site footer
-│   └── ThemeToggle.tsx           Dark/light mode
-├── hooks/
-│   └── useTheme.tsx              Theme provider
-├── integrations/
-│   └── guardian/                 Guardian security client
-├── lib/
-│   └── solana-rpc.ts             Solana mainnet RPC client
-├── packages/
-│   ├── sdk/                      onchain-devex TypeScript package
-│   └── cli/                      Command-line tools
-└── public/
-    └── skill.json                Agent interoperability spec
-```
-
-## Development
-
-```bash
-npm install
-npm run dev          # http://localhost:3000
-npm run build        # Production build
-```
-
-Requires a `.env` file with `SOLANA_RPC_URL` for mainnet RPC access.
-
-## How It Was Built
-
-This platform was built by an AI agent (onchain-devex, Agent #25) over 8 days during the Colosseum Agent Hackathon. Human-directed, agent-built. Full development provenance is available at [/provenance](https://onchain-devex.tools/provenance).
+Human-directed, agent-built over 8 days for the [Colosseum Agent Hackathon](https://colosseum.com/agent-hackathon/projects/solana-devex-platform). Built by Agent #25.
 
 ## License
 
-MIT - see [LICENSE](./LICENSE)
-
----
-
-[onchain-devex.tools](https://onchain-devex.tools) | [GitHub](https://github.com/tyler-james-bridges/solana-devex-platform) | [Colosseum](https://colosseum.com/agent-hackathon/projects/solana-devex-platform) | [@onchain_devex](https://twitter.com/onchain_devex)
+MIT — see [LICENSE](./LICENSE)
